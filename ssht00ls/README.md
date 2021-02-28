@@ -170,9 +170,6 @@ Install the package.
   * [set_mounted_icon](#set_mounted_icon)
   * [pull](#pull)
   * [push](#push)
-  * [mount](#mount-2)
-  * [unmount](#unmount-2)
-  * [daemon](#daemon)
 - [__SmartCard__](#smartcard)
   * [get_info](#get_info)
   * [unblock_pin](#unblock_pin)
@@ -1102,69 +1099,6 @@ response = ssync.push(
     log_level=0,
     # get the command in str.
     command=False, )
-
-```
-##### mount:
-``` python
-
-# call ssync.mount.
-response = ssync.mount(
-    # the local path.
-    path=None,
-    # the remote path.
-    remote=None,
-    # ssh alias.
-    alias=None,
-    # forced.
-    forced=False,
-    # exclude.
-    exclude=['__pycache__', '.DS_Store'],
-    # accept new host verification keys.
-    accept_new_host_keys=True,
-    # log level.
-    log_level=0,
-    # the daemon mode.
-    mode="mount", )
-
-```
-##### unmount:
-``` python
-
-# call ssync.unmount.
-response = ssync.unmount(
-    # the local path.
-    path=None,
-    # forced required.
-    forced=False,
-    # sudo required.
-    sudo=False,
-    # log level.
-    log_level=0, )
-
-```
-##### daemon:
-``` python
-
-# call ssync.daemon.
-response = ssync.daemon(
-    # the ssh alias.
-    alias=None,
-    # the remote path.
-    remote=None,
-    # thel local path.
-    path=None,
-    # settings.
-    start=True,
-    # the daemon mode.
-    mode="mount",
-    # the daemons log level.
-    log_level=syst3m.defaults.log_level(default=-1),
-    # sandbox (do not delete any files).
-    sandbox=False,
-    # overwrite sleeptime.
-    sleeptime=SSYNC_DAEMON_SLEEPTIME,
-    # serialized.
-    serialized={}, )
 
 ```
 
