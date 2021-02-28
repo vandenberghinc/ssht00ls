@@ -57,7 +57,9 @@ class Aliases(syst3m.objects.Traceback):
 		array, dictionary = [], {}
 		for i in list(CONFIG["aliases"].keys()):
 			if len(i) >= len("example.com ") and i[:len("example.com ")] == "example.com ":
-				a=1
+				a=1 # skip
+			elif i in ["None", None]:
+				a=1 # skip
 			else:
 				array.append(i)
 				dictionary[i] = dict(CONFIG["aliases"][i])
@@ -110,6 +112,7 @@ class Aliases(syst3m.objects.Traceback):
 
 		# create non existant.
 		elif not exists and create:
+			print("1; info username:",info['username'])
 			username,public_ip,private_ip,public_port,private_port,private_key,public_key,passphrase,smartcard,pin,save,checks = Dictionary(info).unpack({
 				"username":None, 
 				"public_ip":None,
@@ -123,6 +126,7 @@ class Aliases(syst3m.objects.Traceback):
 				"pin":None,
 				"save":True,
 				"checks":True, })
+			print("2; username:",username)
 			return self.create(
 				alias=alias,
 				# the users.
@@ -323,23 +327,26 @@ class Aliases(syst3m.objects.Traceback):
 				"pin":None,
 				"alias":None,
 			})
+			print("3; username:",username)
 		
 		# check specific.
 		if self.specific:
 			if alias == None: alias = self.alias
 
 		# checks.
-		response = r3sponse.check_parameters({
-			"alias":alias,
-			"username":username,
-			"public_ip":public_ip,
-			"private_ip":private_ip,
-			"public_port":public_port,
-			"private_port":private_port,
-			"private_key":private_key,
-			"public_key":public_key,
-			#"smartcard:bool":smartcard,
-		}, empty_value=None, traceback=self.__traceback__(function="create"))
+		response = r3sponse.check_parameters(
+			traceback=self.__traceback__(function="create"),
+			parameters={
+				"alias":alias,
+				"username":username,
+				"public_ip":public_ip,
+				"private_ip":private_ip,
+				"public_port":public_port,
+				"private_port":private_port,
+				"private_key":private_key,
+				"public_key":public_key,
+				#"smartcard:bool":smartcard,
+			})
 		if not response["success"]: return response
 		if smartcard:
 			response = r3sponse.check_parameters({
