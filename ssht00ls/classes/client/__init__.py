@@ -200,7 +200,7 @@ class Client(syst3m.objects.Traceback):
 	def exists(self):
 		response = self.alias.check()
 		if response.success: return True
-		elif "does not exists" in response.error: return False
+		elif "does not exist." in response.error: return False
 		else: raise ValueError(f"Unexpected error: {response.error}")
 	@property
 	def activated(self):
