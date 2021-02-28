@@ -125,42 +125,30 @@ Install the package.
   * [info](#info)
   * [delete](#delete-1)
   * [edit](#edit)
-  * [edit_dict](#edit_dict)
   * [create](#create)
+  * [sync](#sync)
   * [public](#public)
 - [__Client__](#client)
   * [generate](#generate)
   * [create](#create-1)
   * [check](#check-2)
-  * [exists](#exists)
-  * [activated](#activated)
-  * [id](#id)
-  * [alias_](#alias_)
-  * [username](#username)
-  * [public_ip](#public_ip)
-  * [private_ip](#private_ip)
-  * [public_port](#public_port)
-  * [private_port](#private_port)
-  * [ip](#ip)
-  * [port](#port)
-  * [public](#public-1)
-  * [private_key](#private_key)
-  * [public_key](#public_key)
-  * [is_smartcard](#is_smartcard)
+  * [exists](#properties)
 - [__Connections__](#connections)
   * [list](#list-2)
 - [__Encryption__](#encryption)
+  * [generate](#generate-1)
   * [activate](#activate)
-  * [activated](#activated-1)
-  * [public_key_activated](#public_key_activated)
-  * [private_key_activated](#private_key_activated)
-  * [generated](#generated)
+  * [activated](#properties-1)
 - [__Installation__](#installation)
   * [install](#install)
+  * [check_installed](#check_installed)
 - [__Keys__](#keys)
   * [edit_passphrase](#edit_passphrase)
   * [edit_comment](#edit_comment)
+  * [generate](#generate-2)
   * [check](#check-3)
+  * [enable](#enable)
+  * [disable](#disable)
 - [__SCP__](#scp)
   * [download](#download)
   * [upload](#upload)
@@ -168,10 +156,10 @@ Install the package.
   * [mount](#mount)
   * [unmount](#unmount)
   * [parse](#parse)
-  * [id](#id-1)
-  * [mounted](#mounted)
+  * [id](#properties-2)
 - [__SSH__](#ssh)
   * [session](#session)
+  * [command](#command)
 - [__SSHD__](#sshd)
   * [create](#create-2)
 - [__SSHFS__](#sshfs)
@@ -180,7 +168,9 @@ Install the package.
 - [__SSync__](#ssync)
   * [index](#index)
   * [set_mounted_icon](#set_mounted_icon)
+  * [pull](#pull)
   * [push](#push)
+  * [mount](#mount-2)
   * [unmount](#unmount-2)
 - [__SmartCard__](#smartcard)
   * [get_info](#get_info)
@@ -189,6 +179,7 @@ Install the package.
   * [change_puk](#change_puk)
   * [generate_key](#generate_key)
   * [generate_management_key](#generate_management_key)
+  * [reset_piv](#reset_piv)
   * [export_keys](#export_keys)
   * [check_smartcard](#check_smartcard)
   * [convert_to_smartcard](#convert_to_smartcard)
@@ -201,9 +192,7 @@ Install the package.
   * [kill](#kill)
   * [list](#list-3)
   * [iterate](#iterate-1)
-  * [id](#id-2)
-  * [established](#established)
-  * [pid](#pid)
+  * [id](#properties-3)
 
 ## Agent:
 The agent object class.
@@ -229,15 +218,15 @@ agent = ssht00ls.classes.agent.Agent(
 # call agent.add.
 response = agent.add(
     # the private key's path.
-    private_key=None, 
+    private_key=None,
     # the public key's path (optional).
-    public_key=None, 
+    public_key=None,
     # the keys passphrase.
-    passphrase=None, 
+    passphrase=None,
     # enable if you are using a smart card.
-    smartcard=False, 
+    smartcard=False,
     # the smart cards pin code
-    pin=None, 
+    pin=None,
     # default timeout (do not use).
     timeout=0.5,
     # reattempt (do not use).
@@ -325,7 +314,7 @@ _ = aliases.iterate()
 # call aliases.check.
 response = aliases.check(
     # the alias to check.
-    alias=None, 
+    alias=None,
     # the info to check.
     #     adds / replaces the current (except the exceptions).
     info={},
@@ -362,7 +351,7 @@ response = aliases.delete(alias=None)
 ``` python
 
 # call aliases.edit.
-_ = aliases.edit(
+response = aliases.edit(
     # the alias.
     alias=None,
     # the edits (dict).
@@ -378,13 +367,6 @@ _ = aliases.edit(
     log_level=syst3m.defaults.options.log_level, )
 
 ```
-##### edit_dict:
-``` python
-
-# call aliases.edit_dict.
-_ = aliases.edit_dict(dictionary={}, edits={})
-
-```
 ##### create:
 ``` python
 
@@ -393,7 +375,7 @@ response = aliases.create(
     # the alias.
     alias=None,
     # the users.
-    username=None, 
+    username=None,
     # the ip of the server.
     public_ip=None,
     private_ip=None,
@@ -415,6 +397,13 @@ response = aliases.create(
     checks=True,
     # serialized all parameters as dict, except: [save].
     serialized={}, )
+
+```
+##### sync:
+``` python
+
+# call aliases.sync.
+response = aliases.sync(aliases=["*"], interactive=None, log_level=None)
 
 ```
 ##### public:
@@ -591,7 +580,7 @@ encryption = ssht00ls.classes.encryption.Encryption(
     # the configuration file (Dictionary).
     config=Dictionary,
     # the webserver cache (syst3m.cache.WebServer).
-    webserver=syst3m.cache.WebServer, 
+    webserver=syst3m.cache.WebServer,
     # encrypted cache path.
     cache=None,
     # the passphrase (optional to prompt) (str).
@@ -603,6 +592,19 @@ encryption = ssht00ls.classes.encryption.Encryption(
 
 #### Functions:
 
+##### generate:
+``` python
+
+# call encryption.generate.
+response = encryption.generate(
+    # the passphrase (optional to prompt) (str).
+    passphrase=None,
+    # the verify passphrase (optional).
+    verify_passphrase=None,
+    # interactive (optional).
+    interactive=None )
+
+```
 ##### activate:
 ``` python
 
@@ -610,7 +612,7 @@ encryption = ssht00ls.classes.encryption.Encryption(
 response = encryption.activate(
     # the key's passphrase (optional to retrieve from webserver) (str).
     passphrase=None,
-    # interactive (optional) 
+    # interactive (optional)
     interactive=None, )
 
 ```
@@ -657,6 +659,15 @@ response = installation.install(
     username=None, )
 
 ```
+##### check_installed:
+``` python
+
+# call installation.check_installed.
+response = installation.check_installed(
+    # optional define the user (leave None for current user).
+    username=None, )
+
+```
 
 ## Keys:
 The keys object class.
@@ -690,11 +701,32 @@ response = keys.edit_passphrase(path=None, old=None, new=None)
 response = keys.edit_comment(path=None, passphrase=None, comment=None)
 
 ```
+##### generate:
+``` python
+
+# call keys.generate.
+response = keys.generate(path=None, passphrase=None, comment="")
+
+```
 ##### check:
 ``` python
 
 # call keys.check.
 response = keys.check(username=None, public_keys=[], reversed=False)
+
+```
+##### enable:
+``` python
+
+# call keys.enable.
+response = keys.enable(username=None, public_keys=[])
+
+```
+##### disable:
+``` python
+
+# call keys.disable.
+response = keys.disable(username=None, public_keys=[])
 
 ```
 
@@ -715,15 +747,15 @@ scp = ssht00ls.classes.scp.SCP()
 # call scp.download.
 response = scp.download(
     # the file paths.
-    server_path=None, 
+    server_path=None,
     client_path=None,
-    directory=False, 
+    directory=False,
     # the ssh params.
     # option 1:
     alias=None,
     # option 2:
-    username=None, 
-    ip=None, 
+    username=None,
+    ip=None,
     port=22,
     key_path=None, )
 
@@ -734,15 +766,15 @@ response = scp.download(
 # call scp.upload.
 response = scp.upload(
     # the file paths.
-    server_path=None, 
+    server_path=None,
     client_path=None,
-    directory=False, 
+    directory=False,
     # the ssh params.
     # option 1:
     alias=None,
     # option 2:
-    username=None, 
-    ip=None, 
+    username=None,
+    ip=None,
     port=22,
     key_path=None, )
 
@@ -814,9 +846,9 @@ response = smb.mount(
 # call smb.unmount.
 response = smb.unmount(
     # the mountpoint path (leave None to use smb.path) (REQUIRED) (#1).
-    path=None, 
+    path=None,
     # the forced umount option.
-    forced=False, 
+    forced=False,
     # root permission required for force.
     sudo=False,
     # the log level (leave None to use smb.log_level).
@@ -828,7 +860,7 @@ response = smb.unmount(
 
 # call smb.parse.
 response = smb.parse(
-    # the mountpoint path (leave None to use smb.path) (REQUIRED) (#1). 
+    # the mountpoint path (leave None to use smb.path) (REQUIRED) (#1).
     path=None, )
 
 ```
@@ -865,6 +897,21 @@ ssh = ssht00ls.classes.ssh.SSH(
 # call ssh.session.
 response = ssh.session(
     alias=None, )
+
+```
+##### command:
+``` python
+
+# call ssh.command.
+_ = ssh.command(
+    # the alias.
+    alias=None,
+    # the command to execute.
+    command=None,
+    # serialize the output to json.
+    serialize=False,
+    # the log level.
+    log_level=0, )
 
 ```
 
@@ -937,14 +984,14 @@ sshfs = ssht00ls.classes.sshfs.SSHFS()
 # call sshfs.mount.
 response = sshfs.mount(
     # the directory paths.
-    remote=None, 
-    path=None, 
+    remote=None,
+    path=None,
     # the ssh params.
     # option 1:
     alias=None,
     # option 2:
-    username=None, 
-    ip=None, 
+    username=None,
+    ip=None,
     port=22,
     key_path=None, )
 
@@ -955,9 +1002,9 @@ response = sshfs.mount(
 # call sshfs.unmount.
 response = sshfs.unmount(
     # the client path.
-    path=None, 
+    path=None,
     # the forced umount option.
-    forced=False, 
+    forced=False,
     # forced option may require sudo.
     sudo=False, )
 
@@ -991,17 +1038,49 @@ response = ssync.index(path=None, alias=None, log_level=0, checks=True, accept_n
 _ = ssync.set_mounted_icon(path)
 
 ```
+##### pull:
+``` python
+
+# call ssync.pull.
+response = ssync.pull(
+    # the local path.
+    path=None,
+    # the ssht00ls alias.
+    alias=None,
+    # the remote path.
+    remote=None,
+    # exlude subpaths (list) (leave None to exclude none).
+    exclude=[],
+    # path is directory boolean (leave None to parse automatically).
+    directory=True,
+    empty_directory=False,
+    # update deleted files.
+    delete=False,
+    # forced mode.
+    forced=False,
+    # version control.
+    safe=False,
+    # accept new hosts keys.
+    accept_new_host_keys=True,
+    # checks.
+    checks=True,
+    # log level.
+    log_level=0,
+    # get the command in str.
+    command=False, )
+
+```
 ##### push:
 ``` python
 
 # call ssync.push.
 response = ssync.push(
     # the local path.
-    path=None, 
+    path=None,
     # the ssht00ls alias.
-    alias=None, 
+    alias=None,
     # the remote path.
-    remote=None, 
+    remote=None,
     # exlude subpaths (list) (leave None to exclude none).
     exclude=[],
     # path is directory boolean (leave None to parse automatically).
@@ -1024,13 +1103,36 @@ response = ssync.push(
     command=False, )
 
 ```
+##### mount:
+``` python
+
+# call ssync.mount.
+response = ssync.mount(
+    # the local path.
+    path=None,
+    # the remote path.
+    remote=None,
+    # ssh alias.
+    alias=None,
+    # forced.
+    forced=False,
+    # exclude.
+    exclude=['__pycache__', '.DS_Store'],
+    # accept new host verification keys.
+    accept_new_host_keys=True,
+    # log level.
+    log_level=0,
+    # the daemon mode.
+    mode="mount", )
+
+```
 ##### unmount:
 ``` python
 
 # call ssync.unmount.
 response = ssync.unmount(
     # the local path.
-    path=None, 
+    path=None,
     # forced required.
     forced=False,
     # sudo required.
@@ -1064,7 +1166,7 @@ response = smartcard.get_info()
 # call smartcard.unblock_pin.
 response = smartcard.unblock_pin(
     # the new pin code.
-    pin=None, 
+    pin=None,
     # the smart cards puk code
     puk=None, )
 
@@ -1075,7 +1177,7 @@ response = smartcard.unblock_pin(
 # call smartcard.change_pin.
 response = smartcard.change_pin(
     # the smart cards new pin code.
-    new=None, 
+    new=None,
     # the smart cards old pin code.
     old=123456, )
 
@@ -1086,7 +1188,7 @@ response = smartcard.change_pin(
 # call smartcard.change_puk.
 response = smartcard.change_puk(
     # the smart cards new puk code.
-    new=None, 
+    new=None,
     # the smart cards old puk code.
     old=12345678, )
 
@@ -1109,13 +1211,20 @@ response = smartcard.generate_management_key(
     pin=None, )
 
 ```
+##### reset_piv:
+``` python
+
+# call smartcard.reset_piv.
+response = smartcard.reset_piv()
+
+```
 ##### export_keys:
 ``` python
 
 # call smartcard.export_keys.
 response = smartcard.export_keys(
     # optionally save the keys to a file.
-    path=None,  )
+    path=None, )
 
 ```
 ##### check_smartcard:
@@ -1138,7 +1247,7 @@ response = smartcard.convert_to_smartcard()
 # call smartcard.install.
 response = smartcard.install(
     # specify a new pin (optional).
-    pin=None, 
+    pin=None,
     # specify a new puk (optional).
     puk=None, )
 
