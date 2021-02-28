@@ -9,7 +9,8 @@ from ssht00ls.classes.installation import installation
 
 # the sshd object class.
 class SSHD(syst3m.objects.Traceback):
-	def __init__(self):
+	def __init__(self,
+	):
 		
 		# defaults.
 		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.sshd", raw_traceback="ssht00ls.classes.sshd.SSHD")	

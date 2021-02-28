@@ -12,7 +12,8 @@ def __check_os__(supported=[]):
 
 # the manager class.
 class SmartCards(syst3m.objects.Traceback):
-	def __init__(self):	
+	def __init__(self, 
+	):	
 		
 		# defaults.
 		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.smartcards", raw_traceback="ssht00ls.classes.smartcards.SmartCards")

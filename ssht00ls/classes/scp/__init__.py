@@ -8,7 +8,8 @@ from ssht00ls.classes.smartcards import smartcards
 
 # the scp object class.
 class SCP(syst3m.objects.Traceback):
-	def __init__(self):
+	def __init__(self,
+	):
 
 		# defaults.
 		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.scp", raw_traceback="ssht00ls.classes.scp.SCP")

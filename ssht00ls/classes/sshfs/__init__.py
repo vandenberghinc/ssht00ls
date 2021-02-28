@@ -8,7 +8,8 @@ from ssht00ls.classes.smartcards import smartcards
 
 # the sshfs object class.
 class SSHFS(syst3m.objects.Traceback):
-	def __init__(self):
+	def __init__(self,
+	):
 
 		# defaults.
 		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.sshfs", raw_traceback="ssht00ls.classes.sshfs.SSHFS")	

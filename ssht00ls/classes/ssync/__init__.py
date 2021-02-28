@@ -12,7 +12,7 @@ from ssht00ls.classes import utils
 
 # the ssync object class.
 class SSync(syst3m.objects.Traceback):
-	def __init__(self, 
+	def __init__(self,
 		# initialize as specific not global (optional).
 		#	the username.
 		alias=None,

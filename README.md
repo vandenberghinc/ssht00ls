@@ -240,7 +240,7 @@ The aliases object class.
 ``` python 
 
 # initialize the aliases object class.
-aliases = ssht00ls.classes.aliaes.Aliases(
+aliases = ssht00ls.classes.aliases.Aliases(
     # initialize as specific not global (optional).
     #     the alias.
     alias=None,
@@ -392,7 +392,7 @@ The client object class.
 ``` python 
 
 # initialize the client object class.
-client = ssht00ls.Client(
+client = ssht00ls.classes.client.Client(
     # the alias (required) (param #1).
     alias=None,
     # the username (optional if client already exists).
@@ -715,7 +715,7 @@ The smb object class.
 ``` python 
 
 # initialize the smb object class.
-smb = ssht00ls.smb(
+smb = ssht00ls.classes.smb.SMB(
     # initialize as specific not global (optional).
     #     the share id (#1).
     id=None,
@@ -1007,7 +1007,7 @@ The smartcard object class.
 ``` python 
 
 # initialize the smartcard object class.
-smartcard = SmartCard(serial_number=None)
+smartcard = ssht00ls.classes.smartcards.SmartCard(serial_number=None)
 
 ```
 
@@ -1111,7 +1111,7 @@ The smartcards object class.
 ``` python 
 
 # initialize the smartcards object class.
-smartcards = SmartCards()
+smartcards = ssht00ls.classes.smartcards.SmartCards()
 
 ```
 
@@ -1137,7 +1137,7 @@ The tunnel object class.
 ``` python 
 
 # initialize the tunnel object class.
-tunnel = ssht00ls.ssh.Tunnel(
+tunnel = ssht00ls.classes.ssh.tunnel.Tunnel(
     # initialize as specific not global (optional).
     #     the alias.
     alias=None,
