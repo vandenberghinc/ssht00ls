@@ -29,46 +29,83 @@ Install the package.
 # CLI Usage:
 	Usage: ssht00ls <mode> <options> 
 	Modes:
-	    --create-alias : Create a ssh alias.
-	        --server myserver : Specify the server's name.
-	        --username myuser : Specify the username.
-	        --ip 0.0.0.0 : Specify the server's ip.
-	        --port 22 : Specify the server's port.
-	        for ssh keys::
-	        --key /path/to/key/private_key : Specify the path to the private key.
-	        --passphrase 'MyPassphrase123' : Specify the keys pasphrase (optional).
-	        for smart cards::
-	        --smart-cards : Enable the smart cards boolean.
-	        --pin 123456 : Specify the smart cards pin code (optional).
-	    --generate : Generate a ssh key.
-	        --path /keys/mykey/ : Specify the keys directory path.
-	        --passphrase Passphrase123 : Specify the keys passphrase.
-	        --comment 'My Key' : Specify the keys comment.
-	    --command <alias> 'ls .' : Execute a command over ssh.
-	    --session <alias> : Start a ssh session.
-	        --options ''  : Specify additional ssh options (optional).
-	    --pull <path> <alias>:<remote> : Pull a file / directory.
-	        --delete : Also update the deleted files (optional).
-	        --safe : Enable version control.
-	        --forced : Enable forced mode.
-	    --push <alias>:<remote> <path> : Push a file / directory.
-	    --mount <alias>:<remote> <path> : Mount a remote directory.
-	    --unmount <path> : Unmount a mounted remote directory.
-	        --sudo : Root permission required.
-	    --index <path> / <alias>:<remote> : Index the specified path / alias:remote.
-	    --start-agent : Start the ssht00ls agent.
-	    --stop-agent : Stop the ssht00ls agent.
-	    --start-daemon <alias>:<remote> <path> : Start a ssync daemon.
-	    --stop-daemon <path> : Stop a ssync daemon.
-	    --kill <identifier> : Kill all ssh processes that include the identifier.
-	    --config : Edit the ssht00ls configuration file (nano).
-	    -h / --help : Show the documentation.
-	Options:
-	    -j / --json : Print the response in json format.
+	    Keys:
+	        --generate : Generate a ssh key.
+	            --path /keys/mykey/ : Specify the keys directory path.
+	            --passphrase Passphrase123 : Specify the keys passphrase.
+	            --comment 'My Key' : Specify the keys comment.
+	    Aliases:
+	        --list-aliases : List all aliases.
+	            --joiner ',' : Optionally specify the joiner.
+	        --alias example.com : Select one or multiple aliases (example: x,y,z) (or use all to select all aliases).
+	            --info : Show the aliases info.
+	            --delete : Also update the deleted files (optional).
+	                -f / --forced : Ignore the are you sure prompt.
+	            --create : Create an alias.
+	                --server example.com : Specify the server's name.
+	                --username myuser : Specify the username.
+	                --ip 0.0.0.0 : Specify the server's ip.
+	                --port 22 : Specify the server's port.
+	                for ssh keys :
+	                --key /path/to/key/private_key : Specify the path to the private key.
+	                --passphrase 'MyPassphrase123' : Specify the keys pasphrase (optional).
+	                for smart cards :
+	                --smart-cards : Enable the smart cards boolean.
+	                --pin 123456 : Specify the smart cards pin code (optional).
+	            --edit : Edit the alias config.
+	                *** same options as --create ***:
+	                --alias newalias : Rename the alias.
+	    Sessions:
+	        --command <alias> 'ls .' : Execute a command over ssh.
+	        --session <alias> : Start a ssh session.
+	            --options ''  : Specify additional ssh options (optional).
+	    Push & pull:
+	        --pull <path> <alias>:<remote> : Pull a file / directory.
+	            --safe : Enable version control.
+	            --forced : Enable forced mode.
+	        --push <alias>:<remote> <path> : Push a file / directory.
+	            --delete  : Also update the deleted files (optional).
+	            --safe  : Enable version control.
+	            --forced  : Enable forced mode.
+	            --exclude .git,.gitignore  : Exclude additional subpaths (optioal).
+	            --no-exclude : Skip the default excludes and exlude nothing.
+	    Mounts:
+	        --mount <alias>:<id> <path> : Mount a remote share.
+	            --smb : Select smb mode (default).
+	            --sshfs : Select sshfs mode (when enabled parameter id becomes remote).
+	            *** smb options: *** : SMB --mount options.
+	            --reconnect : Attempt to reconnect the mount when the connection is lost.
+	            --tunnel : Mount the smb share through a ssh tunnel (overwrites options --port & --ip).
+	            --username administrator : Overwrite the smb user (default is retrieved from alias).
+	            --password 'SomePassphrase123' : Set the password of the smb user login (default is no password '').
+	            --port 445 : Select a specific smb port (default is 445).
+	            --ip 127.0.0.1 : Select a specific ip (default is retrieved from alias).
+	        --unmount <path> : Unmount a mounted share.
+	            --sudo   : Root permission required.
+	            --forced   : Enable forced mode.
+	    Tunnels:
+	        --list-tunnels [optional: <alias>] : List all tunnels, optionally pass an alias filter.
+	            --joiner ','  : Optionally specify the joiner.
+	        --tunnel <port>:<ip>:<remote_port>:<alias> : Select a ssh tunnel.
+	            --establish : Establish the selected ssh tunnel.
+	                --reconnect : Attempt to reconnect the tunnel when the connection is lost.
+	                --sleeptime 60 : Set the sleeptime value (default is 60) (only when --reconnect is enabled).
+	                --reattempts 15 : Set the reattempts value (default is 15) (only when --reconnect is enabled).
+	            --kill : Kill the selected ssh tunnel.
+	    Agent:
+	        --sync : Manually synchronize the aliases & add the keys to the agent.
+	        --start-agent : Start the ssht00ls agent manually.
+	        --stop-agent : Stop the ssht00ls agent.
+	    Basic:
+	        --kill <identifier> : Kill all ssh processes that include the identifier.
+	        --config : Edit the ssht00ls configuration file (nano).
+	        --reset-cache : Reset the cache directory.
+	        --version : Show the ssht00ls version.
+	        -h / --help : Show the documentation.
 	Notes:
-	    SSHT00LS_CONFIG : Specify the $SSHT00LS_CONFIG environment variable to use a different ssht00ls config file.
+	    Include config file : Specify the $SSHT00LS_CONFIG environment variable to use a different ssht00ls config file.
 	Author: Daan van den Bergh. 
-	Copyright: © Daan van den Bergh 2021. All rights reserved.
+	Copyright: © Daan van den Bergh 2020 - 2021. All rights reserved.
 
 # Code Examples:
 
