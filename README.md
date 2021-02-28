@@ -39,7 +39,7 @@ Install the package.
 	            --joiner ',' : Optionally specify the joiner.
 	        --alias example.com : Select one or multiple aliases (example: x,y,z) (or use all to select all aliases).
 	            --info : Show the aliases info.
-	            --delete : Also update the deleted files (optional).
+	            --delete   : Delete an alias.
 	                -f / --forced : Ignore the are you sure prompt.
 	            --create : Create an alias.
 	                --server example.com : Specify the server's name.
@@ -61,6 +61,7 @@ Install the package.
 	            --options ''  : Specify additional ssh options (optional).
 	    Push & pull:
 	        --pull <path> <alias>:<remote> : Pull a file / directory.
+	            --delete : Also update the deleted files (optional).
 	            --safe : Enable version control.
 	            --forced : Enable forced mode.
 	        --push <alias>:<remote> <path> : Push a file / directory.

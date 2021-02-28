@@ -25,7 +25,7 @@ class CLI(cl1.CLI):
 				"        --joiner ','":"Optionally specify the joiner.",
 				"    --alias example.com":"Select one or multiple aliases (example: x,y,z) (or use all to select all aliases).",
 				"        --info":"Show the aliases info.",
-				"        --delete":"Delete an alias.",
+				"        --delete  ":"Delete an alias.",
 				"            -f / --forced":"Ignore the are you sure prompt.",
 				"        --create":"Create an alias.",
 				"            --server example.com":"Specify the server's name.",
