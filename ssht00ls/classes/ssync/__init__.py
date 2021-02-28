@@ -184,16 +184,20 @@ class SSync(syst3m.objects.Traceback):
 				try: self.activated
 				except: self.activated = False
 			if not self.specific or not self.activated:
-				if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-					response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
-				else:
-					response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
-				if not response["success"]: return response
-				passphrase = response.decrypted.decode()
-				response = aliases.check(alias)
-				if not response["success"]: return response
-				response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
-				if not response["success"]: return response
+				response = agent.check(public_key=CONFIG["aliases"][alias]["public_key"])
+				if not response.success:
+					if "is not added to the" not in response.error: return response
+					else:
+						if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
+							response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+						else:
+							response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+						if not response["success"]: return response
+						passphrase = response.decrypted.decode()
+						response = aliases.check(alias)
+						if not response["success"]: return response
+						response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
+						if not response["success"]: return response
 				if self.specific: self.activated = True
 		return self.utils.pull(
 			# the local path.
@@ -262,16 +266,20 @@ class SSync(syst3m.objects.Traceback):
 				try: self.activated
 				except: self.activated = False
 			if not self.specific or not self.activated:
-				if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-					response = encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
-				else:
-					response = encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
-				if not response["success"]: return response
-				passphrase = response.decrypted.decode()
-				response = aliases.check(alias)
-				if not response["success"]: return response
-				response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
-				if not response["success"]: return response
+				response = agent.check(public_key=CONFIG["aliases"][alias]["public_key"])
+				if not response.success:
+					if "is not added to the" not in response.error: return response
+					else:
+						if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
+							response = encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+						else:
+							response = encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+						if not response["success"]: return response
+						passphrase = response.decrypted.decode()
+						response = aliases.check(alias)
+						if not response["success"]: return response
+						response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
+						if not response["success"]: return response
 				if self.specific: self.activated = True
 		return self.utils.push(
 			# the local path.
