@@ -1,0 +1,4 @@
+include ssht00ls/.version.py
+include ssht00ls/lib/opensc/macos/*
+include ssht00ls/classes/utils/*
+include ssht00ls/static/media/icons/*

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# import devos library.
+curl -s https://raw.githubusercontent.com/vandenberghinc/devos/master/lib/import | bash 
+if [[ "$OSTYPE" == "darwin"* ]] ; then source /usr/local/lib/devos/lib/import --silent ; else . /usr/local/lib/devos/lib/import --silent ; fi
+	
+# the alias.
+alias="ssht00ls"
+
+# the pypi package name (may differ from alias).
+pypi_name=$alias
+
+# boolean indicating whether the package is an pypi package.
+pypi_package="true"
+
+# execute packge installer.
+remote-install-package \
+    --alias $alias \
+    --pypi-name $pypi_name \
+    --pypi-package $pypi_package \
+    $@
