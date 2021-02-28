@@ -112,7 +112,6 @@ class Aliases(syst3m.objects.Traceback):
 
 		# create non existant.
 		elif not exists and create:
-			print("1; info username:",info['username'])
 			username,public_ip,private_ip,public_port,private_port,private_key,public_key,passphrase,smartcard,pin,save,checks = Dictionary(info).unpack({
 				"username":None, 
 				"public_ip":None,
@@ -126,7 +125,6 @@ class Aliases(syst3m.objects.Traceback):
 				"pin":None,
 				"save":True,
 				"checks":True, })
-			print("2; username:",username)
 			return self.create(
 				alias=alias,
 				# the users.
@@ -327,7 +325,6 @@ class Aliases(syst3m.objects.Traceback):
 				"pin":None,
 				"alias":None,
 			})
-			print("3; username:",username)
 		
 		# check specific.
 		if self.specific:
