@@ -29,7 +29,6 @@ class Tunnel(syst3m.objects.Thread):
 
 		# defaults.
 		syst3m.objects.Thread.__init__(self, traceback="ssht00ls.ssh.tunnel", raw_traceback="ssht00ls.ssh.Tunnel", log_level=syst3m.defaults.log_level(default=-1))
-		self.__stop__ = self.stop
 
 		# modules.
 		self.utils = ssh_utils

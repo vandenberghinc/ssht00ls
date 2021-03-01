@@ -121,7 +121,14 @@ class CLI(cl1.CLI):
 
 		# sync aliases.
 		if encryption.activated and not self.arguments.present(["-h", "--config", "--help", "--version", "--unmount", "--list-tunnels"]):
-			response = ssht00ls.aliases.sync()
+			str_args = Array(sys.argv).string(joiner=" ")
+			aliases = ["*"]
+			if not self.arguments.present(["--sync"]):
+				aliases = []
+				for alias in ssht00ls.aliases:
+					if alias in str_args:
+						aliases.append(alias)
+			response = ssht00ls.aliases.sync(aliases=aliases)
 			if self.arguments.present("--sync"):
 				self.stop(response=response)
 			if not response["success"]: response.crash(json=syst3m.defaults.options.json)

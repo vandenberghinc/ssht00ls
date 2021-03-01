@@ -596,7 +596,9 @@ class Aliases(syst3m.objects.Traceback):
 		return r3sponse.success(f"Successfully synchronized {c} alias(es).")
 	def public(self, public_ip=None, private_ip=None):
 		return not (NETWORK_INFO["public_ip"] == public_ip and netw0rk.network.ping(private_ip, timeout=0.5).up == True)
-
+	# iterate.
+	def __iter__(self):
+		return iter(self.list()["array"])
 # initialized objects.
 aliases = Aliases()
 
