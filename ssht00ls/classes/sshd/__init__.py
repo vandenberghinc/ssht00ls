@@ -22,10 +22,11 @@ class SSHD(syst3m.objects.Traceback):
 				["handler", "https://raw.githubusercontent.com/vandenberghinc/ssht00ls/master/ssht00ls/classes/utils/handler"],
 			]:
 				full_path = gfp.clean(f"{utils_lib}/{subpath}")
-				os.system(f"rm -fr {full_path}")
-				os.system(f"curl -s {url} -o {full_path} && chmod +x {full_path}")
-				if not os.path.exists(full_path):
-					raise exceptions.ModuleError("Failed to install the ssht00ls utils (#1).")
+				if not Files.exists(full_path)
+					os.system(f"rm -fr {full_path}")
+					os.system(f"curl -s {url} -o {full_path} && chmod +x {full_path}")
+					if not os.path.exists(full_path):
+						raise exceptions.ModuleError("Failed to install the ssht00ls utils (#1).")
 
 	def create(self,
 		# save the configuration & banner.
