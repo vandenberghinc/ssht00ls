@@ -281,11 +281,17 @@ class Clients(syst3m.objects.Traceback):
 		self.__clients__ = {}
 
 		#
+	
 	# initialize.
 	def initialize(self):
 		for alias, info in aliases.aliases.iterate():
 			self[alias] = Client(parameters=info)
+	
 	# iterate.
+	def __iter__(self):
+		return iter(self.__clients__)
+	def list(self):
+		return list(self.__clients__.keys())
 	def iterate(self, clients=[]):
 		if clients == []:
 			clients = list(self.__clients__.keys())
@@ -293,9 +299,8 @@ class Clients(syst3m.objects.Traceback):
 		for i in clients:
 			items.append([i, self.__clients__[i]])
 		return items
-	def __iter__(self):
-		return iter(self.__clients__)
-	# get & set.
+	
+	# get & set client.
 	def __setitem__(self, key, value):
 		if isinstance(key, (int, Integer)):
 			key = list(self.__clients__.keys())[key]
@@ -304,9 +309,12 @@ class Clients(syst3m.objects.Traceback):
 		if isinstance(key, (int, Integer)):
 			key = list(self.__clients__.keys())[key]
 		return self.__clients__[key]
+	
 	# len.
 	def __len__(self):
 		return len(self.__clients__)
+
+	#
 
 # initialized objects.
 clients = Clients()

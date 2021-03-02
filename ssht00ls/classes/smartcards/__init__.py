@@ -42,9 +42,11 @@ class SmartCards(syst3m.objects.Traceback):
 				raise OSError("opensc package is not installed, run: [$ brew install yubico-piv-tool opensc].")
 
 		# attributes.
-		self.__smart_cards__ = {}
+		self.__smartcards__ = {}
 
 		#
+
+	# functions.
 	def scan(self, silent=False):
 
 		# list.
@@ -82,13 +84,27 @@ class SmartCards(syst3m.objects.Traceback):
 		})
 
 		#
-	# get & set initialized smart cards.
-	def __getitem__(self, serial_number):
-		if str(serial_number) not in list(self.__smart_cards__.keys()):
-			raise KeyError(f"{self.__traceback__()} does not contain initialized smart card [{serial_number}].")
-		return self.__smart_cards__[str(serial_number)]
-	def __setitem__(self, serial_number, smartcard):
-		self.__smart_cards__[str(serial_number)] = smartcard
+
+	# get & set client.
+	def __getitem__(self, key):
+		return self.__smartcards__[str(key)]
+		#
+	def __setitem__(self, key, value):
+		self.__smartcards__[str(key)] = value
+		#
+
+	# iterate.
+	def __iter__(self):
+		return iter(self.__smartcards__)
+	def list(self):
+		return list(self.__smartcards__.keys())
+	def iterate(self):
+		return self.__smartcards__.items()
+
+	# count.
+	def __len__(self):
+		return len(self.__smartcards__)
+	
 	# system functions.
 	def __single_key_plugged_in__(self):
 
@@ -108,6 +124,9 @@ class SmartCards(syst3m.objects.Traceback):
 		return r3sponse.success("There is only one smart cards plugged in.", {
 			"smartcard":l_response["smartcards"][list(l_response["smartcards"].keys())[0]],
 		})
+
+	#
+
 
 # the smart card class.
 class SmartCard(syst3m.objects.Traceback):
@@ -510,6 +529,12 @@ class SmartCard(syst3m.objects.Traceback):
 
 		#
 
+	# properties.
+	@property
+	def activated(self):
+		raise ValueError("Coming soon.")
+		return False
+
 	# system functions.
 	def __handle_default_output__(self, output):
 
@@ -534,6 +559,7 @@ class SmartCard(syst3m.objects.Traceback):
 		# success.
 		return r3sponse.success("Successfully checked the output.")
 
+	#
 
 # initialized classes.
 smartcards = SmartCards()
