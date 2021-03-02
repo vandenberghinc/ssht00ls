@@ -28,6 +28,8 @@ class Aliases(syst3m.objects.Traceback):
 		private_key=None,
 		# 	the smart card boolean.
 		smartcard=False,
+		#	the smart card serial numbers.
+		serial_numbers=[],
 		# 	the log level.
 		log_level=syst3m.defaults.options.log_level,
 	):
@@ -46,6 +48,7 @@ class Aliases(syst3m.objects.Traceback):
 		self.private_key = private_key
 		self.public_key = public_key
 		self.smartcard = smartcard
+		self.serial_numbers = serial_numbers
 		self.log_level = log_level
 
 		# sync non interactive.
@@ -112,7 +115,7 @@ class Aliases(syst3m.objects.Traceback):
 
 		# create non existant.
 		elif not exists and create:
-			username,public_ip,private_ip,public_port,private_port,private_key,public_key,passphrase,smartcard,pin,save,checks = Dictionary(info).unpack({
+			username,public_ip,private_ip,public_port,private_port,private_key,public_key,passphrase,smartcard,serial_numbers,pin,save,checks = Dictionary(info).unpack({
 				"username":None, 
 				"public_ip":None,
 				"private_ip":None,
@@ -122,6 +125,7 @@ class Aliases(syst3m.objects.Traceback):
 				"public_key":None,
 				"passphrase":None,
 				"smartcard":None,
+				"serial_numbers":None,
 				"pin":None,
 				"save":True,
 				"checks":True, })
@@ -142,6 +146,8 @@ class Aliases(syst3m.objects.Traceback):
 				passphrase=passphrase,
 				# smart card.
 				smartcard=smartcard,
+				# the smartcards serial numbers.
+				serial_numbers=serial_numbers,
 				# the smart cards pincode.
 				pin=pin,
 				# save to configuration.
@@ -205,7 +211,19 @@ class Aliases(syst3m.objects.Traceback):
 		def edit_dict(dictionary={}, edits={}):
 			c = 0
 			for key, value in edits.items():
-				if isinstance(value, dict):
+				if isinstance(value, (list, Array)):
+					found = True
+					try: dictionary[key]
+					except KeyError: found = False
+					if not found:
+						dictionary[key] = value
+					else:
+						for i in value:
+							if value not in dictionary[key]:
+								dictionary[key].append(value)
+				elif isinstance(value, (dict, Dictionary)):
+					if isinstance(value, (Dictionary)):
+						value = value.dictionary
 					found = True
 					try: dictionary[key]
 					except KeyError: found = False
@@ -229,7 +247,7 @@ class Aliases(syst3m.objects.Traceback):
 			if alias == None: alias = self.alias
 		
 		# passphrase.
-		edits = 0
+		edit_count = 0
 		if "passphrase" in list(edits.keys()) and edits["passphrase"] not in value_exceptions:
 			# check encryption activated.
 			if edits["passphrase"] not in [False, "", "none", "None"]:
@@ -242,7 +260,7 @@ class Aliases(syst3m.objects.Traceback):
 			else:
 				CONFIG["aliases"][alias]["smartcard"] = True
 				CONFIG["aliases"][alias]["passphrase"] = ""
-			edits += 1
+			edit_count += 1
 			del edits["passphrase"]
 		
 		# pin.
@@ -263,10 +281,10 @@ class Aliases(syst3m.objects.Traceback):
 		response = self.check(alias)
 		if not response["success"]: return response
 		dictionary, c = edit_dict(dictionary=CONFIG["aliases"][alias], edits=edits)
-		if (edits > 0 or c > 0) and save:
+		if (edit_count > 0 or c > 0) and save:
 			CONFIG["aliases"][alias] = dictionary
 			utils.save_config_safely()
-		if edits > 0 or c > 0:
+		if edit_count > 0 or c > 0:
 			return r3sponse.success(f"Successfully saved {c} edits for alias {alias}.")
 		else:
 			return r3sponse.error(f"No edits were specified.")
@@ -288,6 +306,8 @@ class Aliases(syst3m.objects.Traceback):
 		passphrase=None,
 		# smart card.
 		smartcard=None,
+		# the smart card serial numbers (list).
+		serial_numbers=None,
 		# the smart cards pincode.
 		pin=None,
 		# save to configuration.
@@ -298,6 +318,23 @@ class Aliases(syst3m.objects.Traceback):
 		serialized={},
 	):
 
+		# serialized
+		if serialized != {}:
+			username, public_ip, private_ip, public_port, private_port, private_key, public_key, passphrase, smartcard, serial_numbers, pin, alias = Dictionary(serialized).unpack({
+				"username":None,
+				"public_ip":None,
+				"private_ip":None,
+				"public_port":None,
+				"private_port":None,
+				"private_key":None,
+				"public_key":None,
+				"passphrase":None,
+				"smartcard":None,
+				"serial_numbers":None,
+				"pin":None,
+				"alias":None,
+			})
+		
 		# check specific.
 		if self.specific:
 			if alias == None: alias = self.alias
@@ -309,26 +346,8 @@ class Aliases(syst3m.objects.Traceback):
 			if private_key == None: private_key = self.private_key
 			if public_key == None: public_key = self.public_key
 			if smartcard == None: smartcard = self.smartcard
+			if serial_numbers == None: serial_numbers = self.serial_numbers
 
-		# serialized
-		if serialized != {}:
-			username, public_ip, private_ip, public_port, private_port, private_key, public_key, passphrase, smartcard, pin, alias = Dictionary(serialized).unpack({
-				"username":None,
-				"public_ip":None,
-				"private_ip":None,
-				"public_port":None,
-				"private_port":None,
-				"private_key":None,
-				"public_key":None,
-				"passphrase":None,
-				"smartcard":None,
-				"pin":None,
-				"alias":None,
-			})
-		
-		# check specific.
-		if self.specific:
-			if alias == None: alias = self.alias
 
 		# checks.
 		response = r3sponse.check_parameters(
@@ -342,7 +361,8 @@ class Aliases(syst3m.objects.Traceback):
 				"private_port":private_port,
 				"private_key":private_key,
 				"public_key":public_key,
-				#"smartcard:bool":smartcard,
+				"smartcard:bool":smartcard,
+				"serial_numbers:list,Array":serial_numbers,
 			})
 		if not response["success"]: return response
 		if smartcard:
@@ -420,6 +440,9 @@ class Aliases(syst3m.objects.Traceback):
 				json_config["passphrase"] = ""
 				json_config["pin"] = ""
 
+		# serial numbers.
+		json_config["serial_numbers"] = serial_numbers
+
 		# save.
 		if save:
 			CONFIG["aliases"][alias] = json_config
@@ -439,7 +462,7 @@ class Aliases(syst3m.objects.Traceback):
 			if self.specific:
 				aliases = [self.alias]
 			else:
-				aliases = list(CONFIG["aliases"].keys())
+				aliases = self.list()["array"]
 		_aliases_ = list(aliases)
 		
 		# loader.
@@ -497,6 +520,7 @@ class Aliases(syst3m.objects.Traceback):
 					"public_key":None,
 					"passphrase":None,
 					"smartcard":None,
+					"serial_numbers":[],
 					"pin":None,
 				})
 				if Dictionary(checked) != Dictionary(CONFIG["aliases"][alias]):
@@ -585,17 +609,59 @@ class Aliases(syst3m.objects.Traceback):
 				if not response["success"]: 
 					if log_level >= 0: loader.stop(success=False)
 					return response
+				self.__edit_alias_lib__(alias, response["str"])
 				aliases += response["str"]
 				c += 1
-
-		# save lib.
-		Files.save(f"{syst3m.defaults.vars.home}/.ssht00ls/lib/aliases", aliases)
 
 		# handler.
 		if log_level >= 0: loader.stop()
 		return r3sponse.success(f"Successfully synchronized {c} alias(es).")
 	def public(self, public_ip=None, private_ip=None):
 		return not (NETWORK_INFO["public_ip"] == public_ip and netw0rk.network.ping(private_ip, timeout=0.5).up == True)
+	# edit aliases lib.
+	def __edit_alias_lib__(self, alias, data):
+
+
+		# load lib & get lib depth from the aliases.
+		try:
+			lib = Files.load(f"{syst3m.defaults.vars.home}/.ssht00ls/lib/aliases")
+		except FileNotFoundError:
+			lib = ""
+
+		# normalize.
+		lib = lib.replace("\n\n","\n").replace("\n\n","\n").replace("\n\n","\n").replace("\n\n","\n")
+		while True:
+			if " \n" in lib: lib = lib.replace(" \n","\n")
+			if "Host  " in lib: lib = lib.replace("Host  ","Host ")
+			else: break
+
+		# add.
+		string = String()
+		if f"Host {alias}" not in lib:
+			lib = lib + "\n" + data
+		else:
+			before, after, status = "", "", "before"
+			for line in lib.split("\n"):
+				if f"Host {alias}" in line:
+					status = "detected"
+				elif string.line_indent(line=line) == 0 and status == "detected":
+					status = "after"
+				if status in ["before"]:
+					before += line+"\n"
+				elif status in ["after"]:
+					after += line+"\n"
+			lib = before + "\n" + data + "\n" + after
+
+		# normalize.
+		lib = lib.replace("\n\n","\n").replace("\n\n","\n").replace("\n\n","\n").replace("\n\n","\n")
+		while True:
+			if len(lib) > 0 and lib[0] == "\n": lib = lib[1:]
+			elif len(lib) >= len("\n\n") and lib[:len("\n\n")] == "\n\n": lib = lib[2:]
+			else: break
+
+		# save.
+		Files.save(f"{syst3m.defaults.vars.home}/.ssht00ls/lib/aliases", lib)
+
 	# iterate.
 	def __iter__(self):
 		return iter(self.list()["array"])

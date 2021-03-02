@@ -41,6 +41,10 @@ class SmartCards(syst3m.objects.Traceback):
 			if not Files.exists(self.original_path):
 				raise OSError("opensc package is not installed, run: [$ brew install yubico-piv-tool opensc].")
 
+		# attributes.
+		self.__smart_cards__ = {}
+
+		#
 	def scan(self, silent=False):
 
 		# list.
@@ -78,6 +82,13 @@ class SmartCards(syst3m.objects.Traceback):
 		})
 
 		#
+	# get & set initialized smart cards.
+	def __getitem__(self, serial_number):
+		if str(serial_number) not in list(self.__smart_cards__.keys()):
+			raise KeyError(f"{self.__traceback__()} does not contain initialized smart card [{serial_number}].")
+		return self.__smart_cards__[str(serial_number)]
+	def __setitem__(self, serial_number, smartcard):
+		self.__smart_cards__[str(serial_number)] = smartcard
 	# system functions.
 	def __single_key_plugged_in__(self):
 

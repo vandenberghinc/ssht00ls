@@ -26,7 +26,9 @@ class Client(syst3m.objects.Traceback):
 		# the path to the private key (optional if client already exists).
 		private_key=None,
 		# the smart card boolean (optional if client already exists).
-		smartcard=False,
+		smartcard=None,
+		# the smart card serial numbers (list) (optional if client already exists).
+		serial_numbers=[],
 		# pass parameters by dict.
 		parameters={},
 	):
@@ -36,7 +38,7 @@ class Client(syst3m.objects.Traceback):
 
 		# parameters by dict.
 		if parameters != {}:
-			alias, username, public_ip, private_ip, public_port, private_port, public_key, private_key, smartcard = Dictionary(parameters).unpack({
+			alias, username, public_ip, private_ip, public_port, private_port, public_key, private_key, smartcard, serial_numbers = Dictionary(parameters).unpack({
 				"alias":None,
 				"username":None,
 				"public_ip":None,
@@ -46,6 +48,7 @@ class Client(syst3m.objects.Traceback):
 				"public_key":None,
 				"private_key":None,
 				"smartcard":False,
+				"serial_numbers":[],
 			})
 
 		# auto fill none & alias exists.
@@ -59,6 +62,7 @@ class Client(syst3m.objects.Traceback):
 			if public_key == None: public_key = response.info["public_key"]
 			if private_key == None: private_key = response.info["private_key"]
 			if smartcard == None: smartcard = response.info["smartcard"]
+			if serial_numbers != []: serial_numbers = response.info["serial_numbers"]
 
 		# objects.
 		self.alias = aliases.Aliases(
@@ -70,7 +74,8 @@ class Client(syst3m.objects.Traceback):
 			private_port=private_port,
 			private_key=private_key,
 			public_key=public_key,
-			smartcard=smartcard, )
+			smartcard=smartcard, 
+			serial_numbers=serial_numbers, )
 		self.agent = agent.Agent(
 			private_key=private_key,
 			public_key=public_key,
@@ -83,8 +88,9 @@ class Client(syst3m.objects.Traceback):
 			alias=alias, )
 		self.ssync = ssync.SSync(
 			alias=alias, )
-		self.smartcard = None
-		if smartcard: self.smartcard = smartcard.SmartCard()
+		self.smartcards = smartcards.SmartCards()
+		for serial_number in serial_numbers:
+			self.smartcards[serial_number] = smartcards.SmartCard(serial_number=serial_number)
 		self.smb = smb.SMB(
 			alias=alias,)
 
@@ -195,6 +201,8 @@ class Client(syst3m.objects.Traceback):
 		return r3sponse.success(f"Successfully checked client [{self.alias_}].")
 
 		#
+	def connect(self):
+		return self.ssh.utils.test(alias=self.alias_)
 	# properties.
 	@property
 	def exists(self):
@@ -256,8 +264,11 @@ class Client(syst3m.objects.Traceback):
 	def public_key(self):
 		return self.alias.public_key
 	@property
-	def is_smartcard(self):
-		return self.smartcard != None
+	def smartcard(self):
+		return self.alias.smartcard
+	@property
+	def serial_numbers(self):
+		return self.alias.serial_numbers
 
 # the initialized clients.
 class Clients(syst3m.objects.Traceback):

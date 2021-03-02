@@ -30,14 +30,17 @@ class CLI(cl1.CLI):
 				"        --create":"Create an alias.",
 				"            --server example.com":"Specify the server's name.",
 				"            --username myuser":"Specify the username.",
-				"            --ip 0.0.0.0":"Specify the server's ip.",
-				"            --port 22":"Specify the server's port.",
+				"            --public-ip 0.0.0.0":"Specify the server's ip.",
+				"            --private-ip 0.0.0.0":"Specify the server's ip.",
+				"            --public-port 22":"Specify the server's port.",
+				"            --private-port 22":"Specify the server's port.",
 				"            for ssh keys:":"",
-				"            --key /path/to/key/private_key":"Specify the path to the private key.",
+				"            --private-key /path/to/key/private_key":"Specify the path to the private key.",
+				"            --public-key /path/to/key/private_key":"Specify the path to the private key.",
 				"            --passphrase 'MyPassphrase123'":"Specify the keys pasphrase (optional).",
 				"            for smart cards:":"",
-				"            --smart-cards":"Enable the smart cards boolean.",
-				"            --pin 123456":"Specify the smart cards pin code (optional).",
+				"            --smartcard":"Enable the smartcard boolean.",
+				"            --pin 123456":"Specify the smartcards pin code (optional).",
 				"        --edit":"Edit the alias config.",
 				"            *** same options as --create ***":"",
 				"            --alias newalias":"Rename the alias.",
@@ -284,12 +287,12 @@ class CLI(cl1.CLI):
 							# the edits (dict).
 							edits={
 								"username":self.arguments.get("--username", required=False, default=None),
-								"public_ip":self.arguments.get("--public_ip", required=False, default=None),
-								"public_port":self.arguments.get("--public_port", required=False, default=None),
-								"private_ip":self.arguments.get("--private_ip", required=False, default=None),
-								"private_port":self.arguments.get("--private_port", required=False, default=None),
-								"private_key":self.arguments.get("--private_key", required=False, default=None),
-								"public_key":self.arguments.get("--public_key", required=False, default=None),
+								"public_ip":self.arguments.get("--public-ip", required=False, default=None),
+								"public_port":self.arguments.get("--public_-port", required=False, default=None),
+								"private_ip":self.arguments.get("--private-ip", required=False, default=None),
+								"private_port":self.arguments.get("--private-port", required=False, default=None),
+								"private_key":self.arguments.get("--private-key", required=False, default=None),
+								"public_key":self.arguments.get("--public-key", required=False, default=None),
 								"passphrase":self.arguments.get("--passphrase", required=False, default=None),
 								"smartcard":self.arguments.get("--smartcard", format=bool, required=False, default=None),
 								"pin":self.arguments.get("--pin", format=int, required=False, default=None),
@@ -306,7 +309,7 @@ class CLI(cl1.CLI):
 				elif self.arguments.present('--create'):
 					
 					# create an alias for the key.
-					if not self.arguments.present('--smart-card'):
+					if not self.arguments.present('--smartcard'):
 						key = self.arguments.get('--private-key')
 						response = ssht00ls.aliases.create( 
 							# the alias.
