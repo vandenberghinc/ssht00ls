@@ -6,7 +6,7 @@
 from ssht00ls import classes
 from ssht00ls.classes import encryption
 
-# import initialized classes.
+# import initialized classes & objects.
 from ssht00ls.classes.installation import installation
 from ssht00ls.classes.sshd import sshd
 from ssht00ls.classes.sshfs import sshfs
@@ -19,8 +19,6 @@ from ssht00ls.classes.aliases import aliases
 from ssht00ls.classes.ssh import ssh
 from ssht00ls.classes.ssync import ssync
 from ssht00ls.classes.smb import smb
-
-# import objects.
 from ssht00ls.classes.client import clients, Client
 
 # source path & version.

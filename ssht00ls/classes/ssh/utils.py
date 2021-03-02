@@ -67,6 +67,7 @@ def execute(
 	try:
 		proc = subprocess.run(
 		    ["sh", path],
+		    stdin=subprocess.PIPE,
 			check=True,
 			capture_output=True,
 			text=True,
