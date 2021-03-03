@@ -523,6 +523,8 @@ class Aliases(syst3m.objects.Traceback):
 					"serial_numbers":[],
 					"pin":None,
 				})
+				if checked["smartcard"] not in [True, False]:
+					checked["smartcard"] = False
 				if Dictionary(checked) != Dictionary(CONFIG["aliases"][alias]):
 					CONFIG["aliases"][alias] = checked
 					utils.save_config_safely()
