@@ -30,7 +30,7 @@ class SSync(syst3m.objects.Traceback):
 		self.daemons = daemons
 		
 		#
-	def index(self, path=None, alias=None, log_level=0, checks=True, accept_new_host_keys=True):
+	def index(self, path=None, alias=None, log_level=syst3m.defaults.options.log_level, checks=True, accept_new_host_keys=True):
 
 		# check specific.
 		if self.specific:
@@ -167,7 +167,7 @@ class SSync(syst3m.objects.Traceback):
 		# checks.
 		checks=True,
 		# log level.
-		log_level=0,
+		log_level=syst3m.defaults.options.log_level,
 		# get the command in str.
 		command=False,
 	):	
@@ -249,7 +249,7 @@ class SSync(syst3m.objects.Traceback):
 		checks=True,
 		check_base=True,
 		# log level.
-		log_level=0,
+		log_level=syst3m.defaults.options.log_level,
 		# get the command in str.
 		command=False,
 	):
@@ -323,7 +323,7 @@ class SSync(syst3m.objects.Traceback):
 		# accept new host verification keys.
 		accept_new_host_keys=True,
 		# log level.
-		log_level=0,
+		log_level=syst3m.defaults.options.log_level,
 		# the daemon mode.
 		mode="mount",
 	):
@@ -415,7 +415,7 @@ class SSync(syst3m.objects.Traceback):
 		# sudo required.
 		sudo=False,
 		# log level.
-		log_level=0,
+		log_level=syst3m.defaults.options.log_level,
 	):
 
 		# depricated.
