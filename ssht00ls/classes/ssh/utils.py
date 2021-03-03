@@ -42,8 +42,9 @@ def execute(
 
 	# execute.
 	if log_level >= 6: print(command)
-	if loader != None:
+	if loader != None and log_level >= 0:
 		loader = syst3m.console.Loader(loader, interactive=INTERACTIVE)
+	else: loader = None
 	
 	# script.
 
