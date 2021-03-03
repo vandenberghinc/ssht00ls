@@ -171,7 +171,7 @@ class Client(syst3m.objects.Traceback):
 				response = self.alias.info()
 				if not response.success: return response
 				info = response.info
-				if self.is_smartcard:
+				if self.smartcard:
 					if info["pin"] in [False, None, "", "none", "None"]:
 						no_passphrase = True
 					else:
