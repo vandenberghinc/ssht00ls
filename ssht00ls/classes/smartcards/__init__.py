@@ -84,26 +84,6 @@ class SmartCards(syst3m.objects.Traceback):
 		})
 
 		#
-
-	# get & set client.
-	def __getitem__(self, key):
-		return self.__smartcards__[str(key)]
-		#
-	def __setitem__(self, key, value):
-		self.__smartcards__[str(key)] = value
-		#
-
-	# iterate.
-	def __iter__(self):
-		return iter(self.__smartcards__)
-	def list(self):
-		return list(self.__smartcards__.keys())
-	def iterate(self):
-		return self.__smartcards__.items()
-
-	# count.
-	def __len__(self):
-		return len(self.__smartcards__)
 	
 	# system functions.
 	def __single_key_plugged_in__(self):
@@ -125,6 +105,103 @@ class SmartCards(syst3m.objects.Traceback):
 			"smartcard":l_response["smartcards"][list(l_response["smartcards"].keys())[0]],
 		})
 
+	# iterate.
+	def __iter__(self):
+		return iter(self.__smartcards__)
+	def list(self):
+		return list(self.__smartcards__.keys())
+	def iterate(self):
+		return self.__smartcards__.items()	
+
+	# get & set client.
+	def __getitem__(self, key):
+		return self.__smartcards__[str(key)]
+		#
+	def __setitem__(self, key, value):
+		self.__smartcards__[str(key)] = value
+		#
+
+	# support [>=, <=, <, >] operators.
+	def __gt__(self, smartcards):
+		if isinstance(smartcards, int):
+			a=1
+		elif isinstance(smartcards, self.__class__):
+			smartcards = len(smartcards.__smartcards__)
+		elif not isinstance(smartcards, self.__class__):
+			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {smartcards.__class__}.")
+		return len(self.__smartcards__) > smartcards
+	def __ge__(self, smartcards):
+		if isinstance(smartcards, int):
+			a=1
+		elif isinstance(smartcards, self.__class__):
+			smartcards = len(smartcards.__smartcards__)
+		elif not isinstance(smartcards, self.__class__):
+			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {smartcards.__class__}.")
+		return len(self.__smartcards__) >= smartcards
+	def __lt__(self, smartcards):
+		if isinstance(smartcards, int):
+			a=1
+		elif isinstance(smartcards, self.__class__):
+			smartcards = len(smartcards.__smartcards__)
+		elif not isinstance(smartcards, self.__class__):
+			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {smartcards.__class__}.")
+		return len(self.__smartcards__) < smartcards
+	def __le__(self, smartcards):
+		if isinstance(smartcards, int):
+			a=1
+		elif isinstance(smartcards, self.__class__):
+			smartcards = len(smartcards.__smartcards__)
+		elif not isinstance(smartcards, self.__class__):
+			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {smartcards.__class__}.")
+		return len(self.__smartcards__) <= smartcards
+
+	# support [==, !=] operators.
+	def __eq__(self, smartcards):
+		if isinstance(smartcards, self.__class__):
+			smartcards = smartcards.__smartcards__
+		elif not isinstance(smartcards, self.__class__):
+			return False
+		return Dictionary(self.__smartcards__) == Dictionary(smartcards)
+	def __ne__(self, smartcards):
+		if isinstance(smartcards, self.__class__):
+			smartcards = smartcards.__smartcards__
+		elif not isinstance(smartcards, self.__class__):
+			return True
+		return Dictionary(self.__smartcards__) != Dictionary(smartcards)
+
+	# support +.
+	def __concat__(self, smartcards):
+		if isinstance(smartcards, self.__class__):
+			smartcards = smartcards.__smartcards__
+		elif not isinstance(value, self.__class__):
+			raise exceptions.FormatError(f"Can not concat object {self.__class__} & {smartcards.__class__}.")
+		return Dictionary(self.__smartcards__) + Dictionary(smartcards)
+
+	# support 'in' operator.
+	def __contains__(self, smartcard):
+		if isinstance(smartcard, (list, Files.Array)):
+			for i in smartcard:
+				if str(i) in list(self.__smartcards__.keys()):
+					return True
+			return False
+		else:
+			return str(smartcard) in list(self.__smartcards__.keys())
+		#
+	
+	# representations.
+	def __repr__(self):
+		return str(self)
+	def __str__(self):
+		return str(self.__smartcards__)
+	def __int__(self):
+		return int(self.__smartcards__)
+	def __float__(self):
+		return float(self.__smartcards__)
+	def __bool__(self):
+		return len(self.__smartcards__) > 0
+	def __len__(self):
+		return len(self.__smartcards__)
+	
 	#
 
 
@@ -559,6 +636,15 @@ class SmartCard(syst3m.objects.Traceback):
 		# success.
 		return r3sponse.success("Successfully checked the output.")
 
+	# representations.
+	def __repr__(self):
+		return str(self)
+	def __str__(self):
+		return str(self.serial_number)
+	def __int__(self):
+		return int(self.serial_number)
+	def __float__(self):
+		return float(self.serial_number)
 	#
 
 # initialized classes.

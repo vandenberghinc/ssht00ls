@@ -310,7 +310,84 @@ class Clients(syst3m.objects.Traceback):
 			key = list(self.__clients__.keys())[key]
 		return self.__clients__[key]
 	
-	# len.
+	# support [>=, <=, <, >] operators.
+	def __gt__(self, clients):
+		if isinstance(clients, int):
+			a=1
+		elif isinstance(clients, self.__class__):
+			clients = len(clients.__clients__)
+		elif not isinstance(clients, self.__class__):
+			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {clients.__class__}.")
+		return len(self.__clients__) > clients
+	def __ge__(self, clients):
+		if isinstance(clients, int):
+			a=1
+		elif isinstance(clients, self.__class__):
+			clients = len(clients.__clients__)
+		elif not isinstance(clients, self.__class__):
+			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {clients.__class__}.")
+		return len(self.__clients__) >= clients
+	def __lt__(self, clients):
+		if isinstance(clients, int):
+			a=1
+		elif isinstance(clients, self.__class__):
+			clients = len(clients.__clients__)
+		elif not isinstance(clients, self.__class__):
+			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {clients.__class__}.")
+		return len(self.__clients__) < clients
+	def __le__(self, clients):
+		if isinstance(clients, int):
+			a=1
+		elif isinstance(clients, self.__class__):
+			clients = len(clients.__clients__)
+		elif not isinstance(clients, self.__class__):
+			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {clients.__class__}.")
+		return len(self.__clients__) <= clients
+
+	# support [==, !=] operators.
+	def __eq__(self, clients):
+		if isinstance(clients, self.__class__):
+			clients = clients.__clients__
+		elif not isinstance(clients, self.__class__):
+			return False
+		return Dictionary(self.__clients__) == Dictionary(clients)
+	def __ne__(self, clients):
+		if isinstance(clients, self.__class__):
+			clients = clients.__clients__
+		elif not isinstance(clients, self.__class__):
+			return True
+		return Dictionary(self.__clients__) != Dictionary(clients)
+
+	# support +.
+	def __concat__(self, clients):
+		if isinstance(clients, self.__class__):
+			clients = clients.__clients__
+		elif not isinstance(value, self.__class__):
+			raise exceptions.FormatError(f"Can not concat object {self.__class__} & {clients.__class__}.")
+		return Dictionary(self.__clients__) + Dictionary(clients)
+
+	# support 'in' operator.
+	def __contains__(self, client):
+		if isinstance(client, (list, Files.Array)):
+			for i in client:
+				if str(i) in list(self.__clients__.keys()):
+					return True
+			return False
+		else:
+			return str(client) in list(self.__clients__.keys())
+		#
+	
+	# representations.
+	def __repr__(self):
+		return str(self)
+	def __str__(self):
+		return str(self.__clients__)
+	def __int__(self):
+		return int(self.__clients__)
+	def __float__(self):
+		return float(self.__clients__)
+	def __bool__(self):
+		return len(self.__clients__) > 0
 	def __len__(self):
 		return len(self.__clients__)
 
