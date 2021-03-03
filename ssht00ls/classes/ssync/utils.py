@@ -133,10 +133,10 @@ def pull(
 	# options.
 	exclude_str = Array(array=exclude).string(joiner=" --exclude ", sum_first=True)
 	include_str = Array(array=include).string(joiner=" --include ", sum_first=True)
-	delete_str = Boolean(delete).convert(true="--delete", false="")
+	delete_str = Boolean(delete).string(true="--delete", false="")
 	lremote = serialize_path(gfp.clean(remote), append_last_slash=directory)
 	lpath = serialize_path(gfp.clean(path), append_last_slash=directory)
-	_command_ = f"rsync -{Boolean(directory).convert(true='a', false='')}zqt '{alias}:{lremote}' '{lpath}' {exclude_str} {include_str} {delete_str} --timeout={SSH_TIMEOUT}"
+	_command_ = f"rsync -{Boolean(directory).string(true='a', false='')}zqt '{alias}:{lremote}' '{lpath}' {exclude_str} {include_str} {delete_str} --timeout={SSH_TIMEOUT}"
 	#_command_ = f"rsync -azqtr '{alias}:{lremote}' '{lpath}' {exclude_str} {include_str} {delete_str}"
 
 	# execute.
@@ -230,10 +230,10 @@ def push(
 	# options.
 	exclude_str = Array(array=exclude).string(joiner=" --exclude ", sum_first=True)
 	include_str = Array(array=include).string(joiner=" --include ", sum_first=True)
-	delete_str = Boolean(delete).convert(true="--delete", false="")
+	delete_str = Boolean(delete).string(true="--delete", false="")
 	lremote = serialize_path(gfp.clean(remote), append_last_slash=directory)
 	lpath = serialize_path(gfp.clean(path), append_last_slash=directory)
-	_command_ = f"rsync -{Boolean(directory).convert(true='a', false='')}zqt '{lpath}' '{alias}:{lremote}' {exclude_str} {include_str} {delete_str} --timeout={SSH_TIMEOUT}"
+	_command_ = f"rsync -{Boolean(directory).string(true='a', false='')}zqt '{lpath}' '{alias}:{lremote}' {exclude_str} {include_str} {delete_str} --timeout={SSH_TIMEOUT}"
 	#_command_ = f"rsync -azqtr --rsh=ssh '{lpath}' '{alias}:{lremote}' {exclude_str} {include_str} {delete_str}"
 	
 	# execute.

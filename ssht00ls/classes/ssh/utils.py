@@ -121,7 +121,7 @@ def execute(
 
 # test ssh functions.
 def test(alias=None, accept_new_host_keys=True, checks=True):
-	accept_new_host_keys = Boolean(accept_new_host_keys).convert(true="printf 'yes' | ", false="")
+	accept_new_host_keys = Boolean(accept_new_host_keys).string(true="printf 'yes' | ", false="")
 	output = syst3m.utils.__execute_script__(f"""{accept_new_host_keys}ssh {DEFAULT_SSH_OPTIONS} {alias} ' echo "Hello World" ' """)
 	response = check_errors(output)
 	if not response.success:
