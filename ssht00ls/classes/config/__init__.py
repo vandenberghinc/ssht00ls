@@ -59,10 +59,9 @@ if syst3m.defaults.options.log_level >= 1:
 	r3sponse.log(f"{ALIAS} checks: {CHECKS}")
 
 # database.
-print("DEFAULT:",f"{syst3m.defaults.vars.home}/.{ALIAS}")
 DATABASE = Directory(path=syst3m.env.get_string("SSHT00LS_DATABASE", default=f"{syst3m.defaults.vars.home}/.{ALIAS}"))
 if not DATABASE.fp.exists():
-	r3sponse.log(f"{syst3m.color.orange}Root permission{syst3m.color.end} required to create ssht00ls database [{DATABASE}].")
+	r3sponse.log(f"{syst3m.color.orange}Root permission{syst3m.color.end} required to create {ALIAS} database [{DATABASE}].")
 	os.system(f" sudo mkdir -p {DATABASE}")
 	Files.chown(str(DATABASE), owner=syst3m.defaults.vars.owner, group=syst3m.defaults.vars.group, sudo=True, recursive=True)
 	Files.chmod(str(DATABASE), permission=700, sudo=True, recursive=True)
