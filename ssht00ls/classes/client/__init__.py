@@ -26,7 +26,7 @@ class Client(syst3m.objects.Traceback):
 		# the path to the private key (optional if client already exists).
 		private_key=None,
 		# the smart card boolean (optional if client already exists).
-		smartcard=None,
+		smartcard=False,
 		# the smart card serial numbers (list) (optional if client already exists).
 		serial_numbers=[],
 		# pass parameters by dict.
@@ -156,7 +156,7 @@ class Client(syst3m.objects.Traceback):
 			"private_port":self.private_port,
 			"private_key":self.private_key,
 			"public_key":self.public_key,
-			"smartcard":self.smartcard,
+			"smartcard:bool,Boolean":self.smartcard,
 		})
 		if not response.success: return response
 
