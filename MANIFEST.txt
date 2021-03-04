@@ -1,1 +1,0 @@
-include ssht00ls/README.md
