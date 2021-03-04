@@ -273,11 +273,16 @@ class SSync(syst3m.objects.Traceback):
 					if "is not added to the" not in response.error: return response
 					else:
 						if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-							response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+							response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["pin"])
+							if not response["success"]: return response
+							passphrase = response.decrypted.decode()
 						else:
-							response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
-						if not response["success"]: return response
-						passphrase = response.decrypted.decode()
+							if CONFIG["aliases"][alias]["passphrase"] not in ["", False]:
+								response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+								if not response["success"]: return response
+								passphrase = response.decrypted.decode()
+							else:
+								passphrase = None
 						response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
 						if not response["success"]: return response
 				if self.specific: self.activated = True
