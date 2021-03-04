@@ -78,7 +78,7 @@ class SSH(syst3m.objects.Traceback):
 
 		# command.
 		response = self.utils.execute(
-			command=f"""ssh -t {DEFAULT_SSH_OPTIONS} {alias} ' {command} ' """,
+			command=f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' {command} ' """,
 			message=f"Successfully executed the command on remote [{alias}].",
 			error=f"Failed to execute the command on remote [{alias}].",
 			log_level=log_level,
