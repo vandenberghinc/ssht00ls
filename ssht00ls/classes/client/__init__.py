@@ -192,6 +192,9 @@ class Client(syst3m.objects.Traceback):
 						passphrase=passphrase,
 						pin=pin,)
 					if not response.success: return response
+				else:
+					response = self.agent.add()
+					if not response.success: return response
 
 		# sync alias.
 		response = self.alias.sync()

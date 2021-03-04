@@ -179,9 +179,9 @@ class Agent(syst3m.objects.Traceback):
 					if response.success:
 						return r3sponse.success(f"Successfully added key [{private_key}] to the ssh agent.")
 					else:
-						return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent (#2).")
+						return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent (#2) (output: {output}).")
 				else:
-					return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent (#1).")
+					return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent (#1) (output: {output}).")
 
 			# handle eof.
 			"""try:
@@ -257,6 +257,16 @@ class Agent(syst3m.objects.Traceback):
 				public_key = Files.load(public_key)
 			except FileNotFoundError:
 				return r3sponse.error(f"Failed to load public key path [{public_key}].")
+
+		# check.
+		output = utils.__execute__(["ssh-add", "-L"])
+		if str(public_key.replace("\n",'')) in output:
+			return r3sponse.success(f"Public key [{public_key}] is added to the ssh agent.")
+		else:
+			return r3sponse.error(f"Public key [{public_key}] is not added to the ssh agent.")
+
+		#####################################################################################################################
+		# OLD.
 
 		# retrieve id from public key.
 		"""

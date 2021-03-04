@@ -3,7 +3,7 @@
 asgiref>=3.3.1
 certifi>=2020.12.5
 chardet>=4.0.0
-cl1>=1.11.4
+cl1>=1.11.5
 click>=7.1.2
 Django>=3.1.6
 Flask>=1.1.2
@@ -22,9 +22,9 @@ urllib3>=1.26.3
 Werkzeug>=1.0.1
 
 # inc packages.
-encrypti0n>=3.18.5
-fil3s>=2.12.3
-netw0rk>=1.7.1
-r3sponse>=2.8.2
-syst3m>=2.12.3
+encrypti0n>=3.18.6
+fil3s>=2.12.4
+netw0rk>=1.7.2
+r3sponse>=2.8.3
+syst3m>=2.12.9
 
