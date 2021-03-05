@@ -110,7 +110,7 @@ if CHECKS and not RESET_CACHE:
 	# check lib.
 	if not Files.exists(f"{SOURCE_PATH}/lib") or cl1.argument_present("--download-lib"):
 		r3sponse.log("Downloading the ssht00ls library.")
-		os.system(f"rm -fr /tmp/ssht00ls && git clone https://github.com/vandenberghinc/ssht00ls /tmp/ssht00ls && rsync -azq /tmp/ssht00ls/ssht00ls/lib/ {Files.join(SOURCE_PATH, 'lib/')}")
+		os.system(f"rm -fr /tmp/ssht00ls && git clone -q https://github.com/vandenberghinc/ssht00ls /tmp/ssht00ls && rsync -azq /tmp/ssht00ls/ssht00ls/lib/ {Files.join(SOURCE_PATH, 'lib/')}")
 		if cl1.argument_present("--download-lib"): sys.exit(0)
 
 	# check usr lib.

@@ -131,11 +131,11 @@ class Keys(syst3m.objects.Traceback):
 			passphrase = '""'
 
 		# create dir.
-		if Files.exists(f"{directory}/public_key"): 
+		if directory != None and Files.exists(f"{directory}/public_key"): 
 			return r3sponse.error(f"Public key [{directory}/public_key] already exists.")
-		elif Files.exists(f"{directory}/private_key"): 
+		elif directory != None and Files.exists(f"{directory}/private_key"): 
 			return r3sponse.error(f"Private key [{directory}/private_key] already exists.")
-		elif not Files.exists(directory): 
+		elif directory != None and not Files.exists(directory): 
 			os.mkdir(directory)
 			Files.chmod(path=directory, permission=700, sudo=True)
 			Files.chown(path=directory, owner=syst3m.defaults.vars.user, group=None, sudo=True)
