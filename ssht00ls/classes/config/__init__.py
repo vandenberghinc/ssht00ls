@@ -24,10 +24,7 @@ try:
 # download.
 except ImportError as e:
 	import os
-	if os.path.exists("/usr/bin/pip3"): 
-		os.system(f"/usr/bin/pip3 install -r {syst3m.defaults.source_path(__file__, back=3)}/requirements/requirements.pip --user {os.environ.get('syst3m.defaults.vars.user')}")
-	else:
-		os.system(f"pip3 install -r {syst3m.defaults.source_path(__file__, back=3)}/requirements/requirements.pip")
+	os.system(f"python3 -m pip install -r {syst3m.defaults.source_path(__file__, back=3)}/requirements/requirements.pip")
 
 	# imports.
 	import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpect, random, getpass, time
