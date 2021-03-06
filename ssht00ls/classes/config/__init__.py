@@ -23,8 +23,8 @@ try:
 
 # download.
 except ImportError as e:
-	import os
-	os.system(f"python3 -m pip install -r {syst3m.defaults.source_path(__file__, back=3)}/requirements/requirements.pip")
+	import syst3m
+	syst3m.defaults.install_requirements(f"{syst3m.defaults.source_path(__file__, back=3)}/requirements/requirements.pip")
 
 	# imports.
 	import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpect, random, getpass, time
@@ -51,9 +51,10 @@ CLI = syst3m.env.get("CLI", format=bool, default=False)
 CHECKS = not cl1.arguments_present(["--no-checks"])
 RESET_CACHE = cl1.arguments_present("--reset-cache")
 if syst3m.defaults.options.log_level >= 1:
-	r3sponse.log(f"{ALIAS} cli: {CLI}")
-	r3sponse.log(f"{ALIAS} interactive: {INTERACTIVE}")
-	r3sponse.log(f"{ALIAS} checks: {CHECKS}")
+	r3sponse.log("ssht00ls:")
+	r3sponse.log(f" * cli: {CLI}")
+	r3sponse.log(f" * interactive: {INTERACTIVE}")
+	r3sponse.log(f" * checks: {CHECKS}")
 
 # database.
 DATABASE = Directory(path=syst3m.env.get_string("SSHT00LS_DATABASE", default=f"{syst3m.defaults.vars.home}/.{ALIAS}"))
@@ -68,8 +69,8 @@ CONFIG = Dictionary(path=syst3m.env.get_string("SSHT00LS_CONFIG", default=DATABA
 
 # logs.
 if syst3m.defaults.options.log_level >= 1:
-	r3sponse.log(f"{ALIAS} database: {DATABASE}")
-	r3sponse.log(f"{ALIAS} config: {CONFIG.fp}")
+	r3sponse.log(f" * database: {DATABASE}")
+	r3sponse.log(f" * config: {CONFIG.fp}")
 
 # initialize cache.
 cache = syst3m.cache.Cache(
@@ -88,9 +89,9 @@ SSYNC_DAEMON_SLEEPTIME = round(float(cl1.get_argument("--daemon-sleeptime", requ
 
 # logs.
 if syst3m.defaults.options.log_level >= 2:
-	r3sponse.log(f"{ALIAS} ssh timeout: {SSH_TIMEOUT}")
-	r3sponse.log(f"{ALIAS} ssh reattempts: {SSH_REATTEMPS}")
-	r3sponse.log(f"{ALIAS} daemon sleeptime: {SSYNC_DAEMON_SLEEPTIME}")
+	r3sponse.log(f" * ssh timeout: {SSH_TIMEOUT}")
+	r3sponse.log(f" * ssh reattempts: {SSH_REATTEMPS}")
+	r3sponse.log(f" * daemon sleeptime: {SSYNC_DAEMON_SLEEPTIME}")
 
 # speed up non interactive.
 if CHECKS and not RESET_CACHE:
@@ -101,8 +102,9 @@ if CHECKS and not RESET_CACHE:
 		r3sponse.log(error=NETWORK_INFO.error, json=cl1.arguments_present(["--json", "-j"]), log_level=0)
 		sys.exit(1)
 	if syst3m.defaults.options.log_level >= 1:
-		r3sponse.log(f"public ip: {NETWORK_INFO['public_ip']}")
-		r3sponse.log(f"private ip: {NETWORK_INFO['private_ip']}")
+		r3sponse.log("Network info:")
+		r3sponse.log(f" * public ip: {NETWORK_INFO['public_ip']}")
+		r3sponse.log(f" * private ip: {NETWORK_INFO['private_ip']}")
 
 	# check lib.
 	if not Files.exists(f"{SOURCE_PATH}/lib") or cl1.argument_present("--download-lib"):
