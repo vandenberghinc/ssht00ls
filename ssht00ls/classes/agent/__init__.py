@@ -20,7 +20,7 @@ class Agent(syst3m.objects.Traceback):
 	):
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.agent", raw_traceback="ssht00ls.classes.agent.Agent")
+		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls_agent", raw_traceback="ssht00ls.classes.agent.Agent")
 
 		# specific variables.
 		self.specific = public_key != None or private_key != None
@@ -49,6 +49,7 @@ class Agent(syst3m.objects.Traceback):
 		# check specific.
 		if self.specific:
 			if private_key == None: private_key = self.private_key
+			if public_key == None: public_key = self.public_key
 			if smartcard == None: smartcard = self.smartcard
 
 		# initialize.

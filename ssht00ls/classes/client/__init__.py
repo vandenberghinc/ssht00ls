@@ -175,14 +175,14 @@ class Client(syst3m.objects.Traceback):
 					if info["pin"] in [False, None, "", "none", "None"]:
 						no_passphrase = True
 					else:
-						response = encryption.encryption.decrypt(info["pin"])
+						response = ssht00ls_agent.encryption.decrypt(info["pin"])
 						if not response.success: return response
 						pin = response.decrypted.decode()
 				else:
 					if info["passphrase"] in [False, None, "", "none", "None"]:
 						no_passphrase = True
 					else:
-						response = encryption.encryption.decrypt(info["passphrase"])
+						response = ssht00ls_agent.encryption.decrypt(info["passphrase"])
 						if not response.success: return response
 						passphrase = response.decrypted.decode()
 

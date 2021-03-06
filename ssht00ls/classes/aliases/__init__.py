@@ -251,9 +251,9 @@ class Aliases(syst3m.objects.Traceback):
 		if "passphrase" in list(edits.keys()) and edits["passphrase"] not in value_exceptions:
 			# check encryption activated.
 			if edits["passphrase"] not in [False, "", "none", "None"]:
-				if not encryption.activated:
-					return r3sponse.error("The encryption requires to be activated.")
-				response = encryption.encryption.encrypt(edits["passphrase"])
+				if not ssht00ls_agent.activated:
+					return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+				response = ssht00ls_agent.encryption.encrypt(edits["passphrase"])
 				if not response["success"]: return response
 				CONFIG["aliases"][alias]["smartcard"] = False
 				CONFIG["aliases"][alias]["passphrase"] = response.encrypted.decode()
@@ -267,9 +267,9 @@ class Aliases(syst3m.objects.Traceback):
 		if "pin" in list(edits.keys()) and edits["pin"] not in value_exceptions:
 			# check encryption activated.
 			if edits["pin"] not in [False, "", "none", "None"]:
-				if not encryption.activated:
-					return r3sponse.error("The encryption requires to be activated.")
-				response = encryption.encryption.encrypt(edits["pin"])
+				if not ssht00ls_agent.activated:
+					return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+				response = ssht00ls_agent.encryption.encrypt(edits["pin"])
 				if not response["success"]: return response
 				CONFIG["aliases"][alias]["smartcard"] = True
 				CONFIG["aliases"][alias]["pin"] = response.encrypted.decode()
@@ -377,8 +377,8 @@ class Aliases(syst3m.objects.Traceback):
 			if not response["success"]: return response
 
 		# check encryption activated.
-		if checks and not encryption.activated:
-			return r3sponse.error("The encryption requires to be activated.")
+		if checks and not ssht00ls_agent.activated:
+			return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 
 		# duplicate.
 		if checks:
@@ -429,11 +429,11 @@ class Aliases(syst3m.objects.Traceback):
 		if save:
 			if passphrase not in [False, "", "none", None, "None"]:
 				if smartcard:
-					response = encryption.encryption.encrypt(str(pin))
+					response = ssht00ls_agent.encryption.encrypt(str(pin))
 					if not response["success"]: return response
 					json_config["pin"] = response["encrypted"].decode()
 				else:
-					response = encryption.encryption.encrypt(str(passphrase))
+					response = ssht00ls_agent.encryption.encrypt(str(passphrase))
 					if not response["success"]: return response
 					json_config["passphrase"] = response["encrypted"].decode()
 			else:
@@ -544,12 +544,12 @@ class Aliases(syst3m.objects.Traceback):
 								passphrase =  getpass.getpass(f"Enter the passphrase of key {checked['private_key']}:")
 						else:
 							# check encryption activated.
-							if not encryption.activated:
+							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return r3sponse.error("The encryption requires to be activated.")
+								return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 							new_passphrase = False
-							response = encryption.encryption.decrypt(checked["pin"])
+							response = ssht00ls_agent.encryption.decrypt(checked["pin"])
 							if not response.success: 
 								if log_level >= 0: loader.stop(success=False)
 								return response
@@ -562,12 +562,12 @@ class Aliases(syst3m.objects.Traceback):
 								passphrase =  getpass.getpass(f"Enter the passphrase of key {checked['private_key']}:")
 						else:
 							# check encryption activated.
-							if not encryption.activated:
+							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return r3sponse.error("The encryption requires to be activated.")
+								return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 							new_passphrase = False
-							response = encryption.encryption.decrypt(checked["passphrase"])
+							response = ssht00ls_agent.encryption.decrypt(checked["passphrase"])
 							if not response.success: 
 								if log_level >= 0: loader.stop(success=False)
 								return response
@@ -594,11 +594,11 @@ class Aliases(syst3m.objects.Traceback):
 										return response
 						if new_passphrase:
 							# check encryption activated.
-							if not encryption.activated:
+							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return r3sponse.error("The encryption requires to be activated.")
-							response = encryption.encryption.encrypt(passphrase)
+								return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+							response = ssht00ls_agent.encryption.encrypt(passphrase)
 							if not response.success: 
 								if log_level >= 0: loader.stop(success=False)
 								return response

@@ -95,7 +95,7 @@ class Tunnel(syst3m.objects.Thread):
 			return r3sponse.error(f"Failed to establish tunnel {id}, error: {output}.")
 
 		# send cached run permission.
-		response = webserver.set(group="tunnels.run_permission", id=id, data="True")
+		response = ssht00ls_agent.webserver.set(group="tunnels.run_permission", id=id, data="True")
 		if not response.success: return response
 
 		# tunnel.
@@ -114,7 +114,7 @@ class Tunnel(syst3m.objects.Thread):
 		# start thread.
 		if not self.specific and reconnect:
 			#response = tunnel.start()
-			response = webserver.start_thread(tunnel, group="tunnels", id=tunnel.id)
+			response = ssht00ls_agent.webserver.start_thread(tunnel, group="tunnels", id=tunnel.id)
 			if not response.success: return response
 
 		# handler.
@@ -160,12 +160,12 @@ class Tunnel(syst3m.objects.Thread):
 			return r3sponse.success(f"Tunnel [{id}] was not active.")
 
 		# check stop thread.
-		response = webserver.set(group="tunnels.run_permission", id=id, data="False")
+		response = ssht00ls_agent.webserver.set(group="tunnels.run_permission", id=id, data="False")
 		if not response.success: return response
 
 		"""
 		tunnel = None
-		response = webserver.get_thread(group="tunnels", id=id)
+		response = ssht00ls_agent.webserver.get_thread(group="tunnels", id=id)
 		if not response.success and "There is no thread cached for" not in response.error:
 			return response
 		elif response.success:
@@ -245,7 +245,7 @@ class Tunnel(syst3m.objects.Thread):
 		while self.run_permission:
 
 			# check no cached run permission.
-			response = webserver.get(group="tunnels.run_permission", id=id)
+			response = ssht00ls_agent.webserver.get(group="tunnels.run_permission", id=id)
 			if not response.success: 
 				self.send_crash(response=response)
 				break

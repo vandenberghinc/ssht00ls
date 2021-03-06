@@ -91,7 +91,6 @@ class CLI(cl1.CLI):
 				#"    --list-daemons":"List all daemons & their status.",
 				"Agent:":"*chapter*",
 				"    --sync":"Manually synchronize the aliases & add the keys to the agent.",
-				"    --start-agent":"Start the ssht00ls agent manually.",
 				"    --stop-agent":"Stop the ssht00ls agent.",
 				"Basic:":"*chapter*",
 				"    --kill <identifier>":"Kill all ssh processes that include the identifier.",
@@ -123,7 +122,7 @@ class CLI(cl1.CLI):
 		self.arguments.check(json=syst3m.defaults.options.json, exceptions=["--log-level", "--version", "--create-alias", "--non-interative"])
 
 		# sync aliases.
-		if encryption.activated and not self.arguments.present(["-h", "--config", "--help", "--version", "--unmount", "--list-tunnels"]):
+		if ssht00ls_agent.activated and not self.arguments.present(["-h", "--config", "--help", "--version", "--unmount", "--list-tunnels"]):
 			str_args = Array(sys.argv).string(joiner=" ")
 			aliases = ["*"]
 			if not self.arguments.present(["--sync"]):

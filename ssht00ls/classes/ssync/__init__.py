@@ -42,8 +42,8 @@ class SSync(syst3m.objects.Traceback):
 		path = gfp.clean(path)
 
 		# check encryption activated.
-		if not encryption.activated:
-			return r3sponse.error("The encryption requires to be activated.")
+		if not ssht00ls_agent.activated:
+			return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 
 		# remote.
 		if alias != None:
@@ -57,9 +57,9 @@ class SSync(syst3m.objects.Traceback):
 
 				# check passphrase.
 				if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-					response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+					response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
 				else:
-					response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+					response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
 				if not response["success"]: return response
 				passphrase = response.decrypted.decode()
 				
@@ -177,8 +177,8 @@ class SSync(syst3m.objects.Traceback):
 			if alias == None: alias = self.alias
 
 		# check encryption activated.
-		if not encryption.activated:
-			return r3sponse.error("The encryption requires to be activated.")
+		if not ssht00ls_agent.activated:
+			return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 		if checks:
 			if self.specific:
 				try: self.activated
@@ -191,9 +191,9 @@ class SSync(syst3m.objects.Traceback):
 					if "is not added to the" not in response.error: return response
 					else:
 						if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-							response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+							response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
 						else:
-							response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+							response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
 						if not response["success"]: return response
 						passphrase = response.decrypted.decode()
 						response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
@@ -259,8 +259,8 @@ class SSync(syst3m.objects.Traceback):
 			if alias == None: alias = self.alias
 
 		# check encryption activated.
-		if not encryption.activated:
-			return r3sponse.error("The encryption requires to be activated.")
+		if not ssht00ls_agent.activated:
+			return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 		if checks:
 			if self.specific:
 				try: self.activated
@@ -273,12 +273,12 @@ class SSync(syst3m.objects.Traceback):
 					if "is not added to the" not in response.error: return response
 					else:
 						if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-							response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["pin"])
+							response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["pin"])
 							if not response["success"]: return response
 							passphrase = response.decrypted.decode()
 						else:
 							if CONFIG["aliases"][alias]["passphrase"] not in ["", False]:
-								response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+								response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
 								if not response["success"]: return response
 								passphrase = response.decrypted.decode()
 							else:
@@ -509,7 +509,7 @@ class SSync(syst3m.objects.Traceback):
 			"utils":self.utils,
 			"sleeptime":sleeptime,
 		})
-		if start: webserver.start_thread(_daemon_, group="daemons", id=_daemon_.id)
+		if start: ssht00ls_agent.webserver.start_thread(_daemon_, group="daemons", id=_daemon_.id)
 		return r3sponse.success("Successfully initialized the daemon", {
 			"daemon":_daemon_,
 		})

@@ -155,69 +155,56 @@ if CHECKS and not RESET_CACHE:
 	Files.chmod(f"{SOURCE_PATH}/classes/utils/isdir.py", permission=777)
 	Files.chmod(f"{SOURCE_PATH}/classes/utils/size.py", permission=777)
 
-	# limit webserver recursive import.
-	if syst3m.env.get("SSHT00LS_WEBSERVER_IMPORT", default=False, format=bool) not in ["True", True]:
+	# agent.
+	ssht00ls_agent = encrypti0n.Agent(
+		id="ssht00ls-agent",
+		config=CONFIG,
+		database=Directory(DATABASE.join(".agent/")),
+		passphrase=None, 
+		interactive=INTERACTIVE,
+		host="127.0.0.1",
+		port=2379,
+		traceback="ssht00ls_agent"	)
 
-		# webserver.
-		from ssht00ls.classes.webserver import WebServer
-		webserver = WebServer()
-		if cl1.argument_present("--stop-agent"):
-			response = webserver.stop()
-			if response.success:
-				r3sponse.log(response=response, json=syst3m.defaults.options.json)
-				sys.exit(0)
-			else:
-				r3sponse.log(response=response, json=syst3m.defaults.options.json)
-				sys.exit(1)
-		elif cl1.argument_present("--start-agent"):
-			if not webserver.running: 
-				if syst3m.defaults.options.log_level >= 1:
-					r3sponse.log(f"{ALIAS}: starting the ssht00ls agent.")
-				webserver.start()
-				sys.exit(0)
-			else:
-				r3sponse.log(error=f"The {webserver.id} is already running.", json=syst3m.defaults.options.json)
-				sys.exit(1)
-		elif INTERACTIVE and not webserver.running: 
-			if syst3m.defaults.options.log_level >= 1:
-				r3sponse.log(f"{ALIAS}: forking the ssht00ls agent.")
-			response = webserver.fork()
+	# webserver.
+	if cl1.argument_present("--stop-agent"):
+		response = ssht00ls_agent.webserver.stop()
+		if response.success:
 			r3sponse.log(response=response, json=syst3m.defaults.options.json)
-			if not response.success: sys.exit(1)
+			sys.exit(0)
+		else:
+			r3sponse.log(response=response, json=syst3m.defaults.options.json)
+			sys.exit(1)
+	elif INTERACTIVE and not ssht00ls_agent.webserver.running: # is also automatically done in agent.generate & agent.activate
 		if syst3m.defaults.options.log_level >= 1:
-			r3sponse.log(f"{ALIAS} webserver: {webserver}")
+			r3sponse.log(f"{ALIAS}: forking the ssht00ls agent.")
+		response = ssht00ls_agent.webserver.fork()
+		r3sponse.log(response=response, json=syst3m.defaults.options.json)
+		if not response.success: sys.exit(1)
+	if syst3m.defaults.options.log_level >= 1:
+		r3sponse.log(f"{ALIAS} webserver: {ssht00ls_agent.webserver}")
 
-		# encryption.
-		from ssht00ls.classes import encryption as _encryption_
-		encryption = _encryption_.Encryption(
-			config=CONFIG,
-			webserver=webserver,
-			cache=cache.path,
-			interactive=INTERACTIVE,)
-		if syst3m.defaults.options.log_level >= 1:
-			r3sponse.log(f"{ALIAS} encryption: {encryption}")
+	# check interactive.
+	if INTERACTIVE:
 
-		# check interactive.
-		if INTERACTIVE:
-
-			# generate encryption.
-			if None in [CONFIG.dictionary["encryption"]["public_key"], CONFIG.dictionary["encryption"]["private_key"]]:
-				if CLI:
-					response = encryption.generate()
-					r3sponse.log(response=response, json=syst3m.defaults.options.json)
-					if not response.success: sys.exit(1)
-				else:
-					r3sponse.log(error="There is no encryption installed.", json=syst3m.defaults.options.json)
-					sys.exit(1)
-
-			# activate encryption.
-			else:
-				response = encryption.activate()
+		# generate encryption.
+		if None in [CONFIG.dictionary["encryption"]["public_key"], CONFIG.dictionary["encryption"]["private_key"]]:
+			if CLI:
+				response = ssht00ls_agent.generate()
 				r3sponse.log(response=response, json=syst3m.defaults.options.json)
 				if not response.success: sys.exit(1)
+			else:
+				r3sponse.log(error="There is no encryption installed.", json=syst3m.defaults.options.json)
+				sys.exit(1)
 
-	elif syst3m.defaults.options.log_level >= 0:
-		r3sponse.log(f"{ALIAS}: skip encryption import (#2) due to ssht00ls agent start.")
+		# activate encryption.
+		else:
+			response = ssht00ls_agent.activate()
+			r3sponse.log(response=response, json=syst3m.defaults.options.json)
+			if not response.success: sys.exit(1)
+
+# logs.
 elif syst3m.defaults.options.log_level >= 0:
 	r3sponse.log(f"{ALIAS}: skip encryption import (#1) due to ssht00ls agent start.")
 
+#

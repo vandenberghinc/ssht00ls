@@ -85,14 +85,14 @@ def pull(
 		#if not response.success: return response
 		
 		# check encryption activated.
-		#if not encryption.activated:
-		#	return r3sponse.error("The encryption requires to be activated.")
+		#if not ssht00ls_agent.activated:
+		#	return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 
 		# check passphrase.
 		#if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-		#	response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+		#	response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
 		#else:
-		#	response = encryption.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+		#	response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
 		#if not response.success: return response
 		#passphrase = response.decrypted.decode()
 		
@@ -195,8 +195,8 @@ def push(
 		#if not response.success: return response
 		
 		# check encryption activated.
-		#if not encryption.activated:
-		#	return r3sponse.error("The encryption requires to be activated.")
+		#if not ssht00ls_agent.activated:
+		#	return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 		
 		# check passphrase.
 		#if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
