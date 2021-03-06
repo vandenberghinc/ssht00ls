@@ -142,16 +142,18 @@ class Agent(syst3m.objects.Traceback):
 				a=1
 
 			# excpect eof.
-			r = spawn.expect(["Bad passphrase", "Incorrect pin", "*\r\n", pexpect.EOF], timeout=0.5)
-			if r == 0:
-				return r3sponse.error(f"Provided an incorrect passphrase for key [{private_key}].")
-			elif r == 1:
-				return r3sponse.error("Provided an incorrect pin code.")
-			elif r == 2 or r == 3:
-				# success behaviour.
+			try:
+				r = spawn.expect(["Bad passphrase", "Incorrect pin"], timeout=0.5)
+				if r == 0:
+					return r3sponse.error(f"Provided an incorrect passphrase for key [{private_key}].")
+				elif r == 1:
+					return r3sponse.error("Provided an incorrect pin code.")
+				else:
+					raise ValueError(f"Unkown spawn behaviour: {spawn}")	
+			except pexpect.exceptions.TIMEOUT:
 				a=1
-			else:
-				raise ValueError(f"Unkown spawn behaviour: {spawn}")
+			except pexpect.exceptions.EOF:
+				a=1
 
 			
 			# handle output.
