@@ -38,7 +38,7 @@ class Keys(syst3m.objects.Traceback):
 		path = Formats.denitialize(path)
 		old = Formats.denitialize(old)
 		new = Formats.denitialize(new)
-		response = r3sponse.check_parameters({
+		response = r3sponse.parameters.check({
 			"old":old,
 			"new":new,
 			"path":path,
@@ -79,7 +79,7 @@ class Keys(syst3m.objects.Traceback):
 		path = Formats.denitialize(path)
 		passphrase = Formats.denitialize(passphrase)
 		comment = Formats.denitialize(comment)
-		response = r3sponse.check_parameters({
+		response = r3sponse.parameters.check({
 			"old":old,
 			"passphrase":passphrase,
 			"comment":comment,
@@ -121,7 +121,7 @@ class Keys(syst3m.objects.Traceback):
 		passphrase = Formats.denitialize(passphrase)
 		comment = Formats.denitialize(comment)
 		if directory[len(directory)-1] != "/": directory += "/"
-		response = r3sponse.check_parameters({
+		response = r3sponse.parameters.check({
 			"path":directory,
 		}, traceback=self.__traceback__(function="generate"))
 		if not response["success"]: return response

@@ -70,7 +70,7 @@ class Tunnel(syst3m.objects.Thread):
 		if log_level == None: log_level = self.log_level # keep this one indent back.
 
 		# check parameters.
-		response = r3sponse.check_parameters(
+		response = r3sponse.parameters.check(
 			traceback=self.__traceback__(function="establish"),
 			parameters={
 				"alias":alias,
@@ -144,7 +144,7 @@ class Tunnel(syst3m.objects.Thread):
 		if log_level == None: log_level = self.log_level
 
 		# check parameters.
-		response = r3sponse.check_parameters(
+		response = r3sponse.parameters.check(
 			traceback=self.__traceback__(function="kill"),
 			parameters={
 				"alias":alias,

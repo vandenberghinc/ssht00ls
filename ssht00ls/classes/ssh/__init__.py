@@ -38,7 +38,7 @@ class SSH(syst3m.objects.Traceback):
 			if alias == None: alias = self.alias
 
 		# checks.
-		response = r3sponse.check_parameters(
+		response = r3sponse.parameters.check(
 			traceback=self.__traceback__(function="session"),
 			parameters={
 				"alias":alias,
@@ -68,7 +68,7 @@ class SSH(syst3m.objects.Traceback):
 			if alias == None: alias = self.alias
 
 		# checks.
-		response = r3sponse.check_parameters(
+		response = r3sponse.parameters.check(
 			traceback=self.__traceback__(function="command"),
 			parameters={
 				"alias":alias,

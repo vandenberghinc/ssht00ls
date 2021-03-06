@@ -350,7 +350,7 @@ class Aliases(syst3m.objects.Traceback):
 
 
 		# checks.
-		response = r3sponse.check_parameters(
+		response = r3sponse.parameters.check(
 			traceback=self.__traceback__(function="create"),
 			parameters={
 				"alias":alias,
@@ -366,14 +366,14 @@ class Aliases(syst3m.objects.Traceback):
 			})
 		if not response["success"]: return response
 		if smartcard:
-			response = r3sponse.check_parameters({
+			response = r3sponse.parameters.check({
 				"pin":pin,
-			}, empty_value=None, traceback=self.__traceback__(function="create"))
+			}, default=None, traceback=self.__traceback__(function="create"))
 			if not response["success"]: return response
 		else:
-			response = r3sponse.check_parameters({
+			response = r3sponse.parameters.check({
 				"passphrase":passphrase,
-			}, empty_value=None, traceback=self.__traceback__(function="create"))
+			}, default=None, traceback=self.__traceback__(function="create"))
 			if not response["success"]: return response
 
 		# check encryption activated.

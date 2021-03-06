@@ -92,7 +92,7 @@ class SMB(syst3m.objects.Thread):
 			loader = syst3m.console.Loader(f"Mounting smb share [{alias}:{id}] to [{path}]")
 
 		# checks.
-		response = r3sponse.check_parameters({
+		response = r3sponse.parameters.check({
 			"id:str,String":id,
 			"path:str,String":path,
 			"alias:str,String":alias,
@@ -250,7 +250,7 @@ class SMB(syst3m.objects.Thread):
 			loader = syst3m.console.Loader(f"Unmounting [{path}]")
 
 		# checks.
-		response = r3sponse.check_parameters({
+		response = r3sponse.parameters.check({
 			"path:str,String":path,
 			"forced:bool,Boolean":forced,
 			"sudo:bool,Boolean":sudo,
@@ -314,7 +314,7 @@ class SMB(syst3m.objects.Thread):
 		if path == None: path = self.path
 
 		# checks.
-		response = r3sponse.check_parameters({
+		response = r3sponse.parameters.check({
 			"path:str,String":path,
 		}, traceback=self.__traceback__(function="unmount"))
 		if not response["success"]: return response

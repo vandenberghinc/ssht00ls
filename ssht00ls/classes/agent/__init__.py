@@ -53,12 +53,12 @@ class Agent(syst3m.objects.Traceback):
 
 		# initialize.
 		private_key = private_key.replace("//", "/")
-		response = r3sponse.check_parameters(empty_value=None, parameters={
+		response = r3sponse.parameters.check(default=None, parameters={
 			"private_key":private_key
 		}, traceback=self.__traceback__(function="add"))
 		if not response["success"]: return response
 		if smartcard:
-			response = r3sponse.check_parameters(empty_value=None, parameters={
+			response = r3sponse.parameters.check(default=None, parameters={
 				"pin":pin
 			}, traceback=self.__traceback__(function="add"))
 			if not response["success"]: return response
@@ -140,13 +140,26 @@ class Agent(syst3m.objects.Traceback):
 				a=1
 			except pexpect.exceptions.EOF:
 				a=1
+
+			# excpect eof.
+			r = spawn.expect(["Bad passphrase", "Incorrect pin", pexpect.EOF], timeout=0.5)
+			if r == 0:
+				return r3sponse.error(f"Provided an incorrect passphrase for key [{private_key}].")
+			elif r == 1:
+				return r3sponse.error("Provided an incorrect pin code.")
+			elif r == 2:
+				# success behaviour.
+				a=1
+			else:
+				raise ValueError(f"Unkown spawn behaviour: {spawn}")
+
 			
 			# handle output.
 			output = spawn.read().decode()
 
 			# check success.
-			if "incorrect passphrase" in output.lower():
-				return r3sponse.error("Provided an incorrect passphrase.")
+			if "incorrect passphrase" in output.lower() or "bad passphrase" in output.lower():
+				return r3sponse.error(f"Provided an incorrect passphrase for key [{private_key}].")
 			elif "incorrect pin" in output.lower():
 				return r3sponse.error("Provided an incorrect pin code.")
 			elif "Failed to communicate" in output or "agent refused operation" in output or "Error connecting to agent" in output or "Connection refused" in output:
@@ -242,7 +255,7 @@ class Agent(syst3m.objects.Traceback):
 				public_key = self.public_key
 
 		# params.
-		response = r3sponse.check_parameters({
+		response = r3sponse.parameters.check({
 			"public_key":public_key
 		}, traceback=self.__traceback__(function="check"))
 		if not response["success"]: return response

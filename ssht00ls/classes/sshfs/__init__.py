@@ -32,7 +32,7 @@ class SSHFS(syst3m.objects.Traceback):
 		# checks.
 		base = ""
 		if alias == None:
-			response = r3sponse.check_parameters(
+			response = r3sponse.parameters.check(
 				traceback=self.__traceback__(function="mount"), 
 				parameters={
 					"username":username,
@@ -45,7 +45,7 @@ class SSHFS(syst3m.objects.Traceback):
 			if not response["success"]: return response
 			base += f"sshfs -p {port} -o IdentityFile={key_path} {username}@{ip}"
 		else:
-			response = r3sponse.check_parameters(
+			response = r3sponse.parameters.check(
 				traceback=self.__traceback__(function="mount"), 
 				parameters={
 					"alias":alias,
@@ -90,7 +90,7 @@ class SSHFS(syst3m.objects.Traceback):
 	):
 
 		# checks.
-		response = r3sponse.check_parameters(
+		response = r3sponse.parameters.check(
 			traceback=self.__traceback__(function="unmount"),
 			parameters={
 				"path":path

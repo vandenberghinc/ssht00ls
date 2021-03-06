@@ -32,7 +32,7 @@ class SCP(syst3m.objects.Traceback):
 
 		# checks.
 		if alias == None:
-			response = r3sponse.check_parameters(empty_value=None, parameters={
+			response = r3sponse.parameters.check(default=None, parameters={
 				"username":username,
 				"ip":ip,
 				"server_path":server_path,
@@ -42,7 +42,7 @@ class SCP(syst3m.objects.Traceback):
 			}, traceback=self.__traceback__(function="download"))
 			if not response["success"]: return response
 		else:
-			response = r3sponse.check_parameters(empty_value=None, parameters={
+			response = r3sponse.parameters.check(default=None, parameters={
 				"alias":alias,
 				"server_path":server_path,
 				"client_path":client_path,
@@ -97,7 +97,7 @@ class SCP(syst3m.objects.Traceback):
 
 		# checks.
 		if alias == None:
-			response = r3sponse.check_parameters(empty_value=None, parameters={
+			response = r3sponse.parameters.check(default=None, parameters={
 				"username":username,
 				"ip":ip,
 				"server_path":server_path,
@@ -107,7 +107,7 @@ class SCP(syst3m.objects.Traceback):
 			}, traceback=self.__traceback__(function="upload"))
 			if not response["success"]: return response
 		else:
-			response = r3sponse.check_parameters(empty_value=None, parameters={
+			response = r3sponse.parameters.check(default=None, parameters={
 				"alias":alias,
 				"server_path":server_path,
 				"client_path":client_path,

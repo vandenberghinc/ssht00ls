@@ -215,7 +215,7 @@ def ssh_agent():
 
 # kill all ssh procs with that includes the identifier.
 def kill(identifier=None, sudo=False):
-	response = r3sponse.check_parameters({
+	response = r3sponse.parameters.check({
 		"identifier:str":identifier,})
 	if not response.success: return response
 	return syst3m.defaults.kill(includes=identifier, sudo=sudo)

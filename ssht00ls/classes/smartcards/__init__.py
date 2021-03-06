@@ -30,16 +30,27 @@ class SmartCards(syst3m.objects.Traceback):
 				if Files.exists(path):
 					self.path = path
 					break
-			if self.path == None: raise ValueError("Unable to locate opensc-pkcs11.so path.")
+			if self.path == None: raise ValueError("Unable to locate opensc-pkcs11.so.")
 					
 		elif syst3m.defaults.vars.os in ["macos"]: 
+			self.original_path = None
+			for path in [
+				"/usr/local/lib/libykcs11.dylib",
+			]:
+				if Files.exists(path):
+					self.original_path = path
+					break
+			if self.original_path == None: r3sponse.log("&ORANGE&Unable to locate libykcs11.dylib.&END&")
+
 			#self.original_path = "/usr/local/lib/libykcs11.dylib"
 			#self.path = "/usr/local/lib/libykcs11_NOTALNK.dylib"
 			#self.original_path = "/usr/local/lib/opensc-pkcs11.so"
-			self.original_path = f"{SOURCE_PATH}/lib/opensc/macos/opensc-pkcs11.so"
-			self.path = "/usr/local/lib/opensc-pkcs11_NOTALINK.so"
-			if not Files.exists(self.original_path):
-				raise OSError("opensc package is not installed, run: [$ brew install yubico-piv-tool opensc].")
+			#self.original_path = f"{SOURCE_PATH}/lib/opensc/macos/opensc-pkcs11.so"
+			#self.path = "/usr/local/lib/opensc-pkcs11_NOTALINK.so"
+			self.original_path = path
+			self.path = "/usr/local/lib/libykcs11_NOTALNK.dylib"
+			#if not Files.exists(self.original_path):
+			#	r3sponse.log("&RED&OpenSC package is not installed&END&, run: [$ brew install yubico-piv-tool opensc].")
 
 		# attributes.
 		self.__smartcards__ = {}
@@ -268,8 +279,8 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 		
 		# check params.
-		response = r3sponse.check_parameters(
-			empty_value=None,
+		response = r3sponse.parameters.check(
+			default=None,
 			traceback=self.__traceback__(function="unblock_pin"),
 			parameters={
 				"pin":pin,
@@ -300,8 +311,8 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 
 		# check params.
-		response = r3sponse.check_parameters(
-			empty_value=None,
+		response = r3sponse.parameters.check(
+			default=None,
 			traceback=self.__traceback__(function="change_pin"),
 			parameters={
 				"new":new,
@@ -334,8 +345,8 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 
 		# check params.
-		response = r3sponse.check_parameters(
-			empty_value=None,
+		response = r3sponse.parameters.check(
+			default=None,
 			traceback=self.__traceback__(function="change_puk"),
 			parameters={
 				"new":new,
@@ -367,8 +378,8 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 
 		# check params.
-		response = r3sponse.check_parameters(
-			empty_value=None,
+		response = r3sponse.parameters.check(
+			default=None,
 			traceback=self.__traceback__(function="generate_key"),
 			parameters={
 				"pin":pin,
@@ -405,8 +416,8 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 
 		# check params.
-		response = r3sponse.check_parameters(
-			empty_value=None,
+		response = r3sponse.parameters.check(
+			default=None,
 			traceback=self.__traceback__(function="generate_management_key"),
 			parameters={
 				"pin":pin,

@@ -341,7 +341,7 @@ class SSync(syst3m.objects.Traceback):
 			if alias == None: alias = self.alias
 
 		# checks.
-		response = r3sponse.check_parameters(
+		response = r3sponse.parameters.check(
 			traceback=self.__traceback__(function="mount"), 
 			parameters={
 				"path:str":path,
@@ -427,7 +427,7 @@ class SSync(syst3m.objects.Traceback):
 		return r3sponse.error("DEPRICATED.")
 
 		# checks.
-		response = r3sponse.check_parameters(
+		response = r3sponse.parameters.check(
 			traceback=self.__traceback__(function="unmount"), 
 			parameters={
 				"path:str":path,
