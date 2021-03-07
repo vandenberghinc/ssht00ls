@@ -94,6 +94,10 @@ class Client(syst3m.objects.Traceback):
 		self.smb = smb.SMB(
 			alias=alias,)
 
+		# shortcuts.
+		self.pull = self.ssync.pull
+		self.push = self.ssync.push
+
 		# vars.
 		try: 	self.public_key_data = Files.load(public_key)
 		except: self.public_key_data = None
@@ -275,20 +279,33 @@ class Client(syst3m.objects.Traceback):
 
 # the initialized clients.
 class Clients(syst3m.objects.Traceback):
-	def __init__(self):
+	def __init__(self,
+		# select a preset of clients (append "*" to preset to use all).
+		preset=["*"],
+	):
 
 		# defaults.
 		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.clients", raw_traceback="ssht00ls.classes.client.Clients")
 
 		# attributes.
+		self.preset = preset
 		self.__clients__ = {}
 
 		#
 	
 	# initialize.
-	def initialize(self):
+	def initialize(self, preset=None):
+		if preset == None: preset = self.preset
+		if preset in ["*","all"] or "*" in preset or  "all" in preset: 
+			items = aliases.aliases.iterate()
+		else:
+			items = []
+			for alias in preset:
+				response = aliases.info(alias=alias)
+				if not response.success: return response
+				items.append([alias, response.info])
 		self.__clients__ = {}
-		for alias, info in aliases.aliases.iterate():
+		for alias, info in items:
 			self.__clients__[alias] = Client(parameters=info)
 		return r3sponse.success(f"Successfully initialized {len(self.__clients__)} client(s).")
 

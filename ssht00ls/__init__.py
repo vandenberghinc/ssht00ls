@@ -21,6 +21,10 @@ from ssht00ls.classes.ssync import ssync
 from ssht00ls.classes.smb import smb
 from ssht00ls.classes.client import clients, Client
 
+# shortcuts.
+push = ssync.push
+pull = ssync.pull
+
 # source path & version.
 from fil3s import Version, Directory, Files, gfp
 source = Directory(gfp.base(__file__))

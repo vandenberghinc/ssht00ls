@@ -74,7 +74,7 @@ def execute(
 	# execute.
 	if log_level >= 6: print(command)
 	if loader != None and log_level >= 0 and loader.__class__.__name__ not in ["Loader"]:
-		loader = syst3m.console.Loader(loader, interactive=interactive)
+		loader = syst3m.console.Loader(loader, interactive=INTERACTIVE)
 	if message != None: message = message.replace("$COMMAND", command)
 	
 	# version 4.

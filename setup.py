@@ -7,7 +7,7 @@
 from setuptools import setup, find_packages
 setup(
 	name='ssht00ls',
-	version='3.20.1',
+	version='3.20.2',
 	description='Some description.',
 	url='http://github.com/vandenberghinc/ssht00ls',
 	author='Daan van den Bergh',
@@ -19,7 +19,7 @@ setup(
             'asgiref>=3.3.1',
             'certifi>=2020.12.5',
             'chardet>=4.0.0',
-            'cl1>=1.13.0',
+            'cl1>=1.13.1',
             'click>=7.1.2',
             'Django>=3.1.6',
             'Flask>=1.1.2',
@@ -36,9 +36,9 @@ setup(
             'sqlparse>=0.4.1',
             'urllib3>=1.26.3',
             'Werkzeug>=1.0.1',
-            'encrypti0n>=3.19.9',
-            'fil3s>=2.15.3',
-            'netw0rk>=1.8.8',
-            'r3sponse>=2.10.1',
-            'syst3m>=2.16.0',
+            'encrypti0n>=3.20.0',
+            'fil3s>=2.15.4',
+            'netw0rk>=1.8.9',
+            'r3sponse>=2.10.2',
+            'syst3m>=2.16.1',
         ],)
