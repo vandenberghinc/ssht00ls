@@ -64,7 +64,7 @@ def execute(
 	#   loader message.
 	loader=None,
 	#   the log level.
-	log_level=syst3m.defaults.log_level,
+	log_level=syst3m.defaults.options.log_level,
 	#
 	# System functions.
 	#   add additional attributes to the spawn object.
@@ -97,6 +97,8 @@ def execute(
 		optional = True
 
 	# execute.
+	if log_level == 0: l_log_level = -1
+	else: l_log_level = log_level
 	response = syst3m.console.execute(
 		command=command,
 		input=input,
@@ -106,7 +108,7 @@ def execute(
 		kill=kill,
 		shell=shell,
 		serialize=serialize,
-		log_level=log_level,
+		log_level=l_log_level,
 		__spawn_attributes__=__spawn_attributes__,	)
 	if loader.__class__.__name__ in ["Loader"]: loader.stop(success=response.success)
 	if message != None and response.success: response.message = message

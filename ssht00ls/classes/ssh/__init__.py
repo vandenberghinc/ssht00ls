@@ -94,7 +94,7 @@ class SSH(syst3m.objects.Traceback):
 		#   loader message.
 		loader=None,
 		#   the log level.
-		log_level=syst3m.defaults.log_level,
+		log_level=syst3m.defaults.log_level(default=0),
 		#
 		# System functions.
 		#   add additional attributes to the spawn object.

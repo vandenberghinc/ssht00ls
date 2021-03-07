@@ -7,7 +7,7 @@
 from setuptools import setup, find_packages
 setup(
 	name='ssht00ls',
-	version='3.20.2',
+	version='3.20.3',
 	description='Some description.',
 	url='http://github.com/vandenberghinc/ssht00ls',
 	author='Daan van den Bergh',
@@ -40,5 +40,5 @@ setup(
             'fil3s>=2.15.4',
             'netw0rk>=1.8.9',
             'r3sponse>=2.10.2',
-            'syst3m>=2.16.1',
+            'syst3m>=2.16.2',
         ],)
