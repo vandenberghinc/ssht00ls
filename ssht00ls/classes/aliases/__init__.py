@@ -180,8 +180,13 @@ class Aliases(syst3m.objects.Traceback):
 		# check.
 		response = self.check(alias)
 		if not response["success"]: return response
+		info = dict(CONFIG["aliases"][alias])
+		if self.public(info["public_ip"], info["private_ip"]):
+			info["ip"], info["port"] = info["public_ip"], info["public_port"]
+		else:
+			info["ip"], info["port"] = info["private_ip"], info["private_port"]
 		return r3sponse.success(f"Successfully listed the info of alias {alias}.", {
-			"info":CONFIG["aliases"][alias],
+			"info":info,
 		})
 	def delete(self, alias=None):
 		# check specific.

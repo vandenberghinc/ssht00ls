@@ -59,7 +59,7 @@ class SSH(syst3m.objects.Traceback):
 		# 
 		# Command:
 		#   the command in str.
-		command="ssh <alias> ' ls ' ",
+		command="ls",
 		#
 		# Options:
 		#   asynchronous process.
@@ -99,20 +99,25 @@ class SSH(syst3m.objects.Traceback):
 		# System functions.
 		#   add additional attributes to the spawn object.
 		__spawn_attributes__={},
-
-		# the command to execute.
-		command=None,
-		# serialize the output to json.
-		serialize=False,
-		# the log level.
-		log_level=0,
-		# accept new host keys.
-		accept_new_host_keys=True,
 	):
 		
 		# check specific.
 		if self.specific:
 			if alias == None: alias = self.alias
+
+		# parse alias.
+		response = aliases.info(alias=alias)
+		if not response.success: return response
+		info = response.unpack(["info"])
+
+		# add __spawn_attributes__.
+		for key,value in {
+			"alias":alias,
+			"ip":info["ip"],
+			"port":info["port"],
+		}.items():
+			try: __spawn_attributes__[str(key)]
+			except KeyError: = __spawn_attributes__[str(key)] = value
 
 		# checks.
 		response = r3sponse.parameters.check(
@@ -126,12 +131,21 @@ class SSH(syst3m.objects.Traceback):
 		# command.
 		response = self.utils.execute(
 			command=f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' {command} ' """,
-			log_level=log_level,
+			async_=async_,
+			wait=wait,
+			kill=kill,
+			shell=shell,
 			serialize=serialize,
-			accept_new_host_keys=accept_new_host_keys,)
+			accept_new_host_keys=accept_new_host_keys,
+			input=input,
+			timeout=timeout,
+			optional=optional,
+			message=message,
+			loader=loader,
+			log_level=log_level,)
 
 		# handler.
-		if log_level >= 0:
+		if log_level >= 1:
 			if response.success: print(response.output)
 			else: print(response.error)
 		return response
