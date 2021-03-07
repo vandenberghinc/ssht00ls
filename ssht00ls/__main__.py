@@ -123,7 +123,6 @@ class CLI(cl1.CLI):
 
 		# sync aliases.
 		if ssht00ls_agent.activated and not self.arguments.present(["-h", "--config", "--help", "--version", "--unmount", "--list-tunnels"]):
-			print("START")
 			str_args = Array(sys.argv).string(joiner=" ")
 			aliases = ["*"]
 			if not self.arguments.present(["--sync"]):
@@ -133,7 +132,6 @@ class CLI(cl1.CLI):
 						aliases.append(alias)
 			response = ssht00ls.aliases.sync(aliases=aliases)
 			if self.arguments.present("--sync"):
-				print("END")
 				self.stop(response=response)
 			if not response["success"]: response.crash(json=syst3m.defaults.options.json)
 

@@ -264,11 +264,7 @@ class Daemon(syst3m.objects.Thread):
 						cmd += f""" && printf 'y' | rm -fr '{i}'"""
 					c += 1
 				cmd += ' " '
-			response = self.utils.execute(
-				command=cmd,
-				error=f"Failed to delete {self.alias}:{str_id}.",
-				message=f"Successfully deleted {self.alias}:{str_id}.",
-				get_output=True,)
+			response = self.utils.execute(command=cmd,)
 			if not response["success"]: return response
 			#response = ssh.utils.test_path(alias=self.alias, path=path)
 			#if response.error != None and f"{path} does not exist" not in response.error:
@@ -289,11 +285,7 @@ class Daemon(syst3m.objects.Thread):
 					else:
 						cmd += f""" && printf 'y' | rm -fr '{i}'"""
 					c += 1
-			response = self.utils.execute(
-				command=cmd,
-				error=f"Failed to delete {str_id}.",
-				message=f"Successfully deleted {str_id}.",
-				get_output=True,)
+			response = self.utils.execute(command=cmd)
 			if not response["success"]: return response
 			if response.output != "":
 				return r3sponse.error(f"Failed to delete {str_id}, error: {output}")
@@ -857,23 +849,4 @@ class Daemon(syst3m.objects.Thread):
 
 		# handler.
 		return r3sponse.success(f"Successfully synchronized [{self.alias}:{self.path}] & [{self.path}].")
-	# DEPCIRATED.
-	def synchronized(self): # does not work.
-		response = self.utils.execute(
-			command=f"printf 'yes' | rsync -avun --delete {self.alias}:{self.remote} {self.path} --timeout={SSH_TIMEOUT}",
-			error="",
-			message=f"Successfully checked [{self.alias}:{self.remote}] & [{self.path}]",
-			get_output=True,)
-		if not response["success"]: return response
-		output = response["output"]
-		if "receiving incremental file list" not in output or "total size is" not in output or "bytes/sec" not in output:
-			return r3sponse.error(f"Unkown rsync output: [{output}].")
-		b = output.split("\n")
-		try:
-			output = output[len(b[0])+1:-(len(b[len(b)-1])+len(b[len(b)-2])+3)]
-		except Exception as e:
-			return r3sponse.error(f"Failed to clean rsync output: [{output}]. Error: {e}; ")
-		print("OUTPUT:",output)
-		return r3sponse.success(f"Successfully checked [{self.alias}:{self.remote}] & [{self.path}]", {
-			"synchronized":output == "",
-		})
+	

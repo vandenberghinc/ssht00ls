@@ -53,14 +53,61 @@ class SSH(syst3m.objects.Traceback):
 
 		#
 	def command(self,
-		# the alias.
+		# Alias:
+		#   the alias.
 		alias=None,
+		# 
+		# Command:
+		#   the command in str.
+		command="ssh <alias> ' ls ' ",
+		#
+		# Options:
+		#   asynchronous process.
+		async_=False,
+		#	await asynchronous child (sync process always awaits).
+		wait=False,
+		#	kill process when finished (async that is not awaited is never killed).
+		kill=True,
+		#   the subprocess shell parameter.
+		shell=False,
+		#   serialize output to dict (expect literal dictionary / json output).
+		serialize=False,
+		# accept new host keys.
+		accept_new_host_keys=True,
+		#
+		# Input (sync only):
+		#   send input to the command.
+		#	  undefined: send no input & automatically await the process since input is always sync.
+		#	  dict instance: selects "and" mode ; send expected inputs and their value & return error when one of them is missing.
+		#	  list[dict] instance: send all dictionaries in the list (default dict behaviour so one of the keys in each dict is expected).
+		input=None,
+		#   the input timeout (float) (list with floats by index from input)
+		timeout=2.0,
+		#   do not throw an error when the input is missing or not expected when optional is disabled (bool).
+		optional=False, 
+		#	apped default accept host keys input.
+		append_default_input=True,
+		#
+		# Logging.
+		# the success message (leave None to use the default).
+		message=None,
+		#   loader message.
+		loader=None,
+		#   the log level.
+		log_level=syst3m.defaults.log_level,
+		#
+		# System functions.
+		#   add additional attributes to the spawn object.
+		__spawn_attributes__={},
+
 		# the command to execute.
 		command=None,
 		# serialize the output to json.
 		serialize=False,
 		# the log level.
 		log_level=0,
+		# accept new host keys.
+		accept_new_host_keys=True,
 	):
 		
 		# check specific.
@@ -79,11 +126,9 @@ class SSH(syst3m.objects.Traceback):
 		# command.
 		response = self.utils.execute(
 			command=f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' {command} ' """,
-			message=f"Successfully executed the command on remote [{alias}].",
-			error=f"Failed to execute the command on remote [{alias}].",
 			log_level=log_level,
-			get_output=True,
-			serialize=serialize,)
+			serialize=serialize,
+			accept_new_host_keys=accept_new_host_keys,)
 
 		# handler.
 		if log_level >= 0:

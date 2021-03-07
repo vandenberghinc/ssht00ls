@@ -37,9 +37,8 @@ def size(path, alias=None, log_level=0):
 		})
 	else:
 		return execute(
-			command=f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' python3 /usr/local/lib/ssht00ls/classes/utils/size.py {path} ' '""",
-			message=f"Successfully retrieved the size of {alias}:{path}.",
-			error=f"Failed to retrieve the size of {alias}:{path}.",
+			command=f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' python3 /usr/local/lib/ssht00ls/classes/utils/size.py {path} --non-interactive ' '""",
+			message=f"Successfully retrieved the size of [{alias}:{path}].",
 			log_level=log_level,
 			serialize=True,)
 
@@ -144,9 +143,8 @@ def pull(
 	else:
 		return execute(
 			command=_command_,
-			message=f"Successfully pulled [{alias}:{remote}] to [{path}].",
-			error=f"Failed to pull [{alias}:{remote}] to [{path}].",
 			loader=f"Pulling [{alias}:{remote}] to [{path}]",
+			message=f"Successfully pulled [{alias}:{remote}] to [{path}].",
 			log_level=log_level,
 		)
 
@@ -241,9 +239,8 @@ def push(
 	else:
 		return execute(
 			command=_command_,
-			message=f"Successfully pushed [{path}] to [{alias}:{remote}].",
-			error=f"Failed to push [{path}] to [{alias}:{remote}].",
 			loader=f"Pushing [{path}] to [{alias}:{remote}].",
+			message=f"Successfully pushed [{path}] to [{alias}:{remote}].",
 			log_level=log_level,
 		)
 

@@ -667,6 +667,19 @@ class Aliases(syst3m.objects.Traceback):
 	# iterate.
 	def __iter__(self):
 		return iter(self.list()["array"])
+
+	# representation.
+	def __str__(self):
+		# always keep as str alias when filled fix to the frequent mistake by calling X.alias instead of X.alias_
+		if self.alias != None:
+			return self.alias
+		else:
+			return self.traceback
+	def __repr__(self):
+		return str(self)
+		#
+	#
+	
 # initialized objects.
 aliases = Aliases()
 

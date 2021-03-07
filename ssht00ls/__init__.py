@@ -22,7 +22,8 @@ from ssht00ls.classes.smb import smb
 from ssht00ls.classes.client import clients, Client
 
 # source path & version.
-import fil3s
-source_path = fil3s.gfp.base(__file__)
-try: version = fil3s.Files.load(source_path+".version.py").replace("\n","").replace(" ","")
+from fil3s import Version, Directory, Files, gfp
+source = Directory(gfp.base(__file__))
+base = Directory(source.fp.base())
+try: version = Version(Files.load(source.join(".version.py")))
 except: version = None

@@ -287,9 +287,13 @@ class Clients(syst3m.objects.Traceback):
 	
 	# initialize.
 	def initialize(self):
+		self.__clients__ = {}
 		for alias, info in aliases.aliases.iterate():
-			self[alias] = Client(parameters=info)
-	
+			self.__clients__[alias] = Client(parameters=info)
+		return r3sponse.success(f"Successfully initialized {len(self.__clients__)} client(s).")
+
+		#
+
 	# iterate.
 	def __iter__(self):
 		return iter(self.__clients__)
@@ -302,7 +306,9 @@ class Clients(syst3m.objects.Traceback):
 		for i in clients:
 			items.append([i, self.__clients__[i]])
 		return items
-	
+		
+		#
+
 	# get & set client.
 	def __setitem__(self, key, value):
 		if isinstance(key, (int, Integer)):
@@ -312,7 +318,9 @@ class Clients(syst3m.objects.Traceback):
 		if isinstance(key, (int, Integer)):
 			key = list(self.__clients__.keys())[key]
 		return self.__clients__[key]
-	
+		
+		#
+
 	# support [>=, <=, <, >] operators.
 	def __gt__(self, clients):
 		if isinstance(clients, int):
@@ -347,6 +355,8 @@ class Clients(syst3m.objects.Traceback):
 			raise exceptions.FormatError(f"Can not compare object {self.__class__} & {clients.__class__}.")
 		return len(self.__clients__) <= clients
 
+		#
+
 	# support [==, !=] operators.
 	def __eq__(self, clients):
 		if isinstance(clients, self.__class__):
@@ -361,6 +371,8 @@ class Clients(syst3m.objects.Traceback):
 			return True
 		return Dictionary(self.__clients__) != Dictionary(clients)
 
+		#
+
 	# support +.
 	def __concat__(self, clients):
 		if isinstance(clients, self.__class__):
@@ -369,17 +381,21 @@ class Clients(syst3m.objects.Traceback):
 			raise exceptions.FormatError(f"Can not concat object {self.__class__} & {clients.__class__}.")
 		return Dictionary(self.__clients__) + Dictionary(clients)
 
+		#
+
 	# support 'in' operator.
-	def __contains__(self, client):
-		if isinstance(client, (list, Files.Array)):
-			for i in client:
+	def __contains__(self, alias):
+		# always convert alias fo str client for aliases etc.
+		if isinstance(alias, (list, Files.Array)):
+			for i in alias:
 				if str(i) in list(self.__clients__.keys()):
 					return True
 			return False
 		else:
-			return str(client) in list(self.__clients__.keys())
+			return str(alias) in list(self.__clients__.keys())
+		
 		#
-	
+		
 	# representations.
 	def __repr__(self):
 		return str(self)
@@ -394,6 +410,7 @@ class Clients(syst3m.objects.Traceback):
 	def __len__(self):
 		return len(self.__clients__)
 
+		#
 	#
 
 # initialized objects.

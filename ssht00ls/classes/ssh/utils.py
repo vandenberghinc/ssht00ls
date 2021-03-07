@@ -3,9 +3,9 @@
 
 # imports.
 from ssht00ls.classes.config import * 
-import os, sys, json, subprocess
+import os, sys, json, subprocess, pexpect
 
-# execute.
+# check default errors..
 def check_errors(output):
 	for i in [
 		"rsync: ", "rsync error: ",
@@ -23,29 +23,96 @@ def check_errors(output):
 				else: break
 			return r3sponse.error(e+".")
 	return r3sponse.success("The output contains no (default) errors.")
+
+# execute command.
 def execute( 
-	# the command in str.
-	command="ls",
-	# the success message.
-	message="Successfully executed the specified command.",
-	# the error message.
-	error="Failed to execute the specified command.",
-	# loader message.
-	loader=None,
-	# serialize to json (overwrites message & error).
+	# 
+	# Command:
+	#   the command in str.
+	command="ssh <alias> ' ls ' ",
+	#
+	# Options:
+	#   asynchronous process.
+	async_=False,
+	#	await asynchronous child (sync process always awaits).
+	wait=False,
+	#	kill process when finished (async that is not awaited is never killed).
+	kill=True,
+	#   the subprocess shell parameter.
+	shell=False,
+	#   serialize output to dict (expect literal dictionary / json output).
 	serialize=False,
-	# get the output.
-	get_output=False,
-	# the log level.
-	log_level=0,
+	# accept new host keys.
+	accept_new_host_keys=True,
+	#
+	# Input (sync only):
+	#   send input to the command.
+	#	  undefined: send no input & automatically await the process since input is always sync.
+	#	  dict instance: selects "and" mode ; send expected inputs and their value & return error when one of them is missing.
+	#	  list[dict] instance: send all dictionaries in the list (default dict behaviour so one of the keys in each dict is expected).
+	input=None,
+	#   the input timeout (float) (list with floats by index from input)
+	timeout=2.0,
+	#   do not throw an error when the input is missing or not expected when optional is disabled (bool).
+	optional=False, 
+	#	apped default accept host keys input.
+	append_default_input=True,
+	#
+	# Logging.
+	# the success message (leave None to use the default).
+	message=None,
+	#   loader message.
+	loader=None,
+	#   the log level.
+	log_level=syst3m.defaults.log_level,
+	#
+	# System functions.
+	#   add additional attributes to the spawn object.
+	__spawn_attributes__={},
 ):
 
 	# execute.
 	if log_level >= 6: print(command)
-	if loader != None and log_level >= 0:
-		loader = syst3m.console.Loader(loader, interactive=INTERACTIVE)
-	else: loader = None
+	if loader != None and log_level >= 0 and loader.__class__.__name__ not in ["Loader"]:
+		loader = syst3m.console.Loader(loader, interactive=interactive)
+	if message != None: message = message.replace("$COMMAND", command)
 	
+	# version 4.
+
+	# default input.
+	default_input = {
+		"Are you sure you want to continue connecting":Boolean(accept_new_host_keys).string(true="yes", false="no"),
+	}
+	if input.__class__.__name__ in ["list", "Array"]:
+		if append_default_input:
+			input = [default_input] + input
+	elif input.__class__.__name__ in ["dict", "Dictionary"]:
+		if append_default_input:
+			input = [
+				default_input,
+				input,
+			]
+	elif append_default_input:
+		input = default_input
+		optional = True
+
+	# execute.
+	response = syst3m.console.execute(
+		command=command,
+		input=input,
+		optional=optional,
+		async_=async_,
+		wait=wait,
+		kill=kill,
+		shell=shell,
+		serialize=serialize,
+		log_level=log_level,
+		__spawn_attributes__=__spawn_attributes__,	)
+	if loader.__class__.__name__ in ["Loader"]: loader.stop(success=response.success)
+	if message != None and response.success: response.message = message
+	return response
+
+	# old.
 	# script.
 
 	# version 1.
@@ -122,8 +189,56 @@ def execute(
 
 # test ssh functions.
 def test(alias=None, accept_new_host_keys=True, checks=True):
-	accept_new_host_keys = Boolean(accept_new_host_keys).string(true="printf 'yes' | ", false="")
-	output = syst3m.utils.__execute_script__(f"""{accept_new_host_keys}ssh {DEFAULT_SSH_OPTIONS} {alias} ' echo "Hello World" ' """)
+
+	# init.
+	command = f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' echo "Hello World" ' """
+	
+	# version 3.
+	response = syst3m.console.execute(
+		command=command,
+		input={
+			"Are you sure you want to continue connecting":Boolean(accept_new_host_keys).string(true="yes", false="no"),
+		},
+		optional=True,)
+	if not response.success:
+		return r3sponse.error(f"Failed to connect with {alias}, error: {response.error}")
+	output = response.output
+	response = check_errors(output)
+	if "Hello World" in output:
+		return r3sponse.success(f"Successfully connected with {alias}.")
+	else:
+		return r3sponse.error(f"Failed to connect with {alias}, error: {output}")
+
+	"""
+	version 2.
+	# pexpect.
+	spawn = syst3m.console.Spawn(command)
+	response = spawn.start()
+	if not response.success: return response
+
+	# expect.
+	response = spawn.expect(timeout=1.0, data=[
+		"Are you sure you want to continue connecting",
+	])
+	if not response.success:
+		if "None of the specified inputs were expected." not in response.error:
+			return response
+		else:
+			a=1 # skip not required.
+
+	# send.
+	elif response.success:
+		if response.index == 0:
+			response = spawn.send(timeout=0.5, data={
+				"Are you sure you want to continue connecting":"yes",
+			})
+			if not response.success: return response
+		else: raise exceptions.InvalidUsage(f"Missed expected spawn index: [{response.index}].")
+
+	# handler.
+	response = spawn.output()
+	if not response.success: return response
+	output = response.output
 	response = check_errors(output)
 	if not response.success:
 		return r3sponse.error(f"Failed to connect with {alias}, error: {output}")
@@ -131,11 +246,39 @@ def test(alias=None, accept_new_host_keys=True, checks=True):
 		return r3sponse.success(f"Successfully connected with {alias}.")
 	else:
 		return r3sponse.error(f"Failed to connect with {alias}, error: {output}")
+	"""
+
+	"""
+	# version 1
+	if syst3m.defaults.options.log_level >= 6:
+		print(f"<{ALIAS}.ssh.utils.test> command: {command}")
+	response = syst3m.console.execute(command)
+	if not response.success: return r3sponse.error(response.error)
+	output = response.output
+	response = check_errors(output)
+	if not response.success:
+		return r3sponse.error(f"Failed to connect with {alias}, error: {output}")
+	elif "Hello World" in output:
+		return r3sponse.success(f"Successfully connected with {alias}.")
+	else:
+		return r3sponse.error(f"Failed to connect with {alias}, error: {output}")
+	"""
 def test_path(alias=None, path=None, accept_new_host_keys=True, checks=True):
 	if checks:
 		response = test(alias=alias, accept_new_host_keys=accept_new_host_keys)
 		if not response.success: return response
-	output = syst3m.utils.__execute_script__(f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' ls -ld {path} ' """)
+	command = f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' ls -ld {path} ' """
+	if syst3m.defaults.options.log_level >= 6:
+		print(f"<{ALIAS}.ssh.utils.test> command: {command}")
+	response = syst3m.console.execute(
+		command=command,
+		input={
+			"Are you sure you want to continue connecting":Boolean(accept_new_host_keys).string(true="yes", false="no"),
+		},
+		optional=True,)
+	if not response.success:
+		return r3sponse.error(f"Failed to connect with {alias}, error: {response.error}")
+	output = response.output
 	response = check_errors(output)
 	if not response.success:
 		return r3sponse.error(f"Path {alias}:{path} does not exist.")
@@ -148,7 +291,18 @@ def test_dir(alias=None, path=None, accept_new_host_keys=True, create=False, cre
 		response = test(alias=alias, accept_new_host_keys=accept_new_host_keys)
 		if not response.success: return response
 	lpath = "\'"+path+"\'"
-	output = syst3m.utils.__execute_script__(f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ''' python3 /usr/local/lib/ssht00ls/classes/utils/isdir.py {path}''' """)
+	command = f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ''' python3 /usr/local/lib/ssht00ls/classes/utils/isdir.py {path}''' """
+	if syst3m.defaults.options.log_level >= 6:
+		print(f"<{ALIAS}.ssh.utils.test> command: {command}")
+	response = syst3m.console.execute(
+		command=command,
+		input={
+			"Are you sure you want to continue connecting":Boolean(accept_new_host_keys).string(true="yes", false="no"),
+		},
+		optional=True,)
+	if not response.success:
+		return r3sponse.error(f"Failed to connect with {alias}, error: {response.error}")
+	output = response.output
 	if output.replace("\n","") == "directory":
 		return r3sponse.success(f"Path {alias}:{path} is a directory.", {
 			"created":created,
@@ -172,7 +326,9 @@ def test_ssht00ls(alias=None, accept_new_host_keys=True, install=True):
 			if response.error == f"Path {alias}:{path} does not exist.":
 				if install:
 					loader = syst3m.console.Loader(f"Installing ssht00ls library on remote {alias}.")
-					output = syst3m.utils.__execute_script__(f"ssh {DEFAULT_SSH_OPTIONS} {alias} ' curl https://raw.githubusercontent.com/vandenberghinc/{ALIAS}/master/{ALIAS}/requirements/installer.remote | bash ' ")
+					response = syst3m.console.execute(f"ssh {DEFAULT_SSH_OPTIONS} {alias} ' curl https://raw.githubusercontent.com/vandenberghinc/{ALIAS}/master/{ALIAS}/requirements/installer.remote | bash ' ")
+					if not response.success: return r3sponse.error(response.error)
+					output = response.output
 					response = test_ssht00ls(alias=alias, accept_new_host_keys=accept_new_host_keys, install=False)
 					loader.stop(success=response.success)
 					#print(output)

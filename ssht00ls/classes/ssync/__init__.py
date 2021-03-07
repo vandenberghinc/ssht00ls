@@ -72,10 +72,18 @@ class SSync(syst3m.objects.Traceback):
 				if not response["success"]: return response
 
 			# index.
-			return self.utils.execute(
+			response = self.utils.execute(
 				command=f"""printf 'yes' | ssh {DEFAULT_SSH_OPTIONS} {alias} ' export IPINFO_API_KEY="{IPINFO_API_KEY}" && python3 /usr/local/lib/ssht00ls/classes/ssync/index.py --path {path} --json --non-interactive --no-checks ' """,
 				serialize=True,
-				log_level=log_level,)
+				log_level=log_level,
+				input={
+					"Are you sure you want to continue connecting":Boolean(accept_new_host_keys).string(true="yes", false="no"),
+				},
+				optional=True,)
+			if not response.success:
+				return r3sponse.error(f"Failed to connect with {alias}, error: {response.error}")
+			else:
+				return response
 
 		# local.
 		else:

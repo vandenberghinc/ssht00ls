@@ -6,14 +6,36 @@ from ssht00ls.classes.config import *
 import os, sys, requests, ast, json, pathlib, glob, string, getpass, django
 
 # save config file safely.
-def save_config_safely():
+def save_config_safely(backup=True, __loader__=None, __keyboard_interrupt__=None):
+	if backup: save_config_backup_safely()		
 	try:
 		CONFIG.save()
 	except KeyboardInterrupt as e:
-		loader = syst3m.console.Loader("&RED&Do not interrupt!&END& Saving ssht00ls config file.")
-		CONFIG.save()
-		loader.stop()
-		raise KeyboardInterrupt(e)
+		if __loader__ == None:
+			__loader__ = syst3m.console.Loader("&RED&Do not interrupt!&END& Saving ssht00ls config file.")
+		return save_config_safely(backup=False, __loader__=__loader__, __keyboard_interrupt__=e)
+	if __loader__ != None: __loader__.stop()
+	if __keyboard_interrupt__ != None:
+		raise KeyboardInterrupt(__keyboard_interrupt__)
+
+# save backup of config file safely.
+def save_config_backup_safely(__loader__=None):
+	path = DATABASE.join(".backups")
+	if not Files.exists(path): Files.create(path, directory=True)
+	path += "/config/"
+	if not Files.exists(path): Files.create(path, directory=True)
+	path += f"/{Date().date}"
+	try:
+		Files.save(path, CONFIG.dictionary, format="json")
+	except KeyboardInterrupt as e:
+		if __loader__ == None:
+			__loader__ = syst3m.console.Loader("&RED&Do not interrupt!&END& Saving backup of ssht00ls config file.")
+		return save_config_backup_safely(__loader__=__loader__)
+	if __loader__ != None: __loader__.stop()
+	fp = FilePath(gfp.base(path))
+	if fp.size(format=int, mode="mb") >= 5:
+		fp.delete(forced=True)
+		fp.create(directory=True)
 
 # converting variables.
 def __array_to_string__(array, joiner=" "):

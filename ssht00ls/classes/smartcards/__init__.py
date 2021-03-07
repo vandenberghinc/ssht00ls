@@ -40,7 +40,7 @@ class SmartCards(syst3m.objects.Traceback):
 				if Files.exists(path):
 					self.original_path = path
 					break
-			if self.original_path == None: r3sponse.log("&ORANGE&Unable to locate libykcs11.dylib.&END&")
+			if syst3m.defaults.options.log_level >= 1 and self.original_path == None: r3sponse.log("Unable to locate libykcs11.dylib.", mode="warning")
 
 			#self.original_path = "/usr/local/lib/libykcs11.dylib"
 			#self.path = "/usr/local/lib/libykcs11_NOTALNK.dylib"
