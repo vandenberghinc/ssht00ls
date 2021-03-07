@@ -6,7 +6,7 @@ ALIAS = "ssht00ls"
 
 # updates.
 import os, sys
-if "--update" in sys.argv:
+if "--update" in sys.argv and ALIAS in sys.argv[0]:
 	os.system(f"curl -s https://raw.githubusercontent.com/vandenberghinc/{ALIAS}/master/{ALIAS}/requirements/installer.remote | bash ")
 	sys.exit(0)
 

@@ -117,7 +117,7 @@ class SSH(syst3m.objects.Traceback):
 			"port":info["port"],
 		}.items():
 			try: __spawn_attributes__[str(key)]
-			except KeyError: = __spawn_attributes__[str(key)] = value
+			except KeyError: __spawn_attributes__[str(key)] = value
 
 		# checks.
 		response = r3sponse.parameters.check(
