@@ -3,6 +3,7 @@
 
 # imports.
 from ssht00ls.classes.config import * 
+from ssht00ls.classes import utils
 import os, sys, json, subprocess, pexpect
 
 # check default errors..
@@ -343,33 +344,7 @@ def test_ssht00ls(alias=None, accept_new_host_keys=True, install=True):
 
 # check / start the ssh agent.
 def ssh_agent():
-	"""
-	SSH_AUTH_SOCK = os.environ.get("SSH_AUTH_SOCK")
-	SSH_AGENT_PID = os.environ.get("SSH_AGENT_PID")
-	"""
-	"""
-	try:
-		output = utils.__execute__([f"ssh-add", "-D"])
-	except: a=1
-	try:
-		output = utils.__execute__([f"ssh-add", "-k"])
-	except: a=1
-	"""
-
-	# version 2.
-	try:
-		output = utils.__execute__(f"ssh-agent")
-		try: 
-			SSH_AUTH_SOCK = output.split("SSH_AUTH_SOCK=")[1].split(";")[0]
-			os.environ["SSH_AUTH_SOCK"] = SSH_AUTH_SOCK
-		except: return None
-		try: 
-			SSH_AGENT_PID = output.split("SSH_AGENT_PID=")[1].split(";")[0]
-			os.environ["SSH_AGENT_PID"] = SSH_AGENT_PID
-		except: return None
-	except: return None
-	os.environ["SSH_AUTH_SOCK"] = SSH_AUTH_SOCK
-	os.environ["SSH_AGENT_PID"] = SSH_AGENT_PID
+	return utils.ssh_agent()
 
 # kill all ssh procs with that includes the identifier.
 def kill(identifier=None, sudo=False):

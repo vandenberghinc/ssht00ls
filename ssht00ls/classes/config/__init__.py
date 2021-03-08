@@ -41,8 +41,8 @@ BASE = syst3m.defaults.source_path(SOURCE_PATH)
 syst3m.defaults.operating_system(supported=["linux", "macos"])
 syst3m.defaults.alias(alias=ALIAS, executable=f"{SOURCE_PATH}")
 if syst3m.defaults.options.log_level >= 1:
-	r3sponse.log(f"{ALIAS} source: {SOURCE_PATH}")
-	r3sponse.log(f"{ALIAS} os: {syst3m.defaults.vars.os}")
+	r3sponse.log(f"{ALIAS}:")
+	r3sponse.log(f"  * source: {SOURCE_PATH}")
 
 # universal options.
 # interactive must be False by default.
@@ -52,9 +52,9 @@ CHECKS = not cl1.arguments_present(["--no-checks"])
 RESET_CACHE = cl1.arguments_present("--reset-cache")
 if syst3m.defaults.options.log_level >= 1:
 	r3sponse.log("ssht00ls:")
-	r3sponse.log(f" * cli: {CLI}")
-	r3sponse.log(f" * interactive: {INTERACTIVE}")
-	r3sponse.log(f" * checks: {CHECKS}")
+	r3sponse.log(f"  * cli: {CLI}")
+	r3sponse.log(f"  * interactive: {INTERACTIVE}")
+	r3sponse.log(f"  * checks: {CHECKS}")
 
 # database.
 DATABASE = Directory(path=syst3m.env.get_string("SSHT00LS_DATABASE", default=f"{syst3m.defaults.vars.home}/.{ALIAS}"))
@@ -69,8 +69,8 @@ CONFIG = Dictionary(path=syst3m.env.get_string("SSHT00LS_CONFIG", default=DATABA
 
 # logs.
 if syst3m.defaults.options.log_level >= 1:
-	r3sponse.log(f" * database: {DATABASE}")
-	r3sponse.log(f" * config: {CONFIG.fp}")
+	r3sponse.log(f"  * database: {DATABASE}")
+	r3sponse.log(f"  * config: {CONFIG.fp}")
 
 # initialize cache.
 cache = syst3m.cache.Cache(
@@ -89,9 +89,9 @@ SSYNC_DAEMON_SLEEPTIME = round(float(cl1.get_argument("--daemon-sleeptime", requ
 
 # logs.
 if syst3m.defaults.options.log_level >= 2:
-	r3sponse.log(f" * ssh timeout: {SSH_TIMEOUT}")
-	r3sponse.log(f" * ssh reattempts: {SSH_REATTEMPS}")
-	r3sponse.log(f" * daemon sleeptime: {SSYNC_DAEMON_SLEEPTIME}")
+	r3sponse.log(f"  * ssh timeout: {SSH_TIMEOUT}")
+	r3sponse.log(f"  * ssh reattempts: {SSH_REATTEMPS}")
+	r3sponse.log(f"  * daemon sleeptime: {SSYNC_DAEMON_SLEEPTIME}")
 
 # speed up non interactive.
 if CHECKS and not RESET_CACHE:
@@ -103,8 +103,8 @@ if CHECKS and not RESET_CACHE:
 		sys.exit(1)
 	if syst3m.defaults.options.log_level >= 1:
 		r3sponse.log("Network info:")
-		r3sponse.log(f" * public ip: {NETWORK_INFO['public_ip']}")
-		r3sponse.log(f" * private ip: {NETWORK_INFO['private_ip']}")
+		r3sponse.log(f"  * public ip: {NETWORK_INFO['public_ip']}")
+		r3sponse.log(f"  * private ip: {NETWORK_INFO['private_ip']}")
 
 	# check lib.
 	if not Files.exists(f"{SOURCE_PATH}/lib") or cl1.argument_present("--download-lib"):

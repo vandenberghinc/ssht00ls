@@ -3,6 +3,7 @@
 
 # imports.
 from ssht00ls.classes.config import *
+from ssht00ls.classes.aliases import aliases
 from ssht00ls.classes.ssh.tunnel import Tunnel
 import ssht00ls.classes.ssh.utils as ssh_utils 
 
@@ -108,7 +109,7 @@ class SSH(syst3m.objects.Traceback):
 		# parse alias.
 		response = aliases.info(alias=alias)
 		if not response.success: return response
-		info = response.unpack(["info"])
+		info = response.info
 
 		# add __spawn_attributes__.
 		for key,value in {

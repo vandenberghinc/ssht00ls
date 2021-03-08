@@ -5,7 +5,6 @@
 from ssht00ls.classes.config import *
 from ssht00ls.classes import utils
 from ssht00ls.classes.smartcards import smartcards
-from ssht00ls.classes.ssh import ssh
 
 # the ssh agent object class.
 class Agent(syst3m.objects.Traceback):
@@ -75,7 +74,7 @@ class Agent(syst3m.objects.Traceback):
 		output = utils.__execute__(["ssh-add", "-L"])
 		if "Failed to communicate" in output or "agent refused operation" in output or "Error connecting to agent" in output or "Connection refused" in output:
 			if reattempt:
-				ssh.utils.ssh_agent()
+				utils.ssh_agent()
 				return self.add(
 					# the keys path.
 					private_key=private_key,
@@ -167,7 +166,7 @@ class Agent(syst3m.objects.Traceback):
 				return r3sponse.error("Provided an incorrect pin code.")
 			elif "Failed to communicate" in output or "agent refused operation" in output or "Error connecting to agent" in output or "Connection refused" in output:
 				if reattempt:
-					ssh.utils.ssh_agent()
+					utils.ssh_agent()
 					return self.add(
 						# the keys path.
 						private_key=private_key,
@@ -345,7 +344,7 @@ class Agent(syst3m.objects.Traceback):
 
 # Initialized objects.
 agent = Agent()
-if not INTERACTIVE: ssh.utils.ssh_agent()
+if not INTERACTIVE: utils.ssh_agent()
 
 """
 
