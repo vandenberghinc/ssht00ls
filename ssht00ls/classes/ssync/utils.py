@@ -3,7 +3,7 @@
 
 # imports.
 import os
-from fil3s import *
+from dev0s import *
 from ssht00ls.classes.config import * 
 from ssht00ls.classes.ssh import ssh
 from ssht00ls.classes.ssync.index import index

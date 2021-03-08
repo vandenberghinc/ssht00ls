@@ -1,5 +1,5 @@
-import os, sys, fil3s
-from fil3s import *
+import os, sys
+from dev0s import *
 size = None
 path = sys.argv[1]
 if not Files.exists(path):

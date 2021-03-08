@@ -17,7 +17,7 @@ try:
 	import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpect, random, getpass, time
 
 	# inc imports.
-	from fil3s import *
+	from dev0s import *
 	import syst3m, encrypti0n, netw0rk
 
 # download.
@@ -29,7 +29,7 @@ except ImportError as e:
 	import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpect, random, getpass, time
 
 	# inc imports.
-	from fil3s import *
+	from dev0s import *
 	import syst3m, encrypti0n, netw0rk
 
 
