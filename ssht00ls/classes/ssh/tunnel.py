@@ -6,7 +6,7 @@ from ssht00ls.classes.config import *
 import ssht00ls.classes.ssh.utils as ssh_utils 
 
 # the ssh tunnel object class.
-class Tunnel(syst3m.objects.Thread):
+class Tunnel(Thread):
 	def __init__(self,
 		# initialize as specific not global (optional).
 		# 	the alias.
@@ -28,7 +28,7 @@ class Tunnel(syst3m.objects.Thread):
 	):
 
 		# defaults.
-		syst3m.objects.Thread.__init__(self, traceback="ssht00ls.ssh.tunnel", raw_traceback="ssht00ls.ssh.Tunnel", log_level=Defaults.log_level(default=-1))
+		Thread.__init__(self, traceback="ssht00ls.ssh.tunnel", raw_traceback="ssht00ls.ssh.Tunnel", log_level=Defaults.log_level(default=-1))
 
 		# modules.
 		self.utils = ssh_utils

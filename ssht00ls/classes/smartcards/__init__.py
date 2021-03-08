@@ -11,12 +11,12 @@ def __check_os__(supported=[]):
 	return Response.success(f"Supported operating system [{Defaults.vars.os}].")
 
 # the manager class.
-class SmartCards(syst3m.objects.Traceback):
+class SmartCards(Traceback):
 	def __init__(self, 
 	):	
 		
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.smartcards", raw_traceback="ssht00ls.classes.smartcards.SmartCards")
+		Traceback.__init__(self, traceback="ssht00ls.smartcards", raw_traceback="ssht00ls.classes.smartcards.SmartCards")
 
 		# key path.
 		if Defaults.vars.os in ["linux"]: 
@@ -217,7 +217,7 @@ class SmartCards(syst3m.objects.Traceback):
 
 
 # the smart card class.
-class SmartCard(syst3m.objects.Traceback):
+class SmartCard(Traceback):
 	# the smart card is by default a YubiKey 5 NFC
 	# main docs: https://support.yubico.com/support/solutions/articles/15000012643-yubikey-manager-cli-ykman-user-manual#ykman_piv_change-management-key1suvy
 	# piv: https://developers.yubico.com/PIV/Guides/SSH_with_PIV_and_PKCS11.html
@@ -227,7 +227,7 @@ class SmartCard(syst3m.objects.Traceback):
 	def __init__(self, serial_number=None):	
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.SmartCard", raw_traceback="ssht00ls.classes.smartcards.SmartCard")	
+		Traceback.__init__(self, traceback="ssht00ls.SmartCard", raw_traceback="ssht00ls.classes.smartcards.SmartCard")	
 
 		# arguments.
 		self.serial_number = serial_number

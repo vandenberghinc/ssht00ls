@@ -7,12 +7,12 @@ from ssht00ls.classes import utils
 from ssht00ls.classes.smartcards import smartcards
 
 # the sshfs object class.
-class SSHFS(syst3m.objects.Traceback):
+class SSHFS(Traceback):
 	def __init__(self,
 	):
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.sshfs", raw_traceback="ssht00ls.classes.sshfs.SSHFS")	
+		Traceback.__init__(self, traceback="ssht00ls.sshfs", raw_traceback="ssht00ls.classes.sshfs.SSHFS")	
 
 		#
 	def mount(self, 

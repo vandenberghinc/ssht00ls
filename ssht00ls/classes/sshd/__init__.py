@@ -8,12 +8,12 @@ from ssht00ls.classes.smartcards import smartcards
 from ssht00ls.classes.installation import installation
 
 # the sshd object class.
-class SSHD(syst3m.objects.Traceback):
+class SSHD(Traceback):
 	def __init__(self,
 	):
 		
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.sshd", raw_traceback="ssht00ls.classes.sshd.SSHD")	
+		Traceback.__init__(self, traceback="ssht00ls.sshd", raw_traceback="ssht00ls.classes.sshd.SSHD")	
 
 		# check downloads.
 		if CHECKS:

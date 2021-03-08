@@ -7,7 +7,7 @@ from ssht00ls.classes import utils
 from ssht00ls.classes.smartcards import smartcards
 
 # the ssh key object class.
-class Keys(syst3m.objects.Traceback):
+class Keys(Traceback):
 	def __init__(self,
 		# initialize as specific not global (optional).
 		#	the username.
@@ -19,7 +19,7 @@ class Keys(syst3m.objects.Traceback):
 	):
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.keys", raw_traceback="ssht00ls.classes.keys.Keys")
+		Traceback.__init__(self, traceback="ssht00ls.keys", raw_traceback="ssht00ls.classes.keys.Keys")
 
 		# specific variables.
 		self.specific = username != None

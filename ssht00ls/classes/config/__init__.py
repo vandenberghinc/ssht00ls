@@ -44,8 +44,7 @@ if Defaults.options.log_level >= 1:
 
 # universal options.
 # interactive must be False by default.
-INTERACTIVE = syst3m.env.get("INTERACTIVE", format=bool, default=False)
-CLI = syst3m.env.get("CLI", format=bool, default=False)
+INTERACTIVE = Environment.get("INTERACTIVE", format=bool, default=False)
 CHECKS = not CLI.arguments_present(["--no-checks"])
 RESET_CACHE = CLI.arguments_present("--reset-cache")
 if Defaults.options.log_level >= 1:
@@ -55,7 +54,7 @@ if Defaults.options.log_level >= 1:
 	Response.log(f"  * checks: {CHECKS}")
 
 # database.
-DATABASE = Directory(path=syst3m.env.get_string("SSHT00LS_DATABASE", default=f"{Defaults.vars.home}/.{ALIAS}"))
+DATABASE = Directory(path=Environment.get_string("SSHT00LS_DATABASE", default=f"{Defaults.vars.home}/.{ALIAS}"))
 if not DATABASE.fp.exists():
 	Response.log(f"{color.orange}Root permission{color.end} required to create {ALIAS} database [{DATABASE}].")
 	os.system(f" sudo mkdir -p {DATABASE}")
@@ -63,7 +62,7 @@ if not DATABASE.fp.exists():
 	Files.chmod(str(DATABASE), permission=700, sudo=True, recursive=True)
 
 # config.
-CONFIG = Dictionary(path=syst3m.env.get_string("SSHT00LS_CONFIG", default=DATABASE.join("config","")), load=True, default={})
+CONFIG = Dictionary(path=Environment.get_string("SSHT00LS_CONFIG", default=DATABASE.join("config","")), load=True, default={})
 
 # logs.
 if Defaults.options.log_level >= 1:

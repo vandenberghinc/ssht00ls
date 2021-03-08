@@ -1,30 +1,9 @@
 
 # pip packages.
-asgiref>=3.3.1
-certifi>=2020.12.5
-chardet>=4.0.0
-cl1>=1.13.2
-click>=7.1.2
-Django>=3.1.6
-Flask>=1.1.2
-idna>=2.10
-itsdangerous>=1.1.0
-Jinja2>=2.11.3
-MarkupSafe>=1.1.1
-pexpect>=4.8.0
-ptyprocess>=0.7.0
-pycryptodome>=3.10.1
-pytz>=2021.1
-requests>=2.25.1
-selenium>=3.141.0
-sqlparse>=0.4.1
-urllib3>=1.26.3
-Werkzeug>=1.0.1
 
 # inc packages.
-encrypti0n>=3.20.2
-fil3s>=2.15.8
-netw0rk>=1.9.1
-r3sponse>=2.10.3
-syst3m>=2.16.5
+encrypti0n>=3.20.3
+fil3s>=2.15.9
+netw0rk>=1.9.2
+syst3m>=2.16.6
 

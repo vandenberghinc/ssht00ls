@@ -6,11 +6,11 @@ from ssht00ls.classes.config import *
 from ssht00ls.classes import utils
 
 # the ssh connections object class.
-class Connections(syst3m.objects.Traceback):
+class Connections(Traceback):
 	def __init__(self):
 		
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.connections", raw_traceback="ssht00ls.classes.connections.Connections")
+		Traceback.__init__(self, traceback="ssht00ls.connections", raw_traceback="ssht00ls.classes.connections.Connections")
 
 		#
 	def list(self, filter="ssh"):

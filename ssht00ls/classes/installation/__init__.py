@@ -6,12 +6,12 @@ from ssht00ls.classes.config import *
 from ssht00ls.classes import utils
 
 # the installation object class.
-class Installation(syst3m.objects.Traceback):
+class Installation(Traceback):
 	def __init__(self,
 	):
 		
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.installation", raw_traceback="ssht00ls.classes.installation.Installation")
+		Traceback.__init__(self, traceback="ssht00ls.installation", raw_traceback="ssht00ls.classes.installation.Installation")
 
 		#
 	def install(self, 

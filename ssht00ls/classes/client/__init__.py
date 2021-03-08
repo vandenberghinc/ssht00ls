@@ -7,7 +7,7 @@ from ssht00ls.classes import utils
 from ssht00ls.classes import agent, keys, aliases, ssh, smartcards, ssync, smb
 
 # the client object class.
-class Client(syst3m.objects.Traceback):
+class Client(Traceback):
 	def __init__(self,
 		# the alias (required) (param #1).
 		alias=None,
@@ -34,7 +34,7 @@ class Client(syst3m.objects.Traceback):
 	):
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.Client", raw_traceback="ssht00ls.classes.client.Client")
+		Traceback.__init__(self, traceback="ssht00ls.Client", raw_traceback="ssht00ls.classes.client.Client")
 
 		# parameters by dict.
 		if parameters != {}:
@@ -278,14 +278,14 @@ class Client(syst3m.objects.Traceback):
 		return self.alias.serial_numbers
 
 # the initialized clients.
-class Clients(syst3m.objects.Traceback):
+class Clients(Traceback):
 	def __init__(self,
 		# select a preset of clients (append "*" to preset to use all).
 		preset=["*"],
 	):
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.clients", raw_traceback="ssht00ls.classes.client.Clients")
+		Traceback.__init__(self, traceback="ssht00ls.clients", raw_traceback="ssht00ls.classes.client.Clients")
 
 		# attributes.
 		self.preset = preset

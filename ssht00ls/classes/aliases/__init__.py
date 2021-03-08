@@ -7,7 +7,7 @@ from ssht00ls.classes import utils
 from ssht00ls.classes.agent import agent
 
 # the aliases object class.
-class Aliases(syst3m.objects.Traceback):
+class Aliases(Traceback):
 	def __init__(self,
 		# initialize as specific not global (optional).
 		# 	the alias.
@@ -35,7 +35,7 @@ class Aliases(syst3m.objects.Traceback):
 	):
 		
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.aliases", raw_traceback="ssht00ls.classes.aliaes.Aliases")
+		Traceback.__init__(self, traceback="ssht00ls.aliases", raw_traceback="ssht00ls.classes.aliaes.Aliases")
 
 		# specific variables.
 		self.specific = alias != None
@@ -391,8 +391,8 @@ class Aliases(syst3m.objects.Traceback):
 			if not response["success"]: return response
 
 		# keys.
-		private_key = syst3m.env.fill(private_key)
-		public_key = syst3m.env.fill(public_key)
+		private_key = Environment.fill(private_key)
+		public_key = Environment.fill(public_key)
 		if not Files.exists(private_key):
 			return Response.error(f"Private key {private_key} does not exist.")
 		if not Files.exists(public_key):
@@ -534,10 +534,10 @@ class Aliases(syst3m.objects.Traceback):
 					CONFIG["aliases"][alias] = checked
 					utils.save_config_safely()
 				if isinstance(checked["private_key"], str):
-					checked["private_key"] = syst3m.env.fill(checked["private_key"])
+					checked["private_key"] = Environment.fill(checked["private_key"])
 					Files.chmod(checked["private_key"], permission=700)
 				if isinstance(checked["public_key"], str):
-					checked["public_key"] = syst3m.env.fill(checked["public_key"])
+					checked["public_key"] = Environment.fill(checked["public_key"])
 					Files.chmod(checked["public_key"], permission=700)
 				if interactive:
 					passphrase, has_passphrase, new_passphrase = None, True, True

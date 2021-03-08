@@ -85,15 +85,15 @@ def stop(path, timeout=SSYNC_DAEMON_SLEEPTIME*10, sleeptime=1):
 		return Response.error(f"Failed to stop ssht00ls daemon [{path}].")
 
 # the daemon object class.
-class Daemon(syst3m.objects.Thread):
+class Daemon(Thread):
 	def __init__(self, attributes={}):
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.ssync.daemons.Daemon", raw_traceback="ssht00ls.classes.ssync.daemons.Daemon")
+		Traceback.__init__(self, traceback="ssht00ls.ssync.daemons.Daemon", raw_traceback="ssht00ls.classes.ssync.daemons.Daemon")
 
 		# attributes.
 		self.utils = ssync_utils
-		syst3m.objects.Thread.__init__(self)
+		Thread.__init__(self)
 		self.assign(attributes)
 		self.path = gfp.clean(self.path)
 		self.id = f"{self.alias}:{self.remote} {self.path}"

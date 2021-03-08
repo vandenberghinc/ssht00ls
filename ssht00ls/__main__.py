@@ -397,8 +397,8 @@ class CLI_(CLI.CLI):
 					},
 					json=Defaults.options.json,)
 			alias,remote = remote.split(":")
-			remote = syst3m.env.fill(remote)
-			path = syst3m.env.fill(path)
+			remote = Environment.fill(remote)
+			path = Environment.fill(path)
 			exclude = []
 			if self.arguments.present("--exclude"): 
 				exclude = self.arguments.get("--exclude", chapter="push & pull", mode="--pull", format=list)
@@ -428,8 +428,8 @@ class CLI_(CLI.CLI):
 					},
 					json=Defaults.options.json,)
 			alias,remote = remote.split(":")
-			remote = syst3m.env.fill(remote)
-			path = syst3m.env.fill(path)
+			remote = Environment.fill(remote)
+			path = Environment.fill(path)
 			exclude = []
 			if self.arguments.present("--exclude"): 
 				exclude = self.arguments.get("--exclude", chapter="push & pull", mode="--pull", format=list)
@@ -464,8 +464,8 @@ class CLI_(CLI.CLI):
 						},
 						json=Defaults.options.json,)
 				alias,remote = remote.split(":")
-				remote = syst3m.env.fill(remote)
-				path = syst3m.env.fill(path)
+				remote = Environment.fill(remote)
+				path = Environment.fill(path)
 				response = ssht00ls.sshfs.mount(
 					alias=alias, 
 					remote=remote, 
@@ -484,7 +484,7 @@ class CLI_(CLI.CLI):
 						},
 						json=Defaults.options.json,)
 				alias,id = alias.split(":")
-				path = syst3m.env.fill(path)
+				path = Environment.fill(path)
 				response = ssht00ls.smb.mount(
 					id=id, 
 					path=path,
@@ -516,10 +516,10 @@ class CLI_(CLI.CLI):
 			index = self.arguments.get("--index", chapter="ssync", mode="--index")
 			if ":" in index:
 				alias,remote = index.split(":")
-				remote = syst3m.env.fill(remote)
+				remote = Environment.fill(remote)
 				response = ssht00ls.ssync.index(path=remote, alias=alias)
 			else:
-				index = syst3m.env.fill(index)
+				index = Environment.fill(index)
 				response = ssht00ls.ssync.index(path=index)
 			self.stop(response=response, json=Defaults.options.json)
 
@@ -539,8 +539,8 @@ class CLI_(CLI.CLI):
 						},
 						json=Defaults.options.json,)
 				alias,remote = remote.split(":")
-				remote = syst3m.env.fill(remote)
-				path = syst3m.env.fill(path)
+				remote = Environment.fill(remote)
+				path = Environment.fill(path)
 				response = ssht00ls.ssync.mount(
 					alias=alias, 
 					remote=remote, 
@@ -628,8 +628,8 @@ class CLI_(CLI.CLI):
 						},
 						json=Defaults.options.json,)
 				alias,remote = remote.split(":")
-				remote = syst3m.env.fill(remote)
-				path = syst3m.env.fill(path)
+				remote = Environment.fill(remote)
+				path = Environment.fill(path)
 				response = ssht00ls.ssync.daemon(alias=alias, remote=remote, path=path)
 				self.stop(response=response, json=Defaults.options.json)
 

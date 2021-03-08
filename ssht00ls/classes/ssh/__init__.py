@@ -8,7 +8,7 @@ from ssht00ls.classes.ssh.tunnel import Tunnel
 import ssht00ls.classes.ssh.utils as ssh_utils 
 
 # the ssh object class.
-class SSH(syst3m.objects.Traceback):
+class SSH(Traceback):
 	def __init__(self,
 		# initialize as specific not global (optional).
 		# 	the alias.
@@ -16,7 +16,7 @@ class SSH(syst3m.objects.Traceback):
 	):
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.ssh", raw_traceback="ssht00ls.classes.ssh.SSH")	
+		Traceback.__init__(self, traceback="ssht00ls.ssh", raw_traceback="ssht00ls.classes.ssh.SSH")	
 
 		# modules.
 		self.utils = ssh_utils

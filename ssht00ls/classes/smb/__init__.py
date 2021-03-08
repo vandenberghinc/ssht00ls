@@ -8,7 +8,7 @@ from ssht00ls.classes.ssh import ssh, Tunnel
 from ssht00ls.classes.aliases import aliases
 
 # the smb client object class.
-class SMB(syst3m.objects.Thread):
+class SMB(Thread):
 	def __init__(self,
 		# initialize as specific not global (optional).
 		# 	the share id (#1).
@@ -35,7 +35,7 @@ class SMB(syst3m.objects.Thread):
 	):
 
 		# defaults.
-		syst3m.objects.Thread.__init__(self, traceback="ssht00ls.smb", log_level=Defaults.log_level(default=-1))
+		Thread.__init__(self, traceback="ssht00ls.smb", log_level=Defaults.log_level(default=-1))
 
 		# specific variables.
 		self.specific = alias != None and id != None and path != None and ip != None

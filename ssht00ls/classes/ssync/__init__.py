@@ -11,7 +11,7 @@ from ssht00ls.classes.ssh import ssh
 from ssht00ls.classes import utils
 
 # the ssync object class.
-class SSync(syst3m.objects.Traceback):
+class SSync(Traceback):
 	def __init__(self,
 		# initialize as specific not global (optional).
 		#	the username.
@@ -19,7 +19,7 @@ class SSync(syst3m.objects.Traceback):
 	):
 
 		# defaults.
-		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.ssync", raw_traceback="ssht00ls.classes.ssync.SSync")
+		Traceback.__init__(self, traceback="ssht00ls.ssync", raw_traceback="ssht00ls.classes.ssync.SSync")
 
 		# specific args.
 		self.specific = alias != None
