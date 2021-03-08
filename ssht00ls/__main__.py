@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 
 # imports.
-import os, sys, syst3m ; sys.path.insert(1, syst3m.defaults.source_path(__file__, back=2))
+import os, sys, syst3m ; sys.path.insert(1, Defaults.source_path(__file__, back=2))
 os.environ["CLI"] = "True"
 os.environ["INTERACTIVE"] = "True"
 from ssht00ls.classes.config import *
 import ssht00ls
 
 # the cli object class.
-class CLI(cl1.CLI):
+class CLI_(CLI.CLI):
 	def __init__(self):
 		
 		# defaults.
-		cl1.CLI.__init__(self,
+		CLI.CLI.__init__(self,
 			modes={
 				"Keys:":"*chapter*",
 				"    --generate":"Generate a ssh key.",
@@ -119,7 +119,7 @@ class CLI(cl1.CLI):
 	def start(self):
 		
 		# check arguments.
-		self.arguments.check(json=syst3m.defaults.options.json, exceptions=["--log-level", "--version", "--create-alias", "--non-interative"])
+		self.arguments.check(json=Defaults.options.json, exceptions=["--log-level", "--version", "--create-alias", "--non-interative"])
 
 		# sync aliases.
 		if ssht00ls_agent.activated and not self.arguments.present(["-h", "--config", "--help", "--version", "--unmount", "--list-tunnels"]):
@@ -133,7 +133,7 @@ class CLI(cl1.CLI):
 			response = ssht00ls.aliases.sync(aliases=aliases)
 			if self.arguments.present("--sync"):
 				self.stop(response=response)
-			if not response["success"]: response.crash(json=syst3m.defaults.options.json)
+			if not response["success"]: response.crash(json=Defaults.options.json)
 
 		#
 		# BASICS
@@ -141,11 +141,11 @@ class CLI(cl1.CLI):
 
 		# version.
 		if self.arguments.present(['--version']):
-			self.stop(message=f"{ALIAS} version:"+Files.load(f"{SOURCE_PATH}/.version.py").replace("\n",""), json=syst3m.defaults.options.json)
+			self.stop(message=f"{ALIAS} version:"+Files.load(f"{SOURCE_PATH}/.version.py").replace("\n",""), json=Defaults.options.json)
 
 		# config.
 		elif self.arguments.present('--config'):
-			if syst3m.defaults.options.json:
+			if Defaults.options.json:
 				print(CONFIG.dictionary)
 			else:
 				os.system(f"nano {CONFIG.file_path.path}")
@@ -155,16 +155,16 @@ class CLI(cl1.CLI):
 			response = ssht00ls.ssh.utils.kill(
 				identifier=self.arguments.get("--kill"), 
 				sudo=self.arguments.present("--sudo"),)
-			self.stop(response=response, json=syst3m.defaults.options.json)
+			self.stop(response=response, json=Defaults.options.json)
 
 		# reset cache.
 		elif self.arguments.present('--reset-cache'):
 			path = cache.path
 			os.system(f"rm -fr {path}")
 			if Files.exists(path):
-				self.stop(error=f"Failed to reset cache {path}.", json=syst3m.defaults.options.json)
+				self.stop(error=f"Failed to reset cache {path}.", json=Defaults.options.json)
 			else:
-				self.stop(message=f"Successfully resetted cache {path}.", json=syst3m.defaults.options.json)
+				self.stop(message=f"Successfully resetted cache {path}.", json=Defaults.options.json)
 
 
 		#
@@ -185,7 +185,7 @@ class CLI(cl1.CLI):
 			response = ssht00ls.ssh.command(
 				alias=alias,
 				command=command,
-				serialize=syst3m.defaults.options.json,)
+				serialize=Defaults.options.json,)
 			if not response.success:
 				self.stop(response=response)
 			else:
@@ -198,7 +198,7 @@ class CLI(cl1.CLI):
 		# list aliases.
 		elif self.arguments.present("--list-aliases"):
 			response = ssht00ls.aliases.list()
-			if syst3m.defaults.options.json:
+			if Defaults.options.json:
 				print(response.dictionary)
 			else:
 				if self.arguments.present("--joiner"):
@@ -212,7 +212,7 @@ class CLI(cl1.CLI):
 
 			# help.
 			if self.arguments.present(['-h', '--help']):
-				self.docs(chapter="aliases", success=True, json=syst3m.defaults.options.json)
+				self.docs(chapter="aliases", success=True, json=Defaults.options.json)
 
 			# get alias.
 			aliases = self.arguments.get("--alias")
@@ -233,7 +233,7 @@ class CLI(cl1.CLI):
 
 				# show info.
 				if self.arguments.present('--info'):
-					if syst3m.defaults.options.json:
+					if Defaults.options.json:
 						info[alias] = {alias:alias_info}
 					else:
 						print(self.__str_representable__({alias:alias_info}, start_indent=0))
@@ -243,7 +243,7 @@ class CLI(cl1.CLI):
 					if not self.arguments.present(["-f", "--forced"]) and not syst3m.console.input(f"You are deleting alias [{alias}]. Do you wish to proceed?", yes_no=True):
 						self.stop(error="Aborted.")
 					response = ssht00ls.aliases.delete(alias=alias)
-					self.stop(response=response, json=syst3m.defaults.options.json)
+					self.stop(response=response, json=Defaults.options.json)
 
 				# set passphrase.
 				elif self.arguments.present('--delete'):
@@ -260,7 +260,7 @@ class CLI(cl1.CLI):
 						"passphrase":passphrase,
 						"pin":pin,
 					})
-					self.stop(response=response, json=syst3m.defaults.options.json)
+					self.stop(response=response, json=Defaults.options.json)
 
 				# edit config.
 				elif self.arguments.present('--edit'):
@@ -274,9 +274,9 @@ class CLI(cl1.CLI):
 							utils.save_config_safely()
 						except: success = False
 						if success:
-							self.stop(message=f"Successfully renamed alias {alias} to {new_alias}.", json=syst3m.defaults.options.json)
+							self.stop(message=f"Successfully renamed alias {alias} to {new_alias}.", json=Defaults.options.json)
 						else:
-							self.stop(error=f"Failed to rename alias {alias} to {new_alias}.", json=syst3m.defaults.options.json)
+							self.stop(error=f"Failed to rename alias {alias} to {new_alias}.", json=Defaults.options.json)
 
 					# edit alias config.
 					else:
@@ -302,7 +302,7 @@ class CLI(cl1.CLI):
 							value_exceptions=[None],
 							# save the edits.
 							save=True,)
-						self.stop(response=response, json=syst3m.defaults.options.json)
+						self.stop(response=response, json=Defaults.options.json)
 
 				# create.
 				elif self.arguments.present('--create'):
@@ -354,13 +354,13 @@ class CLI(cl1.CLI):
 							pin=self.arguments.get('--pin', required=False, default=None, chapter="aliases", mode="--create-alias"), )
 
 					# log to console.
-					self.stop(response=response, json=syst3m.defaults.options.json)
+					self.stop(response=response, json=Defaults.options.json)
 
 				# invalid.
-				else: self.invalid(chapter="aliases", json=syst3m.defaults.options.json)
+				else: self.invalid(chapter="aliases", json=Defaults.options.json)
 
 			# json show info joined.
-			if syst3m.defaults.options.json and self.arguments.present('--info'):
+			if Defaults.options.json and self.arguments.present('--info'):
 				print(info)
 
 		#
@@ -377,7 +377,7 @@ class CLI(cl1.CLI):
 				path=self.arguments.get("--path", chapter="keys", mode="--generate"), 
 				passphrase=passphrase, 
 				comment=self.arguments.get("--comment", chapter="keys", mode="--generate"),)
-			self.stop(response=response, json=syst3m.defaults.options.json)
+			self.stop(response=response, json=Defaults.options.json)
 
 		#
 		# PULL & PUSH
@@ -395,7 +395,7 @@ class CLI(cl1.CLI):
 					notes={
 						"<alias>:<path>":"Pack the alias & tuple together as one argument in the following format [<alias>:<path>]."
 					},
-					json=syst3m.defaults.options.json,)
+					json=Defaults.options.json,)
 			alias,remote = remote.split(":")
 			remote = syst3m.env.fill(remote)
 			path = syst3m.env.fill(path)
@@ -412,7 +412,7 @@ class CLI(cl1.CLI):
 				delete=self.arguments.present("--delete"), 
 				safe=self.arguments.present("--safe"), 
 				directory=True, )
-			self.stop(response=response, json=syst3m.defaults.options.json)
+			self.stop(response=response, json=Defaults.options.json)
 
 		# push.
 		elif self.arguments.present('--push'):
@@ -426,7 +426,7 @@ class CLI(cl1.CLI):
 					notes={
 						"<alias>:<path>":"Pack the alias & tuple together as one argument in the following format [<alias>:<path>]."
 					},
-					json=syst3m.defaults.options.json,)
+					json=Defaults.options.json,)
 			alias,remote = remote.split(":")
 			remote = syst3m.env.fill(remote)
 			path = syst3m.env.fill(path)
@@ -443,7 +443,7 @@ class CLI(cl1.CLI):
 				delete=self.arguments.present("--delete"), 
 				safe=self.arguments.present("--safe"), 
 				directory=None, )
-			self.stop(response=response, json=syst3m.defaults.options.json)
+			self.stop(response=response, json=Defaults.options.json)
 
 		#
 		# MOUNTS
@@ -462,7 +462,7 @@ class CLI(cl1.CLI):
 						notes={
 							"<alias>:<remote>":"Pack the alias & remote as a tuple together as one argument in the following format [<alias>:<remote>]."
 						},
-						json=syst3m.defaults.options.json,)
+						json=Defaults.options.json,)
 				alias,remote = remote.split(":")
 				remote = syst3m.env.fill(remote)
 				path = syst3m.env.fill(path)
@@ -482,7 +482,7 @@ class CLI(cl1.CLI):
 						notes={
 							"<alias>:<id>":"Pack the alias & share id as a tuple together as one argument in the following format [<alias>:<id>]."
 						},
-						json=syst3m.defaults.options.json,)
+						json=Defaults.options.json,)
 				alias,id = alias.split(":")
 				path = syst3m.env.fill(path)
 				response = ssht00ls.smb.mount(
@@ -496,7 +496,7 @@ class CLI(cl1.CLI):
 					tunnel=self.arguments.present("--tunnel"), 
 					reconnect=self.arguments.present("--reconnect"), 
 				)
-			self.stop(response=response, json=syst3m.defaults.options.json)
+			self.stop(response=response, json=Defaults.options.json)
 
 		# unmount.
 		elif self.arguments.present('--unmount'):
@@ -505,7 +505,7 @@ class CLI(cl1.CLI):
 				path=path,
 				forced=self.arguments.present("--forced"), 
 				sudo=self.arguments.present("--sudo"), )
-			self.stop(response=response, json=syst3m.defaults.options.json)
+			self.stop(response=response, json=Defaults.options.json)
 
 		#
 		# SSYNC
@@ -521,7 +521,7 @@ class CLI(cl1.CLI):
 			else:
 				index = syst3m.env.fill(index)
 				response = ssht00ls.ssync.index(path=index)
-			self.stop(response=response, json=syst3m.defaults.options.json)
+			self.stop(response=response, json=Defaults.options.json)
 
 		# sync
 			"""
@@ -537,7 +537,7 @@ class CLI(cl1.CLI):
 						notes={
 							"<alias>:<remote>":"Pack the alias & remote as a tuple together as one argument in the following format [<alias>:<remote>]."
 						},
-						json=syst3m.defaults.options.json,)
+						json=Defaults.options.json,)
 				alias,remote = remote.split(":")
 				remote = syst3m.env.fill(remote)
 				path = syst3m.env.fill(path)
@@ -547,7 +547,7 @@ class CLI(cl1.CLI):
 					path=path,
 					forced=self.arguments.present("--forced"), 
 					mode="sync",)
-				self.stop(response=response, json=syst3m.defaults.options.json)
+				self.stop(response=response, json=Defaults.options.json)
 			"""
 
 		#
@@ -557,7 +557,7 @@ class CLI(cl1.CLI):
 		# list tunnels.
 		elif self.arguments.present("--list-tunnels"):
 			response = ssht00ls.ssh.tunnel.list(alias=self.arguments.get("--list-tunnels", required=False, default=None))
-			if syst3m.defaults.options.json:
+			if Defaults.options.json:
 				print(response.dictionary)
 			else:
 				if self.arguments.present("--joiner"):
@@ -571,7 +571,7 @@ class CLI(cl1.CLI):
 
 			# help.
 			if self.arguments.present(['-h', '--help']):
-				self.docs(chapter="tunnels", success=True, json=syst3m.defaults.options.json)
+				self.docs(chapter="tunnels", success=True, json=Defaults.options.json)
 
 			# tunnel.
 			id = self.arguments.get("--tunnel", index=1, chapter="tunnels", notes={})
@@ -586,7 +586,7 @@ class CLI(cl1.CLI):
 					notes={
 						"<port>:<ip>:<remote_port>:<alias>":"Pack the port, ip, remote port & alias as a tuple together as one argument in the following format [<port>:<ip>:<remote_port>:<alias>]."
 					},
-					json=syst3m.defaults.options.json,)
+					json=Defaults.options.json,)
 			tunnel = ssht00ls.ssh.Tunnel(
 				alias=alias,
 				ip=ip,
@@ -595,7 +595,7 @@ class CLI(cl1.CLI):
 				reconnect=self.arguments.present("--reconnect"),
 				sleeptime=self.arguments.get("--sleeptime", required=False, default=60, format=int),
 				reattemps=self.arguments.get("--reattemps", required=False, default=15, format=int),
-				log_level=syst3m.defaults.options.log_level,)
+				log_level=Defaults.options.log_level,)
 
 			# establish.
 			if self.arguments.present("--establish"):
@@ -626,12 +626,12 @@ class CLI(cl1.CLI):
 						notes={
 							"<alias>:<path>":"Pack the alias & tuple together as one argument in the following format [<alias>:<path>]."
 						},
-						json=syst3m.defaults.options.json,)
+						json=Defaults.options.json,)
 				alias,remote = remote.split(":")
 				remote = syst3m.env.fill(remote)
 				path = syst3m.env.fill(path)
 				response = ssht00ls.ssync.daemon(alias=alias, remote=remote, path=path)
-				self.stop(response=response, json=syst3m.defaults.options.json)
+				self.stop(response=response, json=Defaults.options.json)
 
 			# stop daemon.
 			elif self.arguments.present('--stop-daemon'):
@@ -639,23 +639,23 @@ class CLI(cl1.CLI):
 				for path in self.arguments.get("--stop-daemon", index=1, chapter="daemon", mode="--stop-daemon", format=list):
 					response = ssht00ls.ssync.daemons.stop(path)
 					if not response["success"]:
-						self.stop(response=response, json=syst3m.defaults.options.json)
+						self.stop(response=response, json=Defaults.options.json)
 						c += 1
 				if c > 0:
-					self.stop(message=f"Successfully stopped {c} daemon(s).", json=syst3m.defaults.options.json)
+					self.stop(message=f"Successfully stopped {c} daemon(s).", json=Defaults.options.json)
 				else:
-					self.stop(error="No daemons found.", json=syst3m.defaults.options.json)
+					self.stop(error="No daemons found.", json=Defaults.options.json)
 
 			# list daemons.
 			elif self.arguments.present('--list-daemons'):
 				
 				daemons = ssht00ls.ssync.daemons.status()
 				if len(daemons) == 0:
-					self.stop(message=f"There are no active daemons.", json=syst3m.defaults.options.json)
+					self.stop(message=f"There are no active daemons.", json=Defaults.options.json)
 				print("Daemons:")
 				for path, status in daemons.items():
 					print(f" * {path}: {status}")
-				self.stop(message=f"Successfully listed {len(daemons)} daemon(s).", json=syst3m.defaults.options.json)
+				self.stop(message=f"Successfully listed {len(daemons)} daemon(s).", json=Defaults.options.json)
 			"""
 
 		# 
@@ -664,7 +664,7 @@ class CLI(cl1.CLI):
 
 		# help.
 		elif self.arguments.present(['-h', '--help']):
-			self.docs(success=True, json=syst3m.defaults.options.json)
+			self.docs(success=True, json=Defaults.options.json)
 
 		# invalid.
 		else: self.invalid()
@@ -677,7 +677,7 @@ class CLI(cl1.CLI):
 
 # main.
 if __name__ == "__main__":
-	cli = CLI()
+	cli = CLI_()
 	cli.start()
 
 

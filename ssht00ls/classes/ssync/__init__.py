@@ -30,7 +30,7 @@ class SSync(syst3m.objects.Traceback):
 		self.daemons = daemons
 		
 		#
-	def index(self, path=None, alias=None, log_level=syst3m.defaults.options.log_level, checks=True, accept_new_host_keys=True):
+	def index(self, path=None, alias=None, log_level=Defaults.options.log_level, checks=True, accept_new_host_keys=True):
 
 		# check specific.
 		if self.specific:
@@ -38,12 +38,12 @@ class SSync(syst3m.objects.Traceback):
 
 		# checks.
 		if path == None:
-			return r3sponse.error(f"Define parameter: path.")
+			return Response.error(f"Define parameter: path.")
 		path = gfp.clean(path)
 
 		# check encryption activated.
 		if not ssht00ls_agent.activated:
-			return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+			return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 
 		# remote.
 		if alias != None:
@@ -81,7 +81,7 @@ class SSync(syst3m.objects.Traceback):
 				},
 				optional=True,)
 			if not response.success:
-				return r3sponse.error(f"Failed to connect with {alias}, error: {response.error}")
+				return Response.error(f"Failed to connect with {alias}, error: {response.error}")
 			else:
 				return response
 
@@ -89,19 +89,19 @@ class SSync(syst3m.objects.Traceback):
 		else:
 			if checks:
 				if not Files.exists(path):
-					return r3sponse.error(f"Path [{path}] does not exist.")
+					return Response.error(f"Path [{path}] does not exist.")
 				elif not os.path.isdir(path):
-					return r3sponse.error(f"Path [{path}] is not a directory.")
+					return Response.error(f"Path [{path}] is not a directory.")
 
 			# handler.
 			dict = self.utils.index(path)
-			return r3sponse.success(f"Successfully indexed {len(dict)} files from directory [{path}].", {
+			return Response.success(f"Successfully indexed {len(dict)} files from directory [{path}].", {
 				"index":dict,
 			})
 
 			#
 	def set_mounted_icon(self, path):
-		if syst3m.defaults.vars.os in ["osx", "macos"]:
+		if Defaults.vars.os in ["osx", "macos"]:
 			#os.system(f"cp '{SOURCE_PATH}/static/media/icons/Icon\r' '{path}/Icon\r'")
 			icon = f'{SOURCE_PATH}/static/media/icons/mounted.png'
 			syst3m.utils.__execute_script__(f"""
@@ -175,7 +175,7 @@ class SSync(syst3m.objects.Traceback):
 		# checks.
 		checks=True,
 		# log level.
-		log_level=syst3m.defaults.options.log_level,
+		log_level=Defaults.options.log_level,
 		# get the command in str.
 		command=False,
 	):	
@@ -186,7 +186,7 @@ class SSync(syst3m.objects.Traceback):
 
 		# check encryption activated.
 		if not ssht00ls_agent.activated:
-			return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+			return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 		if checks:
 			if self.specific:
 				try: self.activated
@@ -257,7 +257,7 @@ class SSync(syst3m.objects.Traceback):
 		checks=True,
 		check_base=True,
 		# log level.
-		log_level=syst3m.defaults.options.log_level,
+		log_level=Defaults.options.log_level,
 		# get the command in str.
 		command=False,
 	):
@@ -268,7 +268,7 @@ class SSync(syst3m.objects.Traceback):
 
 		# check encryption activated.
 		if not ssht00ls_agent.activated:
-			return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+			return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 		if checks:
 			if self.specific:
 				try: self.activated
@@ -336,20 +336,20 @@ class SSync(syst3m.objects.Traceback):
 		# accept new host verification keys.
 		accept_new_host_keys=True,
 		# log level.
-		log_level=syst3m.defaults.options.log_level,
+		log_level=Defaults.options.log_level,
 		# the daemon mode.
 		mode="mount",
 	):
 
 		# depricated.
-		return r3sponse.error("DEPRICATED.")
+		return Response.error("DEPRICATED.")
 		
 		# check specific.
 		if self.specific:
 			if alias == None: alias = self.alias
 
 		# checks.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			traceback=self.__traceback__(function="mount"), 
 			parameters={
 				"path:str":path,
@@ -363,12 +363,12 @@ class SSync(syst3m.objects.Traceback):
 		if not response["success"]: return response
 		if mode in ["synchronize", "sync", "synch"]: mode = "sync"
 		if mode not in ["mount", "sync"]:
-			return r3sponse.error(f"Specified an invalid mode: [{mode}], options: [mount, sync].")
+			return Response.error(f"Specified an invalid mode: [{mode}], options: [mount, sync].")
 		cache_path = gfp.absolute(path=gfp.clean(path.split(" (d)")[0], remove_last_slash=True))
 		if mode in ["mount"] and not forced and Files.exists(path):
-			return r3sponse.error(f"Path [{path}] already exists.")
+			return Response.error(f"Path [{path}] already exists.")
 		elif self.daemons.running(cache_path):
-			return r3sponse.error(f"Path [{path}] is already mounted.")
+			return Response.error(f"Path [{path}] is already mounted.")
 		path = gfp.clean(path=path)
 		remote = gfp.clean(path=remote)
 
@@ -395,29 +395,29 @@ class SSync(syst3m.objects.Traceback):
 				else:
 					return response
 			if not remote_exists and not local_exists:
-				return r3sponse.error(f"Both local and remote directories {path} & {alias}:{remote} do not exist.")
+				return Response.error(f"Both local and remote directories {path} & {alias}:{remote} do not exist.")
 			if not local_exists:
 				os.system(f"mkdir -p {path}")
 				if not Files.exists(path): 
-					return r3sponse.error(f"Failed to create directory {path}.")
+					return Response.error(f"Failed to create directory {path}.")
 			if not remote_exists:
 				response = ssh.utils.test_dir(path=remote, alias=alias, create=True)
 				if not response["success"]: 
-					return r3sponse.error(f"Failed to create directory {alias}:{remote}, error: {response['error']}")
+					return Response.error(f"Failed to create directory {alias}:{remote}, error: {response['error']}")
 
 		# start daemon.
 		cache.set(id=cache_path, group="daemons", data=f"*running* (timestamp={Date().seconds_timestamp})")
 		self.set_mounted_icon(path)
 		if not self.daemons.running(cache_path):
-			return r3sponse.error(f"Failed to set the {path} daemon status.")
+			return Response.error(f"Failed to set the {path} daemon status.")
 		response =  self.daemon(alias=alias, path=path, remote=remote, start=True, mode=mode)
 		if not response.success: return response
 
 		# handler.
 		if mode == "sync":
-			return r3sponse.success(f"Successfully synchronized {alias}:{remote} to {path}.")
+			return Response.success(f"Successfully synchronized {alias}:{remote} to {path}.")
 		else:
-			return r3sponse.success(f"Successfully mounted {alias}:{remote} to {path}.")
+			return Response.success(f"Successfully mounted {alias}:{remote} to {path}.")
 
 		#
 	def unmount(self, 
@@ -428,14 +428,14 @@ class SSync(syst3m.objects.Traceback):
 		# sudo required.
 		sudo=False,
 		# log level.
-		log_level=syst3m.defaults.options.log_level,
+		log_level=Defaults.options.log_level,
 	):
 
 		# depricated.
-		return r3sponse.error("DEPRICATED.")
+		return Response.error("DEPRICATED.")
 
 		# checks.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			traceback=self.__traceback__(function="unmount"), 
 			parameters={
 				"path:str":path,
@@ -447,19 +447,19 @@ class SSync(syst3m.objects.Traceback):
 		cache_path = gfp.absolute(gfp.clean(path.split(" (d)")[0], remove_last_slash=True))
 		if not self.daemons.running(cache_path):
 			if not Files.exists(path):
-				return r3sponse.error(f"Path [{path}] does not exist.")
+				return Response.error(f"Path [{path}] does not exist.")
 			elif not os.path.isdir(path):
-				return r3sponse.error(f"Path [{path}] is not a directory.")
+				return Response.error(f"Path [{path}] is not a directory.")
 			status = str(cache.get(id=cache_path, group="daemons"))
 			if not self.daemons.running(cache_path):
-				return r3sponse.error(f"Path [{path}] is not mounted (status: {status}).")
+				return Response.error(f"Path [{path}] is not mounted (status: {status}).")
 
 		# wait for daemon stop.
 		response = self.daemons.stop(path=path)
 		if not success: return response
 
 		# handler.
-		return r3sponse.success(f"Successfully unmounted [{path}].")
+		return Response.success(f"Successfully unmounted [{path}].")
 
 		#
 	def daemon(self, 
@@ -474,7 +474,7 @@ class SSync(syst3m.objects.Traceback):
 		# the daemon mode.
 		mode="mount",
 		# the daemons log level.
-		log_level=syst3m.defaults.log_level(default=-1),
+		log_level=Defaults.log_level(default=-1),
 		# sandbox (do not delete any files).
 		sandbox=False,
 		# overwrite sleeptime.
@@ -483,7 +483,7 @@ class SSync(syst3m.objects.Traceback):
 		serialized={},
 	):
 		# depricated.
-		return r3sponse.error("DEPRICATED.")
+		return Response.error("DEPRICATED.")
 
 		# check specific.
 		if self.specific:
@@ -497,13 +497,13 @@ class SSync(syst3m.objects.Traceback):
 				"path":None,
 				"start":True,
 				"mode":"mount",
-				"log_level":syst3m.defaults.log_level(default=-1),
+				"log_level":Defaults.log_level(default=-1),
 				"sandbox":False,
 				"sleeptime":SSYNC_DAEMON_SLEEPTIME,
 			})
 		if mode in ["synchronize", "sync", "synch"]: mode = "sync"
 		if mode not in ["mount", "sync"]:
-			return r3sponse.error(f"Specified an invalid mode: [{mode}], options: [mount, sync].")
+			return Response.error(f"Specified an invalid mode: [{mode}], options: [mount, sync].")
 		path = gfp.clean(path)
 		remote = gfp.clean(remote)
 		_daemon_ = daemons.Daemon({
@@ -518,12 +518,12 @@ class SSync(syst3m.objects.Traceback):
 			"sleeptime":sleeptime,
 		})
 		if start: ssht00ls_agent.webserver.start_thread(_daemon_, group="daemons", id=_daemon_.id)
-		return r3sponse.success("Successfully initialized the daemon", {
+		return Response.success("Successfully initialized the daemon", {
 			"daemon":_daemon_,
 		})
 	
 # initialized objects.
 ssync = SSync()
-if CHECKS and INTERACTIVE and not cl1.argument_present("--reset-cache"):
+if CHECKS and INTERACTIVE and not CLI.argument_present("--reset-cache"):
 	daemons.sync()
 	

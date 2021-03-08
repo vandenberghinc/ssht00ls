@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # imports.
-import os, cl1, syst3m, sys
+import os, syst3m, sys
 from fil3s import *
-from r3sponse import r3sponse
 
 # index.
 def index(path):
@@ -25,17 +24,17 @@ def index(path):
 if __name__ == "__main__":
 
 	# arguments.
-	path = cl1.get_argument("--path")
-	json = cl1.arguments_present(["--json", "-j"])
+	path = CLI.get_argument("--path")
+	json = CLI.arguments_present(["--json", "-j"])
 
 	# checks.
 	if not Files.exists(path):
-		r3sponse.log(response=r3sponse.error(f"Path [{path}] does not exist."), json=json)
+		Response.log(response=Response.error(f"Path [{path}] does not exist."), json=json)
 	elif not os.path.isdir(path):
-		r3sponse.log(response=r3sponse.error(f"Path [{path}] is not a directory."), json=json)
+		Response.log(response=Response.error(f"Path [{path}] is not a directory."), json=json)
 
 	# handler.
 	dict = index(path)
-	r3sponse.log(json=json, response=r3sponse.success(f"Successfully indexed {len(dict)} files from directory [{path}].", {
+	Response.log(json=json, response=Response.success(f"Successfully indexed {len(dict)} files from directory [{path}].", {
 		"index":dict,
 	}))

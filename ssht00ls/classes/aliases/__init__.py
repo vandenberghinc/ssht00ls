@@ -31,7 +31,7 @@ class Aliases(syst3m.objects.Traceback):
 		#	the smart card serial numbers.
 		serial_numbers=[],
 		# 	the log level.
-		log_level=syst3m.defaults.options.log_level,
+		log_level=Defaults.options.log_level,
 	):
 		
 		# defaults.
@@ -66,7 +66,7 @@ class Aliases(syst3m.objects.Traceback):
 			else:
 				array.append(i)
 				dictionary[i] = dict(CONFIG["aliases"][i])
-		return r3sponse.success(f"Successfully listed {len(array)} aliases.", {
+		return Response.success(f"Successfully listed {len(array)} aliases.", {
 			"aliases":array,
 			"array":array,
 			"dictionary":dictionary,
@@ -99,7 +99,7 @@ class Aliases(syst3m.objects.Traceback):
 		except KeyError:
 			exists = False
 			if not create:
-				return r3sponse.error(f"Alias [{alias}] does not exist.")
+				return Response.error(f"Alias [{alias}] does not exist.")
 
 
 		# check existing config.
@@ -161,7 +161,7 @@ class Aliases(syst3m.objects.Traceback):
 			utils.save_config_safely()
 
 		# handler.
-		return r3sponse.success(f"Successfully checked alias {alias}.")
+		return Response.success(f"Successfully checked alias {alias}.")
 
 		#
 	def check_duplicate(self, alias=None):
@@ -171,8 +171,8 @@ class Aliases(syst3m.objects.Traceback):
 		# check.
 		try: CONFIG["aliases"][alias]
 		except KeyError:
-			return r3sponse.success(f"Alias {alias} does not exist.")
-		return r3sponse.error(f"Alias {alias} already exists.")
+			return Response.success(f"Alias {alias} does not exist.")
+		return Response.error(f"Alias {alias} already exists.")
 	def info(self, alias=None):
 		# check specific.
 		if self.specific:
@@ -185,7 +185,7 @@ class Aliases(syst3m.objects.Traceback):
 			info["ip"], info["port"] = info["public_ip"], info["public_port"]
 		else:
 			info["ip"], info["port"] = info["private_ip"], info["private_port"]
-		return r3sponse.success(f"Successfully listed the info of alias {alias}.", {
+		return Response.success(f"Successfully listed the info of alias {alias}.", {
 			"info":info,
 		})
 	def delete(self, alias=None):
@@ -197,7 +197,7 @@ class Aliases(syst3m.objects.Traceback):
 		if not response["success"]: return response
 		del CONFIG["aliases"][alias]
 		utils.save_config_safely()
-		return r3sponse.success(f"Successfully deleted alias {alias}.")
+		return Response.success(f"Successfully deleted alias {alias}.")
 	def edit(self, 
 		# the alias.
 		alias=None,
@@ -211,7 +211,7 @@ class Aliases(syst3m.objects.Traceback):
 		# save the edits.
 		save=True,
 		# the log level.
-		log_level=syst3m.defaults.options.log_level,
+		log_level=Defaults.options.log_level,
 	):
 		def edit_dict(dictionary={}, edits={}):
 			c = 0
@@ -257,7 +257,7 @@ class Aliases(syst3m.objects.Traceback):
 			# check encryption activated.
 			if edits["passphrase"] not in [False, "", "none", "None"]:
 				if not ssht00ls_agent.activated:
-					return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+					return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 				response = ssht00ls_agent.encryption.encrypt(edits["passphrase"])
 				if not response["success"]: return response
 				CONFIG["aliases"][alias]["smartcard"] = False
@@ -273,7 +273,7 @@ class Aliases(syst3m.objects.Traceback):
 			# check encryption activated.
 			if edits["pin"] not in [False, "", "none", "None"]:
 				if not ssht00ls_agent.activated:
-					return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+					return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 				response = ssht00ls_agent.encryption.encrypt(edits["pin"])
 				if not response["success"]: return response
 				CONFIG["aliases"][alias]["smartcard"] = True
@@ -290,9 +290,9 @@ class Aliases(syst3m.objects.Traceback):
 			CONFIG["aliases"][alias] = dictionary
 			utils.save_config_safely()
 		if edit_count > 0 or c > 0:
-			return r3sponse.success(f"Successfully saved {c} edits for alias {alias}.")
+			return Response.success(f"Successfully saved {c} edits for alias {alias}.")
 		else:
-			return r3sponse.error(f"No edits were specified.")
+			return Response.error(f"No edits were specified.")
 	def create(self, 
 		# the alias.
 		alias=None,
@@ -355,7 +355,7 @@ class Aliases(syst3m.objects.Traceback):
 
 
 		# checks.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			traceback=self.__traceback__(function="create"),
 			parameters={
 				"alias":alias,
@@ -371,19 +371,19 @@ class Aliases(syst3m.objects.Traceback):
 			})
 		if not response["success"]: return response
 		if smartcard:
-			response = r3sponse.parameters.check({
+			response = Response.parameters.check({
 				"pin":pin,
 			}, default=None, traceback=self.__traceback__(function="create"))
 			if not response["success"]: return response
 		else:
-			response = r3sponse.parameters.check({
+			response = Response.parameters.check({
 				"passphrase":passphrase,
 			}, default=None, traceback=self.__traceback__(function="create"))
 			if not response["success"]: return response
 
 		# check encryption activated.
 		if checks and not ssht00ls_agent.activated:
-			return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+			return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 
 		# duplicate.
 		if checks:
@@ -394,9 +394,9 @@ class Aliases(syst3m.objects.Traceback):
 		private_key = syst3m.env.fill(private_key)
 		public_key = syst3m.env.fill(public_key)
 		if not Files.exists(private_key):
-			return r3sponse.error(f"Private key {private_key} does not exist.")
+			return Response.error(f"Private key {private_key} does not exist.")
 		if not Files.exists(public_key):
-			return r3sponse.error(f"Public key {public_key} does not exist.")
+			return Response.error(f"Public key {public_key} does not exist.")
 
 		# info.
 		json_config, config = {}, ""
@@ -454,7 +454,7 @@ class Aliases(syst3m.objects.Traceback):
 			utils.save_config_safely()
 
 		# response.
-		return r3sponse.success(f"Successfully created alias [{alias}].", {
+		return Response.success(f"Successfully created alias [{alias}].", {
 			"json":json_config,
 			"str":config,
 		})
@@ -475,15 +475,15 @@ class Aliases(syst3m.objects.Traceback):
 			loader = syst3m.console.Loader(f"Synchronizing {len(_aliases_)} aliases.")
 
 		# check ssh dir.
-		if not Files.exists(f"{syst3m.defaults.vars.home}/.ssh"): os.system(f"mkdir {syst3m.defaults.vars.home}/.ssh && chown -R {syst3m.defaults.vars.user}:{syst3m.defaults.vars.group} {syst3m.defaults.vars.home}/.ssh && chmod 700 {syst3m.defaults.vars.home}/.ssh")
+		if not Files.exists(f"{Defaults.vars.home}/.ssh"): os.system(f"mkdir {Defaults.vars.home}/.ssh && chown -R {Defaults.vars.user}:{Defaults.vars.group} {Defaults.vars.home}/.ssh && chmod 700 {Defaults.vars.home}/.ssh")
 		
 		# check include.
 		include = f"include ~/.ssht00ls/lib/aliases"
-		if not Files.exists(f"{syst3m.defaults.vars.home}/.ssh/config"): 
-			Files.save(f"{syst3m.defaults.vars.home}/.ssh/config", include)
-			os.system(f"chown {syst3m.defaults.vars.user}:{syst3m.defaults.vars.group} {syst3m.defaults.vars.home}/.ssh/config && chmod 770 {syst3m.defaults.vars.home}/.ssh/config")
-		if include not in Files.load(f"{syst3m.defaults.vars.home}/.ssh/config"):
-			data = Files.load(f"{syst3m.defaults.vars.home}/.ssh/config")
+		if not Files.exists(f"{Defaults.vars.home}/.ssh/config"): 
+			Files.save(f"{Defaults.vars.home}/.ssh/config", include)
+			os.system(f"chown {Defaults.vars.user}:{Defaults.vars.group} {Defaults.vars.home}/.ssh/config && chmod 770 {Defaults.vars.home}/.ssh/config")
+		if include not in Files.load(f"{Defaults.vars.home}/.ssh/config"):
+			data = Files.load(f"{Defaults.vars.home}/.ssh/config")
 			new, included = "", False
 			for line in data.split("\n"):
 				if len(line) > 0 and line[0] == "#":
@@ -492,7 +492,7 @@ class Aliases(syst3m.objects.Traceback):
 					new += include+"\n"
 					included = True
 				new += line+"\n"
-			Files.save(f"{syst3m.defaults.vars.home}/.ssh/config", new)
+			Files.save(f"{Defaults.vars.home}/.ssh/config", new)
 
 		# iterate.
 		aliases, c = "", 0
@@ -552,7 +552,7 @@ class Aliases(syst3m.objects.Traceback):
 							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+								return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 							new_passphrase = False
 							response = ssht00ls_agent.encryption.decrypt(checked["pin"])
 							if not response.success: 
@@ -570,7 +570,7 @@ class Aliases(syst3m.objects.Traceback):
 							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+								return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 							new_passphrase = False
 							response = ssht00ls_agent.encryption.decrypt(checked["passphrase"])
 							if not response.success: 
@@ -602,7 +602,7 @@ class Aliases(syst3m.objects.Traceback):
 							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return r3sponse.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+								return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 							response = ssht00ls_agent.encryption.encrypt(passphrase)
 							if not response.success: 
 								if log_level >= 0: loader.stop(success=False)
@@ -622,7 +622,7 @@ class Aliases(syst3m.objects.Traceback):
 
 		# handler.
 		if log_level >= 0: loader.stop()
-		return r3sponse.success(f"Successfully synchronized {c} alias(es).")
+		return Response.success(f"Successfully synchronized {c} alias(es).")
 	def public(self, public_ip=None, private_ip=None):
 		return not (NETWORK_INFO["public_ip"] == public_ip and netw0rk.network.ping(private_ip, timeout=0.5).up == True)
 	# edit aliases lib.
@@ -631,7 +631,7 @@ class Aliases(syst3m.objects.Traceback):
 
 		# load lib & get lib depth from the aliases.
 		try:
-			lib = Files.load(f"{syst3m.defaults.vars.home}/.ssht00ls/lib/aliases")
+			lib = Files.load(f"{Defaults.vars.home}/.ssht00ls/lib/aliases")
 		except FileNotFoundError:
 			lib = ""
 
@@ -667,7 +667,7 @@ class Aliases(syst3m.objects.Traceback):
 			else: break
 
 		# save.
-		Files.save(f"{syst3m.defaults.vars.home}/.ssht00ls/lib/aliases", lib)
+		Files.save(f"{Defaults.vars.home}/.ssht00ls/lib/aliases", lib)
 
 	# iterate.
 	def __iter__(self):

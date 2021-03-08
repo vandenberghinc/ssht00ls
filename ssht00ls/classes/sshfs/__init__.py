@@ -32,7 +32,7 @@ class SSHFS(syst3m.objects.Traceback):
 		# checks.
 		base = ""
 		if alias == None:
-			response = r3sponse.parameters.check(
+			response = Response.parameters.check(
 				traceback=self.__traceback__(function="mount"), 
 				parameters={
 					"username":username,
@@ -45,7 +45,7 @@ class SSHFS(syst3m.objects.Traceback):
 			if not response["success"]: return response
 			base += f"sshfs -p {port} -o IdentityFile={key_path} {username}@{ip}"
 		else:
-			response = r3sponse.parameters.check(
+			response = Response.parameters.check(
 				traceback=self.__traceback__(function="mount"), 
 				parameters={
 					"alias":alias,
@@ -64,20 +64,20 @@ class SSHFS(syst3m.objects.Traceback):
 
 		# check fails.
 		if "mount_osxfuse: mount point " in output and "is itself" in output:
-			return r3sponse.error(f"Client path [{path}] is already mounted.")
+			return Response.error(f"Client path [{path}] is already mounted.")
 		elif "No such file or directory" in output:
-			return r3sponse.error(f"Server path [{remote}] does not exist.")
+			return Response.error(f"Server path [{remote}] does not exist.")
 		elif "" == output:
 			if not Files.exists(path):
-				return r3sponse.error(f"Could not connect with server [{alias}].")
+				return Response.error(f"Could not connect with server [{alias}].")
 			# check success.	
 			else:
-				return r3sponse.success(f"Successfully mounted directory [{path}].")
+				return Response.success(f"Successfully mounted directory [{path}].")
 
 		# unknown.
 		else:
 			l = f"Failed to mount directory [{path}]"
-			return r3sponse.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return Response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		
 		#		
 	def unmount(self, 
@@ -90,7 +90,7 @@ class SSHFS(syst3m.objects.Traceback):
 	):
 
 		# checks.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			traceback=self.__traceback__(function="unmount"),
 			parameters={
 				"path":path
@@ -104,9 +104,9 @@ class SSHFS(syst3m.objects.Traceback):
 		output = utils.__execute__(command=command)
 		if output != "":
 			l = f"Failed to unmount directory [{path}]."
-			return r3sponse.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return Response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		else:
-			return r3sponse.success(f"Successfully unmounted directory [{path}].")
+			return Response.success(f"Successfully unmounted directory [{path}].")
 		#
 	
 # Initialized classes.

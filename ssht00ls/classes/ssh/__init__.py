@@ -39,7 +39,7 @@ class SSH(syst3m.objects.Traceback):
 			if alias == None: alias = self.alias
 
 		# checks.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			traceback=self.__traceback__(function="session"),
 			parameters={
 				"alias":alias,
@@ -50,7 +50,7 @@ class SSH(syst3m.objects.Traceback):
 		os.system(f"ssh {DEFAULT_SSH_OPTIONS} {alias}")
 
 		# handler.
-		return r3sponse.success(f"Successfully started ssh session [{alias}].")
+		return Response.success(f"Successfully started ssh session [{alias}].")
 
 		#
 	def command(self,
@@ -95,7 +95,7 @@ class SSH(syst3m.objects.Traceback):
 		#   loader message.
 		loader=None,
 		#   the log level.
-		log_level=syst3m.defaults.log_level(default=0),
+		log_level=Defaults.log_level(default=0),
 		#
 		# System functions.
 		#   add additional attributes to the spawn object.
@@ -121,7 +121,7 @@ class SSH(syst3m.objects.Traceback):
 			except KeyError: __spawn_attributes__[str(key)] = value
 
 		# checks.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			traceback=self.__traceback__(function="command"),
 			parameters={
 				"alias":alias,

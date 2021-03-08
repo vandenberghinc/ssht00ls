@@ -6,9 +6,9 @@ from ssht00ls.classes.config import *
 from ssht00ls.classes import utils
 
 def __check_os__(supported=[]):
-	if syst3m.defaults.vars.os not in supported:
-		return r3sponse.error(f"Unsupported operating system [{syst3m.defaults.vars.os}].")
-	return r3sponse.success(f"Supported operating system [{syst3m.defaults.vars.os}].")
+	if Defaults.vars.os not in supported:
+		return Response.error(f"Unsupported operating system [{Defaults.vars.os}].")
+	return Response.success(f"Supported operating system [{Defaults.vars.os}].")
 
 # the manager class.
 class SmartCards(syst3m.objects.Traceback):
@@ -19,7 +19,7 @@ class SmartCards(syst3m.objects.Traceback):
 		syst3m.objects.Traceback.__init__(self, traceback="ssht00ls.smartcards", raw_traceback="ssht00ls.classes.smartcards.SmartCards")
 
 		# key path.
-		if syst3m.defaults.vars.os in ["linux"]: 
+		if Defaults.vars.os in ["linux"]: 
 			self.path = None
 			for path in [
 				"/usr/lib/x86_64-linux-gnu//opensc-pkcs11.so",
@@ -32,7 +32,7 @@ class SmartCards(syst3m.objects.Traceback):
 					break
 			if self.path == None: raise ValueError("Unable to locate opensc-pkcs11.so.")
 					
-		elif syst3m.defaults.vars.os in ["macos"]: 
+		elif Defaults.vars.os in ["macos"]: 
 			self.original_path = None
 			for path in [
 				"/usr/local/lib/libykcs11.dylib",
@@ -40,7 +40,7 @@ class SmartCards(syst3m.objects.Traceback):
 				if Files.exists(path):
 					self.original_path = path
 					break
-			if syst3m.defaults.options.log_level >= 1 and self.original_path == None: r3sponse.log("Unable to locate libykcs11.dylib.", mode="warning")
+			if Defaults.options.log_level >= 1 and self.original_path == None: Response.log("Unable to locate libykcs11.dylib.", mode="warning")
 
 			#self.original_path = "/usr/local/lib/libykcs11.dylib"
 			#self.path = "/usr/local/lib/libykcs11_NOTALNK.dylib"
@@ -50,7 +50,7 @@ class SmartCards(syst3m.objects.Traceback):
 			self.original_path = path
 			self.path = "/usr/local/lib/libykcs11_NOTALNK.dylib"
 			#if not Files.exists(self.original_path):
-			#	r3sponse.log("&RED&OpenSC package is not installed&END&, run: [$ brew install yubico-piv-tool opensc].")
+			#	Response.log("&RED&OpenSC package is not installed&END&, run: [$ brew install yubico-piv-tool opensc].")
 
 		# attributes.
 		self.__smartcards__ = {}
@@ -72,10 +72,10 @@ class SmartCards(syst3m.objects.Traceback):
 					text = card.split(" Serial:")[0]
 					smartcards[serial_number] = SmartCard(serial_number=serial_number)
 				except IndexError: 
-					return r3sponse.error("Unrecognized smart card detected. Remove the smart card and plug it back in.")
+					return Response.error("Unrecognized smart card detected. Remove the smart card and plug it back in.")
 
 		# response.
-		return r3sponse.success(f"Successfully scanned & detected {len(smartcards)} smart card(s).", {
+		return Response.success(f"Successfully scanned & detected {len(smartcards)} smart card(s).", {
 			"smartcards":smartcards
 		})
 
@@ -86,11 +86,11 @@ class SmartCards(syst3m.objects.Traceback):
 		response = self.scan()
 		if response["error"] != None: return response
 		elif str(serial_number) not in list(response["smartcards"].keys()):
-			return r3sponse.error(f"There is no smart card detected  with serial number [{serial_number}].")
+			return Response.error(f"There is no smart card detected  with serial number [{serial_number}].")
 
 		# success.
 		smartcard = response["smartcards"][str(serial_number)]
-		return r3sponse.success(f"Successfully initialzed smart card [{serial_number}].", {
+		return Response.success(f"Successfully initialzed smart card [{serial_number}].", {
 			"smartcard":smartcard
 		})
 
@@ -105,14 +105,14 @@ class SmartCards(syst3m.objects.Traceback):
 
 		# check one.
 		if len(l_response["smartcards"]) > 1:
-			return r3sponse.error("There are multiple smart cards plugged in.")
+			return Response.error("There are multiple smart cards plugged in.")
 
 		# check zero.
 		if len(l_response["smartcards"]) == 0:
-			return r3sponse.error("There are no smart cards plugged in / detected.")
+			return Response.error("There are no smart cards plugged in / detected.")
 
 		# success.
-		return r3sponse.success("There is only one smart cards plugged in.", {
+		return Response.success("There is only one smart cards plugged in.", {
 			"smartcard":l_response["smartcards"][list(l_response["smartcards"].keys())[0]],
 		})
 
@@ -253,7 +253,7 @@ class SmartCard(syst3m.objects.Traceback):
 		try: 
 			output = subprocess.check_output(f"ykman --device {self.serial_number} piv info", shell=True).decode().replace('  ',' ').replace('  ',' ').replace('  ',' ').lower().split('\n')
 		except: 
-			return r3sponse.error("Failed to retrieve yubikey info.")
+			return Response.error("Failed to retrieve yubikey info.")
 
 		# iterate.
 		info = {}
@@ -266,7 +266,7 @@ class SmartCard(syst3m.objects.Traceback):
 		info["serial_number"] = self.serial_number
 
 		# success.
-		return r3sponse.success(f"Successfully retrieved the information from smart card [{self.serial_number}].", {
+		return Response.success(f"Successfully retrieved the information from smart card [{self.serial_number}].", {
 				"info":info,
 			})
 
@@ -279,7 +279,7 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 		
 		# check params.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			default=None,
 			traceback=self.__traceback__(function="unblock_pin"),
 			parameters={
@@ -297,10 +297,10 @@ class SmartCard(syst3m.objects.Traceback):
 
 		# handle error.
 		if output != "":
-			return r3sponse.error(f"Unknown error pin unblocking, output: [{output}].")
+			return Response.error(f"Unknown error pin unblocking, output: [{output}].")
 
 		# handle success.
-		return r3sponse.success(f"Successfully unblocked the pin code of smart card [{self.serial_number}].")
+		return Response.success(f"Successfully unblocked the pin code of smart card [{self.serial_number}].")
 
 		#
 	def change_pin(self, 
@@ -311,7 +311,7 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 
 		# check params.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			default=None,
 			traceback=self.__traceback__(function="change_pin"),
 			parameters={
@@ -330,11 +330,11 @@ class SmartCard(syst3m.objects.Traceback):
 
 		# handle success.
 		elif "New PIN set." in output: 
-			return r3sponse.success(f"Successfully changed the pin of smart card [{self.serial_number}].")
+			return Response.success(f"Successfully changed the pin of smart card [{self.serial_number}].")
 
 		# unknown error.
 		else:
-			return r3sponse.error(f"Unknown error while changing pin, output: [{output}].")
+			return Response.error(f"Unknown error while changing pin, output: [{output}].")
 
 		#
 	def change_puk(self, 
@@ -345,7 +345,7 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 
 		# check params.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			default=None,
 			traceback=self.__traceback__(function="change_puk"),
 			parameters={
@@ -365,11 +365,11 @@ class SmartCard(syst3m.objects.Traceback):
 
 		# handle success.
 		elif "New PUK set." in output: 
-			return r3sponse.success(f"Successfully changed the puk of smart card [{self.serial_number}].")
+			return Response.success(f"Successfully changed the puk of smart card [{self.serial_number}].")
 
 		# unknown error.
 		else:
-			return r3sponse.error(f"Unknown error while changing puk, output: [{output}].")
+			return Response.error(f"Unknown error while changing puk, output: [{output}].")
 
 		#
 	def generate_key(self, 
@@ -378,7 +378,7 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 
 		# check params.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			default=None,
 			traceback=self.__traceback__(function="generate_key"),
 			parameters={
@@ -394,7 +394,7 @@ class SmartCard(syst3m.objects.Traceback):
 		response = self.__handle_default_output__(output)
 		if not response["success"]: return response
 		elif output != "":
-			return r3sponse.error(f"Unknown error during key generation, output: [{output}].")
+			return Response.error(f"Unknown error during key generation, output: [{output}].")
 
 		# do.
 		command = f'ykman --device {self.serial_number} piv generate-certificate -s "/CN=SSH-key/" 9a public.pem --pin {pin} --management-key 010203040506070801020304050607080102030405060708'
@@ -404,10 +404,10 @@ class SmartCard(syst3m.objects.Traceback):
 		response = self.__handle_default_output__(output)
 		if not response["success"]: return response
 		elif output != "":
-			return r3sponse.error(f"Unknown error during certificate generation, output: [{output}].")
+			return Response.error(f"Unknown error during certificate generation, output: [{output}].")
 
 		# handle success.
-		return r3sponse.success(f"Successfully generated a signed certificate & key for smart card [{self.serial_number}].")
+		return Response.success(f"Successfully generated a signed certificate & key for smart card [{self.serial_number}].")
 
 		#
 	def generate_management_key(self, 
@@ -416,7 +416,7 @@ class SmartCard(syst3m.objects.Traceback):
 	):
 
 		# check params.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			default=None,
 			traceback=self.__traceback__(function="generate_management_key"),
 			parameters={
@@ -432,9 +432,9 @@ class SmartCard(syst3m.objects.Traceback):
 		response = self.__handle_default_output__(output)
 		if not response["success"]: return response
 		elif output != "":
-			return r3sponse.error(f"Unknown error during management key generation, output: [{output}].")
+			return Response.error(f"Unknown error during management key generation, output: [{output}].")
 		else:
-			return r3sponse.success(f"Successfully generated a management key for smart card [{self.serial_number}].")
+			return Response.success(f"Successfully generated a management key for smart card [{self.serial_number}].")
 
 		#
 	def reset_piv(self): # for when both pin & puk codes are blocked.
@@ -445,11 +445,11 @@ class SmartCard(syst3m.objects.Traceback):
 		
 		# handle success.
 		if "Success!" in output:
-			return r3sponse.success("Successfully resetted the smart card.")
+			return Response.success("Successfully resetted the smart card.")
 
 		# handle error.
 		else:
-			return r3sponse.error("Failed to reset the smart card.")
+			return Response.error("Failed to reset the smart card.")
 
 	# single key plugged in compatible:
 	def export_keys(self, 
@@ -463,7 +463,7 @@ class SmartCard(syst3m.objects.Traceback):
 		
 		# error.
 		if len(output) == 0 or "ssh-rsa " not in output[0]:
-			return r3sponse.error(f"Failed to export smart card [{self.serial_number}].")
+			return Response.error(f"Failed to export smart card [{self.serial_number}].")
 		else:
 
 			# write out.
@@ -471,10 +471,10 @@ class SmartCard(syst3m.objects.Traceback):
 				try:
 					Files.save(path, utils.__array_to_string__(output, joiner="\n"))
 				except:
-					return r3sponse.error(f"Failed to write out the exported key from smart card [{self.serial_number}].")
+					return Response.error(f"Failed to write out the exported key from smart card [{self.serial_number}].")
 
 			# success.
-			return r3sponse.success(f"Successfully exported smart card [{self.serial_number}].", {"public_keys":output})
+			return Response.success(f"Successfully exported smart card [{self.serial_number}].", {"public_keys":output})
 
 		#
 	def check_smartcard(self):
@@ -483,13 +483,13 @@ class SmartCard(syst3m.objects.Traceback):
 		try:
 			output = subprocess.check_output("yubico-piv-tool -aversion", shell=True).decode()
 		except:
-			return r3sponse.error("Failed to check for yubikey smart cards.")
+			return Response.error("Failed to check for yubikey smart cards.")
 
 		# success.
 		if "Application version " in output: 
-			return r3sponse.success("Yubikey smart card detected.", {"smartcard":True})
+			return Response.success("Yubikey smart card detected.", {"smartcard":True})
 		else: 
-			return r3sponse.success("No yubikey smart card detected.", {"smartcard":False})
+			return Response.success("No yubikey smart card detected.", {"smartcard":False})
 
 		#
 	def convert_to_smartcard(self):
@@ -509,7 +509,7 @@ class SmartCard(syst3m.objects.Traceback):
 		l_response = self.check_smartcard()
 		if l_response["error"] != None: return l_response
 		if l_response["smartcard"]:
-			return r3sponse.success("The plugged in yubikey is already a smart cards.")
+			return Response.success("The plugged in yubikey is already a smart cards.")
 
 		# check os.
 		response = __check_os__(["linux"])
@@ -571,10 +571,10 @@ class SmartCard(syst3m.objects.Traceback):
 		# initialize.
 		if pin == None: 
 			pin = utils.__generate_pincode__(characters=6)
-		elif len(pin) != 6: return r3sponse.error("The pin code must be a six character integer code.")
+		elif len(pin) != 6: return Response.error("The pin code must be a six character integer code.")
 		if puk == None: 
 			puk = utils.__generate_pincode__(characters=8)
-		elif len(puk) != 8: return r3sponse.error("The puk code must be a eight character integer code.")
+		elif len(puk) != 8: return Response.error("The puk code must be a eight character integer code.")
 		info = {
 			"pin":pin,
 			"puk":puk,
@@ -610,7 +610,7 @@ class SmartCard(syst3m.objects.Traceback):
 		if l_response["error"] != None: return l_response
 
 		# success.
-		return r3sponse.success(f"Successfully installed smart card [{self.serial_number}].", {
+		return Response.success(f"Successfully installed smart card [{self.serial_number}].", {
 			"pin":info["pin"],
 			"puk":info["puk"],
 		})
@@ -631,21 +631,21 @@ class SmartCard(syst3m.objects.Traceback):
 
 		# handle.
 		if "Incorrect PUK" in output:
-			return r3sponse.error(f"Provided an incorrect puk code.")
+			return Response.error(f"Provided an incorrect puk code.")
 		elif "Incorrect PIN" in output:
 			info = self.get_info()
 			if info['success']: 
-				return r3sponse.error(f"Provided an incorrect pin code, {info['pin_attempts']} attempts left.")
+				return Response.error(f"Provided an incorrect pin code, {info['pin_attempts']} attempts left.")
 			else: 
-				return r3sponse.error(f"Provided an incorrect pin code.")
+				return Response.error(f"Provided an incorrect pin code.")
 			return response
 		elif "PUK is blocked" in output:
-			return False, r3sponse.error(f"The puk code of smart card [{self.serial_number}] is blocked.")
+			return False, Response.error(f"The puk code of smart card [{self.serial_number}] is blocked.")
 		elif "Error: " in output:
-			return r3sponse.error(output.split("Error: ")[1].replace('.\n', '. ').replace('\n', ''))
+			return Response.error(output.split("Error: ")[1].replace('.\n', '. ').replace('\n', ''))
 
 		# success.
-		return r3sponse.success("Successfully checked the output.")
+		return Response.success("Successfully checked the output.")
 
 	# representations.
 	def __repr__(self):

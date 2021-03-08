@@ -80,9 +80,9 @@ def stop(path, timeout=SSYNC_DAEMON_SLEEPTIME*10, sleeptime=1):
 			break
 		time.sleep(sleeptime)
 	if stopped:
-		return r3sponse.success(f"Successfully stopped ssht00ls daemon [{path}].")
+		return Response.success(f"Successfully stopped ssht00ls daemon [{path}].")
 	else:
-		return r3sponse.error(f"Failed to stop ssht00ls daemon [{path}].")
+		return Response.error(f"Failed to stop ssht00ls daemon [{path}].")
 
 # the daemon object class.
 class Daemon(syst3m.objects.Thread):
@@ -173,7 +173,7 @@ class Daemon(syst3m.objects.Thread):
 			# sync.
 			response = self.sync(attempts=3, delay=[3, 5, 10])
 			if self.log_level >= 1:
-				r3sponse.log(response=response)
+				Response.log(response=response)
 			if not response["success"]: 
 				self.crash(f"ssht00ls daemon ({self.id}) encountered an error while synchronizing: {response.error}", unmount=False)
 
@@ -219,7 +219,7 @@ class Daemon(syst3m.objects.Thread):
 				time.sleep(0.5)
 				response = self.delete(self.path, remote=False, subpath=False,)
 				if not response["success"]: return response
-		return r3sponse.success("Successfully unmounted.")
+		return Response.success("Successfully unmounted.")
 	def delete(self, path, remote=False, subpath=True):
 
 		# sandbox.
@@ -239,11 +239,11 @@ class Daemon(syst3m.objects.Thread):
 			if remote:
 				msg = f"Sandbox enabled, skip deletion of {self.alias}:{str_id}."
 				if self.log_level >= 0: print(msg)
-				return r3sponse.success(msg)
+				return Response.success(msg)
 			else:
 				msg = f"Sandbox enabled, skip deletion of {str_id}."
 				if self.log_level >= 0: print(msg)
-				return r3sponse.success(msg)
+				return Response.success(msg)
 
 		# logs.
 		if self.log_level >= 1:
@@ -268,10 +268,10 @@ class Daemon(syst3m.objects.Thread):
 			if not response["success"]: return response
 			#response = ssh.utils.test_path(alias=self.alias, path=path)
 			#if response.error != None and f"{path} does not exist" not in response.error:
-			#	return r3sponse.error(f"Failed to delete {self.alias}:{path}, error: {response.error}")
+			#	return Response.error(f"Failed to delete {self.alias}:{path}, error: {response.error}")
 			if response.output != "":
-				return r3sponse.error(f"Failed to delete {self.alias}:{str_id}, error: {output}")
-			return r3sponse.success(f"Successfully deleted {self.alias}:{str_id}")
+				return Response.error(f"Failed to delete {self.alias}:{str_id}, error: {output}")
+			return Response.success(f"Successfully deleted {self.alias}:{str_id}")
 
 		# remote to local.
 		else:
@@ -288,8 +288,8 @@ class Daemon(syst3m.objects.Thread):
 			response = self.utils.execute(command=cmd)
 			if not response["success"]: return response
 			if response.output != "":
-				return r3sponse.error(f"Failed to delete {str_id}, error: {output}")
-			return r3sponse.success(f"Successfully deleted {str_id}")
+				return Response.error(f"Failed to delete {str_id}, error: {output}")
+			return Response.success(f"Successfully deleted {str_id}")
 	def index(self, short=False):
 
 		# index.
@@ -308,7 +308,7 @@ class Daemon(syst3m.objects.Thread):
 			try:
 				clean_index[subpath] = index[path]
 			except KeyError:
-				return r3sponse.error(f"Should not happen(#278363). (subpath: {subpath}), (path: {path}), (index: {index}), (remote index: {remote_index}).")
+				return Response.error(f"Should not happen(#278363). (subpath: {subpath}), (path: {path}), (index: {index}), (remote index: {remote_index}).")
 		for path, mtime in remote_index.items():
 			subpath = self.subpath(path)
 			if subpath not in all_paths: 
@@ -317,7 +317,7 @@ class Daemon(syst3m.objects.Thread):
 			try:
 				remote_clean_index[subpath] = remote_index[path]
 			except KeyError:
-				return r3sponse.error(f"Should not happen(#739639). (subpath: {subpath}), (path: {path}), (index: {index}), (remote index: {remote_index}).")
+				return Response.error(f"Should not happen(#739639). (subpath: {subpath}), (path: {path}), (index: {index}), (remote index: {remote_index}).")
 
 		# mismatches.
 		synchronized, mismatches = self.mismatches(clean_index, remote_clean_index, all_paths)
@@ -330,7 +330,7 @@ class Daemon(syst3m.objects.Thread):
 				self.last_index["0"] = clean_index
 			if self.last_remote_index == {}:
 				self.last_remote_index["0"] = remote_clean_index
-			return r3sponse.success(f"Successfully indexed [{self.alias}:{self.path}] & [{self.path}].", {
+			return Response.success(f"Successfully indexed [{self.alias}:{self.path}] & [{self.path}].", {
 				"synchronized":synchronized,
 				"index":index,
 				"remote_index":remote_index,
@@ -397,7 +397,7 @@ class Daemon(syst3m.objects.Thread):
 						"local_mtime":lmtime,
 						"remote_mtime":rmtime,
 					}
-		return r3sponse.error(f"Failed to synchronize [{self.alias}:{self.remote}] & [{self.path}], mismatches: {mismatches}].")
+		return Response.error(f"Failed to synchronize [{self.alias}:{self.remote}] & [{self.path}], mismatches: {mismatches}].")
 		"""
 	def process_mismatches(self, clean_index, remote_clean_index, mismatches):
 
@@ -424,7 +424,7 @@ class Daemon(syst3m.objects.Thread):
 			# should not happen.
 			if rmtime == None and lmtime == None: 
 				self.set_last_index(clean_index) ; self.set_last_index(remote_clean_index, remote=True)
-				return r3sponse.error(f"No remote & local modification time present. (path: {subpath}), (rmtime: {rmtime}), (lmtime: {lmtime}), (last_rmtime: {last_rmtime}), (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
+				return Response.error(f"No remote & local modification time present. (path: {subpath}), (rmtime: {rmtime}), (lmtime: {lmtime}), (last_rmtime: {last_rmtime}), (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
 
 			# one missing.
 			elif rmtime == None or lmtime == None:
@@ -458,7 +458,7 @@ class Daemon(syst3m.objects.Thread):
 				# should not happen.
 				else:
 					self.set_last_index(clean_index) ; self.set_last_index(remote_clean_index, remote=True)
-					return r3sponse.error(f"Should not happen (#3243443). (path: {subpath}), (rmtime: {rmtime}), (lmtime: {lmtime}), (last_rmtime: {last_rmtime}), (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
+					return Response.error(f"Should not happen (#3243443). (path: {subpath}), (rmtime: {rmtime}), (lmtime: {lmtime}), (last_rmtime: {last_rmtime}), (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
 
 			# both present.
 			elif rmtime != None and lmtime != None:
@@ -478,12 +478,12 @@ class Daemon(syst3m.objects.Thread):
 				# should not happen.
 				else:
 					self.set_last_index(clean_index) ; self.set_last_index(remote_clean_index, remote=True)
-					return r3sponse.error(f"Unable to compare rmtime: {rmtime} & lmtime: {lmtime}. (path: {subpath}), (rmtime: {rmtime}), (lmtime: {lmtime}), (last_rmtime: {last_rmtime}), (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
+					return Response.error(f"Unable to compare rmtime: {rmtime} & lmtime: {lmtime}. (path: {subpath}), (rmtime: {rmtime}), (lmtime: {lmtime}), (last_rmtime: {last_rmtime}), (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
 
 			# exceptions.
 			else:
 				self.set_last_index(clean_index) ; self.set_last_index(remote_clean_index, remote=True)
-				return r3sponse.error(f"Should not happen (#407294). (path: {subpath}), (rmtime: {rmtime}), (lmtime: {lmtime}), (last_rmtime: {last_rmtime}), (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
+				return Response.error(f"Should not happen (#407294). (path: {subpath}), (rmtime: {rmtime}), (lmtime: {lmtime}), (last_rmtime: {last_rmtime}), (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
 
 			# do not remove this exception.
 			# it is required for safe edits, to make sure a dir never gets synced unless it is created / removed.
@@ -495,7 +495,7 @@ class Daemon(syst3m.objects.Thread):
 				# add to updates.
 				if local_to_remote and remote_to_local:
 					self.set_last_index(clean_index) ; self.set_last_index(remote_clean_index, remote=True)
-					return r3sponse.error(f"Can not synchronize both remote to local & local to remote (rmtime: {rmtime}) (lmtime: {lmtime}), (last_rmtime: {last_rmtime}) (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
+					return Response.error(f"Can not synchronize both remote to local & local to remote (rmtime: {rmtime}) (lmtime: {lmtime}), (last_rmtime: {last_rmtime}) (last_lmtime: {last_lmtime}), index: {clean_index}, remote index: {remote_clean_index}.")
 				if "delete" in options: 
 					if self.log_level >= 1: 
 						if local_to_remote:
@@ -522,7 +522,7 @@ class Daemon(syst3m.objects.Thread):
 						"empty_directory":empty_directory,}
 		# handler.
 		self.set_last_index(clean_index) ; self.set_last_index(remote_clean_index, remote=True)
-		return r3sponse.success(f"Successfully indexed [{self.alias}:{rfullpath}] & [{lfullpath}].", {
+		return Response.success(f"Successfully indexed [{self.alias}:{rfullpath}] & [{lfullpath}].", {
 			"synchronized":len(updates) == 0 and len(deletions) == 0,
 			"updates":updates,
 			"deletions":deletions,
@@ -652,9 +652,9 @@ class Daemon(syst3m.objects.Thread):
 			if self.log_level > 0:
 				print(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized.")
 			if self.log_level >= 3:
-				return r3sponse.success(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized, index: {response.index}, remote index: {response.remote_index}.")
+				return Response.success(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized, index: {response.index}, remote index: {response.remote_index}.")
 			else:
-				return r3sponse.success(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized.")
+				return Response.success(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized.")
 		"""
 
 		# get index.
@@ -664,9 +664,9 @@ class Daemon(syst3m.objects.Thread):
 			if self.log_level >= 1:
 				print(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized.")
 			if self.log_level >= 3:
-				return r3sponse.success(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized, index: {response.index}, remote index: {response.remote_index}.")
+				return Response.success(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized, index: {response.index}, remote index: {response.remote_index}.")
 			else:
-				return r3sponse.success(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized.")
+				return Response.success(f"Directories [{self.alias}:{self.path}] & [{self.path}] are already synchronized.")
 		updates,deletions = response.unpack(["updates", "deletions"])
 		if multiprocessing and len(updates) < 50:
 			if self.log_level >= 0:
@@ -710,7 +710,7 @@ class Daemon(syst3m.objects.Thread):
 						inside_batch_size += 1
 					del depths[str(depth)]
 			if depths != {}:
-				return r3sponse.error(f"Should not happen(#234938). (depths: {depths}), (updates: {updates}).")
+				return Response.error(f"Should not happen(#234938). (depths: {depths}), (updates: {updates}).")
 
 			# add directories.
 			for path, info in dir_updates.items():
@@ -845,8 +845,8 @@ class Daemon(syst3m.objects.Thread):
 		response = self.index(short=True)
 		if not response["success"]: return response
 		elif not response.synchronized:
-			return r3sponse.error(f"Failed to synchronize [{self.alias}:{self.remote}] & [{self.path}], mismatches: {response.mismatches}].")
+			return Response.error(f"Failed to synchronize [{self.alias}:{self.remote}] & [{self.path}], mismatches: {response.mismatches}].")
 
 		# handler.
-		return r3sponse.success(f"Successfully synchronized [{self.alias}:{self.path}] & [{self.path}].")
+		return Response.success(f"Successfully synchronized [{self.alias}:{self.path}] & [{self.path}].")
 	

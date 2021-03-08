@@ -32,7 +32,7 @@ class SCP(syst3m.objects.Traceback):
 
 		# checks.
 		if alias == None:
-			response = r3sponse.parameters.check(default=None, parameters={
+			response = Response.parameters.check(default=None, parameters={
 				"username":username,
 				"ip":ip,
 				"server_path":server_path,
@@ -42,7 +42,7 @@ class SCP(syst3m.objects.Traceback):
 			}, traceback=self.__traceback__(function="download"))
 			if not response["success"]: return response
 		else:
-			response = r3sponse.parameters.check(default=None, parameters={
+			response = Response.parameters.check(default=None, parameters={
 				"alias":alias,
 				"server_path":server_path,
 				"client_path":client_path,
@@ -51,7 +51,7 @@ class SCP(syst3m.objects.Traceback):
 
 		# check client path.
 		if Files.exists(client_path):
-			return r3sponse.error(f"Client path [{client_path}] already exists.")
+			return Response.error(f"Client path [{client_path}] already exists.")
 
 		# do.
 		command = self.__build__(
@@ -65,19 +65,19 @@ class SCP(syst3m.objects.Traceback):
 		
 		# check fails.
 		if "No such file or directory" in output:
-			return r3sponse.error(f"Server path [{server_path}] does not exist.")
+			return Response.error(f"Server path [{server_path}] does not exist.")
 		elif "not a regular file" in output:
-			return r3sponse.error(f"Server path [{server_path}] is a directory.")
+			return Response.error(f"Server path [{server_path}] is a directory.")
 		elif "" == output:
 			if not Files.exists(client_path):
-				return r3sponse.error(f"Failed to download [{server_path}].")
+				return Response.error(f"Failed to download [{server_path}].")
 			# check success.	
 			else:
-				return r3sponse.success(f"Successfully downloaded [{server_path}].")
+				return Response.success(f"Successfully downloaded [{server_path}].")
 		# unknown.
 		else:
 			l = f"Failed to download [{client_path}]"
-			return r3sponse.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return Response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		
 		#
 	def upload(self, 
@@ -97,7 +97,7 @@ class SCP(syst3m.objects.Traceback):
 
 		# checks.
 		if alias == None:
-			response = r3sponse.parameters.check(default=None, parameters={
+			response = Response.parameters.check(default=None, parameters={
 				"username":username,
 				"ip":ip,
 				"server_path":server_path,
@@ -107,7 +107,7 @@ class SCP(syst3m.objects.Traceback):
 			}, traceback=self.__traceback__(function="upload"))
 			if not response["success"]: return response
 		else:
-			response = r3sponse.parameters.check(default=None, parameters={
+			response = Response.parameters.check(default=None, parameters={
 				"alias":alias,
 				"server_path":server_path,
 				"client_path":client_path,
@@ -116,7 +116,7 @@ class SCP(syst3m.objects.Traceback):
 
 		# check client path.
 		if not Files.exists(client_path):
-			return r3sponse.error(f"Client path [{client_path}] does not exist.")
+			return Response.error(f"Client path [{client_path}] does not exist.")
 
 		# do.
 		command = self.__build__(
@@ -130,15 +130,15 @@ class SCP(syst3m.objects.Traceback):
 
 		# check fails.
 		if "No such file or directory" in output:
-			return r3sponse.error(f"The base path [{FilePath(server_path).base()}] of the specified file does not exist on the server.")
+			return Response.error(f"The base path [{FilePath(server_path).base()}] of the specified file does not exist on the server.")
 		elif "not a regular file" in output:
-			return r3sponse.error(f"Client path [{client_path}] is a directory.")
+			return Response.error(f"Client path [{client_path}] is a directory.")
 		elif "" == output:
-			return r3sponse.success(f"Successfully uploaded [{client_path}].")
+			return Response.success(f"Successfully uploaded [{client_path}].")
 		# unknown.
 		else:
 			l = f"Failed to upload [{client_path}]"
-			return r3sponse.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return Response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		
 		#
 	# system functions.

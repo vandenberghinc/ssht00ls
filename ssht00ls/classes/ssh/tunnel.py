@@ -28,7 +28,7 @@ class Tunnel(syst3m.objects.Thread):
 	):
 
 		# defaults.
-		syst3m.objects.Thread.__init__(self, traceback="ssht00ls.ssh.tunnel", raw_traceback="ssht00ls.ssh.Tunnel", log_level=syst3m.defaults.log_level(default=-1))
+		syst3m.objects.Thread.__init__(self, traceback="ssht00ls.ssh.tunnel", raw_traceback="ssht00ls.ssh.Tunnel", log_level=Defaults.log_level(default=-1))
 
 		# modules.
 		self.utils = ssh_utils
@@ -70,7 +70,7 @@ class Tunnel(syst3m.objects.Thread):
 		if log_level == None: log_level = self.log_level # keep this one indent back.
 
 		# check parameters.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			traceback=self.__traceback__(function="establish"),
 			parameters={
 				"alias":alias,
@@ -86,13 +86,13 @@ class Tunnel(syst3m.objects.Thread):
 
 		# check already established
 		if self.established:
-			return r3sponse.success(f"Tunnel [{id}] is already established.")
+			return Response.success(f"Tunnel [{id}] is already established.")
 
 		# execute.
-		output = syst3m.console.execute(f"ssh -L {port}:{ip}:{remote_port} -f -N {DEFAULT_SSH_OPTIONS} {alias}", async_=True)
+		output = Code.execute(f"ssh -L {port}:{ip}:{remote_port} -f -N {DEFAULT_SSH_OPTIONS} {alias}", async_=True)
 		if not output.success: return output
 		if output != "":
-			return r3sponse.error(f"Failed to establish tunnel {id}, error: {output}.")
+			return Response.error(f"Failed to establish tunnel {id}, error: {output}.")
 
 		# send cached run permission.
 		response = ssht00ls_agent.webserver.set(group="tunnels.run_permission", id=id, data="True")
@@ -107,9 +107,9 @@ class Tunnel(syst3m.objects.Thread):
 				remote_port=remote_port,
 				reconnect=reconnect,)
 			if not tunnel.established:
-				return r3sponse.error(f"Failed to establish tunnel {tunnel.id}.")
+				return Response.error(f"Failed to establish tunnel {tunnel.id}.")
 		elif not self.established:
-			return r3sponse.error(f"Failed to establish tunnel {self.id}.")
+			return Response.error(f"Failed to establish tunnel {self.id}.")
 
 		# start thread.
 		if not self.specific and reconnect:
@@ -120,7 +120,7 @@ class Tunnel(syst3m.objects.Thread):
 		# handler.
 		attributes = {}
 		if not self.specific: attributes["tunnel"] = tunnel
-		return r3sponse.success(f"Successfully established tunnel [{id}].", attributes)
+		return Response.success(f"Successfully established tunnel [{id}].", attributes)
 
 		#
 	def kill(self,
@@ -144,7 +144,7 @@ class Tunnel(syst3m.objects.Thread):
 		if log_level == None: log_level = self.log_level
 
 		# check parameters.
-		response = r3sponse.parameters.check(
+		response = Response.parameters.check(
 			traceback=self.__traceback__(function="kill"),
 			parameters={
 				"alias":alias,
@@ -157,7 +157,7 @@ class Tunnel(syst3m.objects.Thread):
 
 		# check established.
 		if not self.__established__(alias=alias, ip=ip, port=port, remote_port=remote_port):
-			return r3sponse.success(f"Tunnel [{id}] was not active.")
+			return Response.success(f"Tunnel [{id}] was not active.")
 
 		# check stop thread.
 		response = ssht00ls_agent.webserver.set(group="tunnels.run_permission", id=id, data="False")
@@ -178,24 +178,24 @@ class Tunnel(syst3m.objects.Thread):
 		# kill pid(s).
 		pid = self.__pid__(alias=alias, ip=ip, port=port, remote_port=remote_port)
 		if pid == None:
-			return r3sponse.error(f"Unable to determine the pid of tunnel [{id}].")
+			return Response.error(f"Unable to determine the pid of tunnel [{id}].")
 		elif isinstance(pid, (list, Array)):
 			for i in pid:
-				response = syst3m.defaults.kill(pid=i, log_level=log_level)
+				response = Code.kill(pid=i, log_level=log_level)
 				if not response.success:
-					return r3sponse.error(f"Failed to kill pid [{i}] of tunnel [{id}], error: {response.error}")
+					return Response.error(f"Failed to kill pid [{i}] of tunnel [{id}], error: {response.error}")
 		else:
-			response = syst3m.defaults.kill(pid=pid, log_level=log_level)
+			response = Code.kill(pid=pid, log_level=log_level)
 			if not response.success:
-				return r3sponse.error(f"Failed to kill pid [{pid}] of tunnel [{id}], error: {response.error}")
+				return Response.error(f"Failed to kill pid [{pid}] of tunnel [{id}], error: {response.error}")
 
 
 		# check stopped.
 		if self.__established__(alias=alias, ip=ip, port=port, remote_port=remote_port):
-			return r3sponse.error(f"Failed to stop tunnel [{id}].")
+			return Response.error(f"Failed to stop tunnel [{id}].")
 
 		# handler.
-		return r3sponse.success(f"Successfully stopped tunnel [{id}].")
+		return Response.success(f"Successfully stopped tunnel [{id}].")
 
 		#
 	def list(self, alias=None):
@@ -203,7 +203,7 @@ class Tunnel(syst3m.objects.Thread):
 		array, dictionary = [], {}
 		#all_aliases, c = list(CONFIG["aliases"].keys()), 0
 		includes = f"ssh -L "
-		response = syst3m.defaults.processes(includes=includes)
+		response = Code.processes(includes=includes)
 		if not response.success: return response
 		for pid, info in response.processes.items():
 			pass_ = False
@@ -225,7 +225,7 @@ class Tunnel(syst3m.objects.Thread):
 					"port":port,
 					"remote_port":remote_port,
 				}
-		return r3sponse.success(f"Successfully listed {len(array)} tunnels.", {
+		return Response.success(f"Successfully listed {len(array)} tunnels.", {
 			"tunnels":array,
 			"array":array,
 			"dictionary":dictionary,
@@ -239,7 +239,7 @@ class Tunnel(syst3m.objects.Thread):
 
 		# checks.
 		if not self.established:
-			self.send_crash(response=r3sponse.error_response("The tunnel is not established yet."))
+			self.send_crash(response=Response.error_response("The tunnel is not established yet."))
 
 		# start.
 		while self.run_permission:
@@ -279,7 +279,7 @@ class Tunnel(syst3m.objects.Thread):
 	def __stop__(self):
 		response = self.kill()
 		if not response.success: return response
-		return r3sponse.success(f"Successfully stopped [{self.id}]")
+		return Response.success(f"Successfully stopped [{self.id}]")
 	# properties.
 	@property
 	def id(self):
@@ -299,7 +299,7 @@ class Tunnel(syst3m.objects.Thread):
 		if remote_port == None: remote_port = self.remote_port
 		if ip == None: ip = self.ip
 		id = self.__id__(alias=alias, ip=ip, port=port, remote_port=remote_port)
-		response = syst3m.defaults.processes(includes=f"ssh -L {port}:{ip}:{remote_port}")
+		response = Code.processes(includes=f"ssh -L {port}:{ip}:{remote_port}")
 		if not response.success: raise ValueError(f"Unable to determine if tunnel {id} is active, error: {response.error}")
 		return len(response.processes) >= 1
 	@property
@@ -311,7 +311,7 @@ class Tunnel(syst3m.objects.Thread):
 		if remote_port == None: remote_port = self.remote_port
 		if ip == None: ip = self.ip
 		id = self.__id__(alias=alias, ip=ip, port=port, remote_port=remote_port)
-		response = syst3m.defaults.processes(includes=f"ssh -L {port}:{ip}:{remote_port}")
+		response = Code.processes(includes=f"ssh -L {port}:{ip}:{remote_port}")
 		if not response.success: raise ValueError(f"Unable to determine if tunnel {id} is active, error: {response.error}")
 		pids = list(response.processes.keys())
 		if len(pids) == 0:

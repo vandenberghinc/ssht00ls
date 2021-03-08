@@ -205,10 +205,10 @@ class SSHD(syst3m.objects.Traceback):
 			fp.ownership.set(owner="root", group=None, sudo=True)
 			os.system("sudo systemctl restart ssh")
 			if not fp.exists(sudo=True):
-				return r3sponse.error(f"Failed to save the sshd configuration.")
+				return Response.error(f"Failed to save the sshd configuration.")
 
 		# success.
-		return r3sponse.success("Successfully created the sshd configuration.", {
+		return Response.success("Successfully created the sshd configuration.", {
 				"sshd":configuration,
 			})
 
@@ -236,7 +236,7 @@ class SSHD(syst3m.objects.Traceback):
 			try: 
 				info["allowed_ips"]
 				if not isinstance(info["allowed_ips"], list):
-					return r3sponse.error(f"Invalid usage, parameter [users.{username}.allowed_ips] is supposed to be a list with allowed ip addresses.")
+					return Response.error(f"Invalid usage, parameter [users.{username}.allowed_ips] is supposed to be a list with allowed ip addresses.")
 			except KeyError: info["allowed_ips"] = []
 			try: info["sftp_only"]
 			except KeyError: info["sftp_only"] = False
@@ -248,7 +248,7 @@ class SSHD(syst3m.objects.Traceback):
 			except KeyError: info["tcp_forwarding"] = False
 
 		# response.
-		return r3sponse.success("Successfully checked the user items.")
+		return Response.success("Successfully checked the user items.")
 
 		#
 	def __check_utils_installed__(self, usernames=[]):
@@ -259,7 +259,7 @@ class SSHD(syst3m.objects.Traceback):
 		for username in usernames:
 			
 			# non existant.
-			fp = FilePath(f"{syst3m.defaults.vars.homes}{username}/.ssh/utils/.version.py")
+			fp = FilePath(f"{Defaults.vars.homes}{username}/.ssh/utils/.version.py")
 			if not fp.exists(sudo=True): 
 				to_install.append(username)
 
@@ -276,7 +276,7 @@ class SSHD(syst3m.objects.Traceback):
 			if response["error"] != None: return response
 
 		# success.
-		return r3sponse.success("Successfully verified the ssht00ls utils installation.")
+		return Response.success("Successfully verified the ssht00ls utils installation.")
 
 		#
 	def __install_utils__(self, usernames=[]):
@@ -284,7 +284,7 @@ class SSHD(syst3m.objects.Traceback):
 		# checks.
 		if isinstance(usernames, str): usernames = [usernames]
 		if len(usernames) == 0: 
-			return r3sponse.error("No usernames specified.")
+			return Response.error("No usernames specified.")
 
 		# create tmp lib.
 		utils_lib = gfp.clean(path=f"{SOURCE_PATH}/classes/utils/")
@@ -297,7 +297,7 @@ class SSHD(syst3m.objects.Traceback):
 		os.system(f"rm -fr {utils_tmp}/isdir.py")
 		os.system(f"rm -fr {utils_tmp}/size.py")
 		if not Files.exists(utils_tmp):
-			return r3sponse.error("Failed to install the ssht00ls utils (#2).")
+			return Response.error("Failed to install the ssht00ls utils (#2).")
 
 		# iterate.
 		for username in usernames:
@@ -311,16 +311,16 @@ class SSHD(syst3m.objects.Traceback):
 				if response["error"] != None: return response
 
 			# copy.
-			fp = FilePath(f"{syst3m.defaults.vars.homes}{username}/.ssh/utils/")
+			fp = FilePath(f"{Defaults.vars.homes}{username}/.ssh/utils/")
 			os.system(f"sudo rm -fr {fp.path}")
 			os.system(f"sudo rsync -az {utils_tmp} {fp.path} --delete")
 			fp.ownership.set(owner=username, group=None, sudo=True, recursive=True)
 			fp.permission.set(permission=755, recursive=True, sudo=True)
 			if not fp.exists(sudo=True):
-				return r3sponse.error("Failed to install the ssht00ls utils (#3).")
+				return Response.error("Failed to install the ssht00ls utils (#3).")
 
 		# success.
-		return r3sponse.success("Successfully installed the ssht00ls utils.")
+		return Response.success("Successfully installed the ssht00ls utils.")
 
 		#
 	def __install_banner__(self, banner="", usernames=[]):
@@ -328,7 +328,7 @@ class SSHD(syst3m.objects.Traceback):
 		# checks.
 		if isinstance(usernames, str): usernames = [usernames]
 		if len(usernames) == 0: 
-			return r3sponse.error("No usernames specified.")
+			return Response.error("No usernames specified.")
 
 		# save banner.
 		file = File(path='/tmp/banner', data=banner)
@@ -337,15 +337,15 @@ class SSHD(syst3m.objects.Traceback):
 
 		# iterate.
 		for username in usernames:
-			fp = FilePath(f"/{syst3m.defaults.vars.homes}{username}/.ssh/banner")
+			fp = FilePath(f"/{Defaults.vars.homes}{username}/.ssh/banner")
 			file.file_path.copy(fp.path, sudo=True)
 			fp.permission.set(permission=755, sudo=True)
 			fp.ownership.set(owner=username, group=None, sudo=True)
 			if not fp.exists(sudo=True):
-				return r3sponse.error(f"Failed to install the banner for user [{username}].")
+				return Response.error(f"Failed to install the banner for user [{username}].")
 
 		# success.
-		return r3sponse.success("Successfully installed the banner.")
+		return Response.success("Successfully installed the banner.")
 
 		#
 	#

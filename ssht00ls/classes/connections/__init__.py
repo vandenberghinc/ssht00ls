@@ -27,7 +27,7 @@ class Connections(syst3m.objects.Traceback):
 						"sendq":sendq,
 						"net_id":net_id,
 					}
-		return r3sponse.success(f"Successfully listed {len(connections)} ssh connection(s).", {
+		return Response.success(f"Successfully listed {len(connections)} ssh connection(s).", {
 			"connections":connections,
 		})
 

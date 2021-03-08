@@ -53,22 +53,22 @@ class Agent(syst3m.objects.Traceback):
 
 		# initialize.
 		private_key = private_key.replace("//", "/")
-		response = r3sponse.parameters.check(default=None, parameters={
+		response = Response.parameters.check(default=None, parameters={
 			"private_key":private_key
 		}, traceback=self.__traceback__(function="add"))
 		if not response["success"]: return response
 		if smartcard:
-			response = r3sponse.parameters.check(default=None, parameters={
+			response = Response.parameters.check(default=None, parameters={
 				"pin":pin
 			}, traceback=self.__traceback__(function="add"))
 			if not response["success"]: return response
 		else:
 			if not Files.exists(private_key):
-				return r3sponse.error(f"Private key [{private_key}] does not exist.")
+				return Response.error(f"Private key [{private_key}] does not exist.")
 			if public_key == None:
 				public_key = private_key.replace("/private_key","/public_key")
 			if not Files.exists(public_key):
-				return r3sponse.error(f"Public key [{public_key}] does not exist.")
+				return Response.error(f"Public key [{public_key}] does not exist.")
 
 		# check agent connection.
 		output = utils.__execute__(["ssh-add", "-L"])
@@ -90,19 +90,19 @@ class Agent(syst3m.objects.Traceback):
 					reattempt=False,
 				)
 			else:
-				return r3sponse.error("Failed to communicate with the ssh-agent. Try logging out the current system user & logging back in (or execute [$ eval `ssh-agent`]).")
+				return Response.error("Failed to communicate with the ssh-agent. Try logging out the current system user & logging back in (or execute [$ eval `ssh-agent`]).")
 
 		# check already added.
 		if not smartcard:
 			response = self.check(public_key=public_key, raw=False)
 			if response.success:
-				return r3sponse.success(f"Key [{private_key}] is already added to the ssh agent.")
+				return Response.success(f"Key [{private_key}] is already added to the ssh agent.")
 
 		# with passphrase.
 		if smartcard or passphrase not in [False, None, "", "none", "None"]:
 			if smartcard:
 				private_key = smartcards.path
-				if syst3m.defaults.vars.os in ["macos"]:
+				if Defaults.vars.os in ["macos"]:
 					os.system(f"rm -fr {smartcards.path}")
 					os.system(f"cp {smartcards.original_path} {smartcards.path}")
 					os.system(f"chmod 644 {smartcards.path}")
@@ -145,9 +145,9 @@ class Agent(syst3m.objects.Traceback):
 			try:
 				r = spawn.expect(["Bad passphrase", "Incorrect pin"], timeout=0.5)
 				if r == 0:
-					return r3sponse.error(f"Provided an incorrect passphrase for key [{private_key}].")
+					return Response.error(f"Provided an incorrect passphrase for key [{private_key}].")
 				elif r == 1:
-					return r3sponse.error("Provided an incorrect pin code.")
+					return Response.error("Provided an incorrect pin code.")
 				else:
 					raise ValueError(f"Unkown spawn behaviour: {spawn}")	
 			except pexpect.exceptions.TIMEOUT:
@@ -161,9 +161,9 @@ class Agent(syst3m.objects.Traceback):
 
 			# check success.
 			if "incorrect passphrase" in output.lower() or "bad passphrase" in output.lower():
-				return r3sponse.error(f"Provided an incorrect passphrase for key [{private_key}].")
+				return Response.error(f"Provided an incorrect passphrase for key [{private_key}].")
 			elif "incorrect pin" in output.lower():
-				return r3sponse.error("Provided an incorrect pin code.")
+				return Response.error("Provided an incorrect pin code.")
 			elif "Failed to communicate" in output or "agent refused operation" in output or "Error connecting to agent" in output or "Connection refused" in output:
 				if reattempt:
 					utils.ssh_agent()
@@ -182,27 +182,27 @@ class Agent(syst3m.objects.Traceback):
 						reattempt=False,
 					)
 				else:
-					return r3sponse.error("Failed to communicate with the ssh-agent. Try logging out the current system user & logging back in (or execute [$ eval `ssh-agent`]).")
+					return Response.error("Failed to communicate with the ssh-agent. Try logging out the current system user & logging back in (or execute [$ eval `ssh-agent`]).")
 			elif "Identity added:" in output or "Card added:" in output: 
-				return r3sponse.success(f"Successfully added key [{private_key}] to the ssh agent.")
+				return Response.success(f"Successfully added key [{private_key}] to the ssh agent.")
 			elif output != "": 
-				return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent, error: {output}")
+				return Response.error(f"Failed to add key [{private_key}] to the ssh agent, error: {output}")
 			else: 
 				# no output check if key added.
 				if not smartcard:
 					response = self.check(public_key=public_key, raw=False)
 					if response.success:
-						return r3sponse.success(f"Successfully added key [{private_key}] to the ssh agent.")
+						return Response.success(f"Successfully added key [{private_key}] to the ssh agent.")
 					else:
-						return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent (#2) (output: {output}).")
+						return Response.error(f"Failed to add key [{private_key}] to the ssh agent (#2) (output: {output}).")
 				else:
-					return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent (#1) (output: {output}).")
+					return Response.error(f"Failed to add key [{private_key}] to the ssh agent (#1) (output: {output}).")
 
 			# handle eof.
 			"""try:
 				spawn.expect(pexpect.EOF, timeout=timeout)
 			except pexpect.ExceptionPexpect as epe:
-				return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent #3.")"""
+				return Response.error(f"Failed to add key [{private_key}] to the ssh agent #3.")"""
 
 		# without pass.
 		else:
@@ -210,11 +210,11 @@ class Agent(syst3m.objects.Traceback):
 
 			# check success.
 			if "Failed to communicate" in output or "agent refused operation" in output or "Error connecting to agent" in output or "Connection refused" in output:
-				return r3sponse.error("Failed to communicate with the ssh-agent.")
+				return Response.error("Failed to communicate with the ssh-agent.")
 			elif "Identity added:" in output: 
-				return r3sponse.success(f"Successfully added key [{private_key}] to the ssh agent.")
+				return Response.success(f"Successfully added key [{private_key}] to the ssh agent.")
 			else: 
-				return r3sponse.error(f"Failed to add key [{private_key}] to the ssh agent, error: {output}")
+				return Response.error(f"Failed to add key [{private_key}] to the ssh agent, error: {output}")
 
 		#
 	def delete(self):
@@ -224,11 +224,11 @@ class Agent(syst3m.objects.Traceback):
 
 		# check success.
 		if "Could not open a connection to your authentication agent." in output:
-			return r3sponse.error("Failed to communicate with the ssh-agent.")
+			return Response.error("Failed to communicate with the ssh-agent.")
 		elif "All identities removed." in output: 
-			return r3sponse.success(f"Successfully removed all keys from the ssh agent.")
+			return Response.success(f"Successfully removed all keys from the ssh agent.")
 		else: 
-			return r3sponse.error(f"Failed to remove all keys from the ssh agent.")
+			return Response.error(f"Failed to remove all keys from the ssh agent.")
 
 		#
 	def list(self):
@@ -238,12 +238,12 @@ class Agent(syst3m.objects.Traceback):
 		# list keys.
 		output = utils.__execute__(command=["ssh-add", "-L"], return_format="array")
 		if "Failed to communicate" in output:
-			return r3sponse.error("Failed to communicate with the ssh-agent.")
+			return Response.error("Failed to communicate with the ssh-agent.")
 		elif "The agent has no identities." in output:
 			keys = []
 		else:
 			keys = output
-		return r3sponse.success(f"Successfully listed the agent's keys.", {
+		return Response.success(f"Successfully listed the agent's keys.", {
 			"keys":keys,
 		})
 
@@ -257,28 +257,28 @@ class Agent(syst3m.objects.Traceback):
 				public_key = self.public_key
 
 		# params.
-		response = r3sponse.parameters.check({
+		response = Response.parameters.check({
 			"public_key":public_key
 		}, traceback=self.__traceback__(function="check"))
 		if not response["success"]: return response
 
 		# checks.
 		if not raw and not Files.exists(public_key):
-			return r3sponse.error(f"Public key path [{public_key}] does not exist.")
+			return Response.error(f"Public key path [{public_key}] does not exist.")
 
 		# load public key.
 		if not raw:
 			try:
 				public_key = Files.load(public_key)
 			except FileNotFoundError:
-				return r3sponse.error(f"Failed to load public key path [{public_key}].")
+				return Response.error(f"Failed to load public key path [{public_key}].")
 
 		# check.
 		output = utils.__execute__(["ssh-add", "-L"])
 		if str(public_key.replace("\n",'')) in output:
-			return r3sponse.success(f"Public key [{public_key}] is added to the ssh agent.")
+			return Response.success(f"Public key [{public_key}] is added to the ssh agent.")
 		else:
-			return r3sponse.error(f"Public key [{public_key}] is not added to the ssh agent.")
+			return Response.error(f"Public key [{public_key}] is not added to the ssh agent.")
 
 		#####################################################################################################################
 		# OLD.
@@ -288,7 +288,7 @@ class Agent(syst3m.objects.Traceback):
 		try:
 			public_key_id = public_key.split("[#id:")[1].split("]")[0]
 		except IndexError:
-			return r3sponse.error(f"Public key [{public_key}] does not contain any id.")
+			return Response.error(f"Public key [{public_key}] does not contain any id.")
 
 		# list.
 		response = self.list()
@@ -314,9 +314,9 @@ class Agent(syst3m.objects.Traceback):
 
 		# success.
 		if success:
-			return r3sponse.success(f"Public key [{public_key}] is added to the ssh agent.")
+			return Response.success(f"Public key [{public_key}] is added to the ssh agent.")
 		else:
-			return r3sponse.error(f"Public key [{public_key}] is not added to the ssh agent.")
+			return Response.error(f"Public key [{public_key}] is not added to the ssh agent.")
 
 		#
 	def initialize(self):
@@ -329,18 +329,18 @@ class Agent(syst3m.objects.Traceback):
 				l = subprocess.check_output(['eval', '"$(ssh-agent)"'], shell=True).decode()
 				output = utils.__execute__(command=["ssh-add", "-l"])
 				if "Failed to communicate" in output or "Error connecting to agent" in output:
-					return r3sponse.error("Failed to communicate with the ssh-agent.")
+					return Response.error("Failed to communicate with the ssh-agent.")
 				else:
 					output = utils.__execute__(command=["ssh-add", "-l"])
 					if "Failed to communicate" in output or "Error connecting to agent" in output:
-						return r3sponse.error("Failed to communicate with the ssh-agent.")
+						return Response.error("Failed to communicate with the ssh-agent.")
 			else:
 				output = utils.__execute__(command=["ssh-add", "-l"])
 				if "Failed to communicate" in output or "Error connecting to agent" in output:
-					return r3sponse.error("Failed to communicate with the ssh-agent.")
+					return Response.error("Failed to communicate with the ssh-agent.")
 
 		# success.
-		return r3sponse.success(f"Successfully initialized the ssh agent.")
+		return Response.success(f"Successfully initialized the ssh agent.")
 
 # Initialized objects.
 agent = Agent()
