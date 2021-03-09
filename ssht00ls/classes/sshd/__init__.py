@@ -259,14 +259,14 @@ class SSHD(Traceback):
 		for username in usernames:
 			
 			# non existant.
-			fp = FilePath(f"{Defaults.vars.homes}{username}/.ssht00ls/utils/.version.py")
+			fp = FilePath(f"{Defaults.vars.homes}{username}/.ssht00ls/utils/.version")
 			if not fp.exists(sudo=True): 
 				to_install.append(username)
 
 			# check version.
 			else: 
 				version = utils.__execute__(["sudo", "cat", fp.path])
-				github_version = utils.__execute__(["curl", "https://raw.githubusercontent.com/vandenberghinc/ssht00ls/master/.version.py?raw=true"])
+				github_version = utils.__execute__(["curl", "https://raw.githubusercontent.com/vandenberghinc/ssht00ls/master/.version?raw=true"])
 				if str(version) != str(github_version):
 					to_install.append(username)
 
@@ -292,7 +292,7 @@ class SSHD(Traceback):
 		if not os.path.exists(utils_lib):
 			raise ValueError(f"ssht00ls library [{utils_lib}] does not exist.")
 		Files.copy(utils_lib, utils_tmp)
-		Files.copy(f"{SOURCE_PATH}/.version.py", f"{utils_tmp}.version.py")
+		Files.copy(f"{SOURCE_PATH}/.version", f"{utils_tmp}.version")
 		Files.delete(f"{utils_tmp}/__pycache__")
 		Files.delete(f"{utils_tmp}/__init__.py")
 		Files.chmod(f"{utils_tmp}/*", "+x")

@@ -142,7 +142,7 @@ class CLI_(CLI.CLI):
 
 		# version.
 		if self.arguments.present(['--version']):
-			self.stop(message=f"{ALIAS} version:"+Files.load(f"{SOURCE_PATH}/.version.py").replace("\n",""), json=Defaults.options.json)
+			self.stop(message=f"{ALIAS} version:"+Files.load(f"{SOURCE_PATH}/.version").replace("\n",""), json=Defaults.options.json)
 
 		# config.
 		elif self.arguments.present('--config'):
