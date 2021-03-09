@@ -2,7 +2,7 @@
 
 # import dev0s library.
 curl -s https://raw.githubusercontent.com/vandenberghinc/dev0s/master/lib/bash/import | bash 
-if [[ "$OSTYPE" == "darwin"* ]] ; then source /usr/local/lib/dev0s/lib/import --silent ; else . /usr/local/lib/dev0s/lib/import --silent ; fi
+if [[ "$OSTYPE" == "darwin"* ]] ; then source /usr/local/lib/dev0s/lib/bash/import --silent ; else . /usr/local/lib/dev0s/lib/bash/import --silent ; fi
 	
 # the alias.
 alias="ssht00ls"
