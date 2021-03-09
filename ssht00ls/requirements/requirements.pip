@@ -3,7 +3,7 @@
 
 # inc packages.
 encrypti0n>=3.20.6
-dev0s>=2.17.0
+dev0s>=2.17.1
 netw0rk>=1.9.5
 syst3m>=2.16.9
 
