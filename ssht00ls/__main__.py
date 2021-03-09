@@ -3,7 +3,9 @@
 
 # imports.
 from dev0s import * ; Defaults.insert(Defaults.source_path(__file__, back=2))
+Environment["INTERACTIVE"] = True
 Environment["CLI"] = True
+Defaults.options.interactive = True
 from ssht00ls.classes.config import *
 import ssht00ls
 

@@ -17,8 +17,6 @@ import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpec
 from dev0s import *
 import dev0s, syst3m, encrypti0n, netw0rk
 
-
-
 # source.	
 SOURCE_PATH = Defaults.source_path(__file__, back=3)
 BASE = Defaults.source_path(SOURCE_PATH)
@@ -137,8 +135,7 @@ if CHECKS and not RESET_CACHE:
 	})
 
 	# database.
-	Files.chmod(f"{SOURCE_PATH}/classes/utils/isdir.py", permission=777)
-	Files.chmod(f"{SOURCE_PATH}/classes/utils/size.py", permission=777)
+	Files.chmod(f"{SOURCE_PATH}/lib/utils/*", permission="+x")
 
 	# agent.
 	ssht00ls_agent = encrypti0n.Agent(

@@ -19,7 +19,7 @@ class SSHD(Traceback):
 		if CHECKS:
 			utils_lib = gfp.clean(path=f"{SOURCE_PATH}/classes/utils/")
 			for subpath, url in [
-				["handler", "https://raw.githubusercontent.com/vandenberghinc/ssht00ls/master/ssht00ls/classes/utils/handler"],
+				["handler", "https://raw.githubusercontent.com/vandenberghinc/ssht00ls/master/ssht00ls/lib/utils/handler"],
 			]:
 				full_path = gfp.clean(f"{utils_lib}/{subpath}")
 				if not Files.exists(full_path):
@@ -168,11 +168,11 @@ class SSHD(Traceback):
 
 				# shell access.
 				else:
-					configuration += '\n        ForceCommand bash .ssh/utils/handler'
+					configuration += '\n        ForceCommand bash .ssht00ls/utils/handler'
 
 				# match unverified ips.
 				configuration += f'\n    Match User {username} Address *,!{self.__sum_list__(info["allowed_ips"])}'
-				configuration += f'\n        ForceCommand .ssh/utils/log.py "Your ip address is not authorized." "Authorize your ip address to access user [{username}]."'
+				configuration += f'\n        ForceCommand .ssht00ls/utils/log "Your ip address is not authorized." "Authorize your ip address to access user [{username}]."'
 
 			# no ip filter.
 			else:
@@ -183,7 +183,7 @@ class SSHD(Traceback):
 
 				# shell access.
 				else:
-					configuration += '\n    ForceCommand bash .ssh/utils/handler'
+					configuration += '\n    ForceCommand bash .ssht00ls/utils/handler'
 
 		# match none authorized users.
 		#if '*all*' not in list(users.keys()):
@@ -191,7 +191,7 @@ class SSHD(Traceback):
 		configuration += '\n    PasswordAuthentication no'
 		configuration += '\n    PermitEmptyPasswords no'
 		configuration += '\n    PubkeyAuthentication no'
-		configuration += f'\n    ForceCommand .ssh/utils/log.py "You are not authorized to access user [$USER] over ssh."'
+		configuration += f'\n    ForceCommand .ssht00ls/utils/log "You are not authorized to access user [$USER] over ssh."'
 		configuration += "\n"
 
 		# save sshd.
@@ -259,14 +259,14 @@ class SSHD(Traceback):
 		for username in usernames:
 			
 			# non existant.
-			fp = FilePath(f"{Defaults.vars.homes}{username}/.ssh/utils/.version.py")
+			fp = FilePath(f"{Defaults.vars.homes}{username}/.ssht00ls/utils/.version.py")
 			if not fp.exists(sudo=True): 
 				to_install.append(username)
 
 			# check version.
 			else: 
 				version = utils.__execute__(["sudo", "cat", fp.path])
-				github_version = utils.__execute__(["curl", "https://raw.githubusercontent.com/vandenberghinc/ssht00ls/master/ssht00ls/classes/utils/.version.py?raw=true"])
+				github_version = utils.__execute__(["curl", "https://raw.githubusercontent.com/vandenberghinc/ssht00ls/master/.version.py?raw=true"])
 				if str(version) != str(github_version):
 					to_install.append(username)
 
@@ -287,15 +287,15 @@ class SSHD(Traceback):
 			return Response.error("No usernames specified.")
 
 		# create tmp lib.
-		utils_lib = gfp.clean(path=f"{SOURCE_PATH}/classes/utils/")
+		utils_lib = gfp.clean(path=f"{SOURCE_PATH}/lib/utils/")
 		utils_tmp = "/tmp/utils/"
 		if not os.path.exists(utils_lib):
 			raise ValueError(f"ssht00ls library [{utils_lib}] does not exist.")
-		os.system(f"rsync -az {utils_lib} {utils_tmp} --delete")
-		os.system(f"rm -fr {utils_tmp}/__pycache__")
-		os.system(f"rm -fr {utils_tmp}/__init__.py")
-		os.system(f"rm -fr {utils_tmp}/isdir.py")
-		os.system(f"rm -fr {utils_tmp}/size.py")
+		Files.copy(utils_lib, utils_tmp)
+		Files.copy(f"{SOURCE_PATH}/.version.py", f"{utils_tmp}.version.py")
+		Files.delete(f"{utils_tmp}/__pycache__")
+		Files.delete(f"{utils_tmp}/__init__.py")
+		Files.chmod(f"{utils_tmp}/*", "+x")
 		if not Files.exists(utils_tmp):
 			return Response.error("Failed to install the ssht00ls utils (#2).")
 
@@ -311,9 +311,11 @@ class SSHD(Traceback):
 				if response["error"] != None: return response
 
 			# copy.
-			fp = FilePath(f"{Defaults.vars.homes}{username}/.ssh/utils/")
-			os.system(f"sudo rm -fr {fp.path}")
-			os.system(f"sudo rsync -az {utils_tmp} {fp.path} --delete")
+			fp = FilePath(f"{Defaults.vars.homes}{username}/.ssht00ls/utils/")
+			if not Files.exists(fp.base(), sudo=True):
+				Files.create(path=fp.base(), sudo=True, directory=True)
+			fp.delete(sudo=True, forced=True)
+			Files.copy(utils_tmp, fp.path, sudo=True)
 			fp.ownership.set(owner=username, group=None, sudo=True, recursive=True)
 			fp.permission.set(permission=755, recursive=True, sudo=True)
 			if not fp.exists(sudo=True):

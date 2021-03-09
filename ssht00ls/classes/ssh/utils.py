@@ -292,7 +292,7 @@ def test_dir(alias=None, path=None, accept_new_host_keys=True, create=False, cre
 		response = test(alias=alias, accept_new_host_keys=accept_new_host_keys)
 		if not response.success: return response
 	lpath = "\'"+path+"\'"
-	command = f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ''' python3 /usr/local/lib/ssht00ls/classes/utils/isdir.py {path}''' """
+	command = f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ''' /usr/local/lib/ssht00ls/lib/utils/isdir {path}''' """
 	if Defaults.options.log_level >= 6:
 		print(f"<{ALIAS}.ssh.utils.test> command: {command}")
 	response = Code.execute(
