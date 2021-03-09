@@ -11,26 +11,12 @@ if "--update" in sys.argv and ALIAS in sys.argv[0]:
 	sys.exit(0)
 
 # imports.
-try: 
+import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpect, random, getpass, time
 
-	# imports.
-	import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpect, random, getpass, time
+# inc imports.
+from dev0s import *
+import syst3m, encrypti0n, netw0rk
 
-	# inc imports.
-	from dev0s import *
-	import syst3m, encrypti0n, netw0rk
-
-# download.
-except ImportError as e:
-	from dev0s import *
-	Defaults.install_requirements(f"{Defaults.source_path(__file__, back=3)}/requirements/requirements.pip")
-
-	# imports.
-	import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpect, random, getpass, time
-
-	# inc imports.
-	from dev0s import *
-	import syst3m, encrypti0n, netw0rk
 
 
 # source.	
