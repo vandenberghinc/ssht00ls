@@ -3,7 +3,7 @@
 
 # imports.
 from dev0s import * ; Defaults.insert(Defaults.source_path(__file__, back=2))
-os.environ["CLI"] = "True"
+Environment["CLI"] = True
 os.environ["INTERACTIVE"] = "True"
 from ssht00ls.classes.config import *
 import ssht00ls
