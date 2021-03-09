@@ -240,7 +240,7 @@ class CLI_(CLI.CLI):
 
 				# delete.
 				elif self.arguments.present('--delete'):
-					if not self.arguments.present(["-f", "--forced"]) and not syst3m.console.input(f"You are deleting alias [{alias}]. Do you wish to proceed?", yes_no=True):
+					if not self.arguments.present(["-f", "--forced"]) and not Console.input(f"You are deleting alias [{alias}]. Do you wish to proceed?", yes_no=True):
 						self.stop(error="Aborted.")
 					response = ssht00ls.aliases.delete(alias=alias)
 					self.stop(response=response, json=Defaults.options.json)

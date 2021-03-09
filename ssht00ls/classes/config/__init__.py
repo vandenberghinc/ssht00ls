@@ -15,7 +15,7 @@ import os, sys, requests, ast, json, pathlib, glob, platform, subprocess, pexpec
 
 # inc imports.
 from dev0s import *
-import syst3m, encrypti0n, netw0rk
+import dev0s, syst3m, encrypti0n, netw0rk
 
 
 

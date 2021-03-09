@@ -14,7 +14,7 @@ class Connections(Traceback):
 
 		#
 	def list(self, filter="ssh"):
-		output = syst3m.utils.__execute_script__("""ss | grep ssh | awk '{print $1","$2","$3","$4","$5","$6}' """)
+		output = dev0s.utils.__execute_script__("""ss | grep ssh | awk '{print $1","$2","$3","$4","$5","$6}' """)
 		connections = {}
 		for line in output.split("\n"):
 			if line not in [""]:

@@ -104,7 +104,7 @@ class SSync(Traceback):
 		if Defaults.vars.os in ["osx", "macos"]:
 			#os.system(f"cp '{SOURCE_PATH}/static/media/icons/Icon\r' '{path}/Icon\r'")
 			icon = f'{SOURCE_PATH}/static/media/icons/mounted.png'
-			syst3m.utils.__execute_script__(f"""
+			dev0s.utils.__execute_script__(f"""
 				
 				#!/bin/bash
 				# Set Icon to a File / Folder on macOS

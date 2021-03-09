@@ -75,7 +75,7 @@ def execute(
 	# execute.
 	if log_level >= 6: print(command)
 	if loader != None and log_level >= 0 and loader.__class__.__name__ not in ["Loader"]:
-		loader = syst3m.console.Loader(loader, interactive=INTERACTIVE)
+		loader = Console.Loader(loader, interactive=INTERACTIVE)
 	if message != None: message = message.replace("$COMMAND", command)
 	
 	# version 4.
@@ -117,7 +117,7 @@ def execute(
 	# script.
 
 	# version 1.
-	#output = syst3m.utils.__execute_script__(command)
+	#output = dev0s.utils.__execute_script__(command)
 	
 	# version 2.
 	#try:
@@ -213,7 +213,7 @@ def test(alias=None, accept_new_host_keys=True, checks=True):
 	"""
 	version 2.
 	# pexpect.
-	spawn = syst3m.console.Spawn(command)
+	spawn = Console.Spawn(command)
 	response = spawn.start()
 	if not response.success: return response
 
@@ -311,7 +311,7 @@ def test_dir(alias=None, path=None, accept_new_host_keys=True, create=False, cre
 	elif output.replace("\n","") in ["directory", "does-not-exist"]:
 		if output.replace("\n","") in ["does-not-exist"]:
 			if create:
-				output = syst3m.utils.__execute_script__(f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ''' mkdir -p {path}''' """)
+				output = dev0s.utils.__execute_script__(f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ''' mkdir -p {path}''' """)
 				if "permission denied" in output: return Response.error(f"Unable to create remote directory [{alias}:{path}].")
 				return test_dir(alias=alias, path=path, checks=False, create=False, created=True)
 			else:
@@ -326,7 +326,7 @@ def test_ssht00ls(alias=None, accept_new_host_keys=True, install=True):
 		if not response.success:
 			if response.error == f"Path {alias}:{path} does not exist.":
 				if install:
-					loader = syst3m.console.Loader(f"Installing ssht00ls library on remote {alias}.")
+					loader = Console.Loader(f"Installing ssht00ls library on remote {alias}.")
 					response = Code.execute(f"ssh {DEFAULT_SSH_OPTIONS} {alias} ' curl https://raw.githubusercontent.com/vandenberghinc/{ALIAS}/master/{ALIAS}/requirements/installer.remote | bash ' ")
 					if not response.success: return Response.error(response.error)
 					output = response.output
@@ -352,15 +352,15 @@ def kill(identifier=None, sudo=False):
 	return Code.kill(includes=identifier, sudo=sudo)
 	# old.
 	killed = 0
-	output = syst3m.utils.__execute_script__(f"""ps -ax | grep "{identifier}" | """ + """awk '{print $1"|"$2"|"$3"|"$4}' """)
+	output = dev0s.utils.__execute_script__(f"""ps -ax | grep "{identifier}" | """ + """awk '{print $1"|"$2"|"$3"|"$4}' """)
 	for line in output.split("\n"):
 		if line not in ["", " "]:
 			pid,tty,_,process = line.split("|")
 			if process not in dont_kill:
-				loader = syst3m.console.Loader(f"Killing process {pid}.")
+				loader = Console.Loader(f"Killing process {pid}.")
 				if sudo: _sudo_ = "sudo "
 				else: _sudo_ = ""
-				output = syst3m.utils.__execute_script__(f"{_sudo_}kill {pid}")
+				output = dev0s.utils.__execute_script__(f"{_sudo_}kill {pid}")
 				if "terminated" in output:
 					loader.stop()
 					killed += 1

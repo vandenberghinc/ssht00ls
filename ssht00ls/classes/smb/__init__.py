@@ -89,7 +89,7 @@ class SMB(Thread):
 
 		# loader.
 		if log_level >= 0:
-			loader = syst3m.console.Loader(f"Mounting smb share [{alias}:{id}] to [{path}]")
+			loader = Console.Loader(f"Mounting smb share [{alias}:{id}] to [{path}]")
 
 		# checks.
 		response = Response.parameters.check({
@@ -247,7 +247,7 @@ class SMB(Thread):
 
 		# loader.
 		if log_level >= 0:
-			loader = syst3m.console.Loader(f"Unmounting [{path}]")
+			loader = Console.Loader(f"Unmounting [{path}]")
 
 		# checks.
 		response = Response.parameters.check({

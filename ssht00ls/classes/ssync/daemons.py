@@ -120,7 +120,7 @@ class Daemon(Thread):
 
 		# logs.
 		if self.log_level >= 0: 
-			loader = syst3m.console.Loader(f"Checking daemon {self.id}", interactive=INTERACTIVE)
+			loader = Console.Loader(f"Checking daemon {self.id}", interactive=INTERACTIVE)
 
 		# checks.
 		status = str(cache.get(id=self.cache_path, group="daemons"))
@@ -821,12 +821,12 @@ class Daemon(Thread):
 				else:
 					remote_deletions.append(path)
 			if local_deletions != []:
-				if self.log_level >= 0: loader = syst3m.console.Loader(f"Deleting {len(local_deletions)} local file(s).")
+				if self.log_level >= 0: loader = Console.Loader(f"Deleting {len(local_deletions)} local file(s).")
 				response = self.delete(local_deletions, remote=False)
 				if self.log_level >= 0: loader.stop(success=response["success"])
 				if not response["success"]: return response
 			if remote_deletions != []:
-				if self.log_level >= 0: loader = syst3m.console.Loader(f"Deleting {len(remote_deletions)} remote file(s).")
+				if self.log_level >= 0: loader = Console.Loader(f"Deleting {len(remote_deletions)} remote file(s).")
 				response = self.delete(remote_deletions, remote=True)
 				if self.log_level >= 0: loader.stop(success=response["success"])
 				if not response["success"]: return response

@@ -472,7 +472,7 @@ class Aliases(Traceback):
 		
 		# loader.
 		if log_level >= 0:
-			loader = syst3m.console.Loader(f"Synchronizing {len(_aliases_)} aliases.")
+			loader = Console.Loader(f"Synchronizing {len(_aliases_)} aliases.")
 
 		# check ssh dir.
 		if not Files.exists(f"{Defaults.vars.home}/.ssh"): os.system(f"mkdir {Defaults.vars.home}/.ssh && chown -R {Defaults.vars.user}:{Defaults.vars.group} {Defaults.vars.home}/.ssh && chmod 700 {Defaults.vars.home}/.ssh")
