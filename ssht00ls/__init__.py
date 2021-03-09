@@ -4,7 +4,7 @@
 # import classes.
 # keep this import style so you can also use the keys.Keys() etc directly.
 from ssht00ls import classes
-from ssht00ls.classes import ssht00ls_agent
+from ssht00ls.classes import ssht00ls_agent, network_info
 
 # import initialized classes & objects.
 from ssht00ls.classes.installation import installation
