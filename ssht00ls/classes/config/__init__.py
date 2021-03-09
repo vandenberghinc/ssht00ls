@@ -22,7 +22,7 @@ try:
 
 # download.
 except ImportError as e:
-	import syst3m
+	from dev0s import *
 	Defaults.install_requirements(f"{Defaults.source_path(__file__, back=3)}/requirements/requirements.pip")
 
 	# imports.

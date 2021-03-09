@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # import devos library.
-curl -s https://raw.githubusercontent.com/vandenberghinc/devos/master/lib/import | bash 
+curl -s https://raw.githubusercontent.com/vandenberghinc/devos/master/lib/bash/import | bash 
 if [[ "$OSTYPE" == "darwin"* ]] ; then source /usr/local/lib/devos/lib/import --silent ; else . /usr/local/lib/devos/lib/import --silent ; fi
 	
 # the alias.

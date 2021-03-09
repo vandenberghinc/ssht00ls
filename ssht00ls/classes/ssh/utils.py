@@ -107,7 +107,7 @@ def execute(
 		kill=kill,
 		shell=shell,
 		serialize=serialize,
-		log_level=l_log_level,
+		log_level=log_level,
 		__spawn_attributes__=__spawn_attributes__,	)
 	if loader.__class__.__name__ in ["Loader"]: loader.stop(success=response.success)
 	if message != None and response.success: response.message = message
