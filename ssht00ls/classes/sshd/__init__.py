@@ -288,17 +288,9 @@ class SSHD(Traceback):
 
 		# create tmp lib.
 		utils_lib = gfp.clean(path=f"{SOURCE_PATH}/lib/utils/")
-		utils_tmp = "/tmp/utils/"
-		if not os.path.exists(utils_lib):
-			raise ValueError(f"ssht00ls library [{utils_lib}] does not exist.")
-		Files.copy(utils_lib, utils_tmp)
-		Files.copy(f"{SOURCE_PATH}/.version", f"{utils_tmp}.version")
-		Files.delete(f"{utils_tmp}/__pycache__")
-		Files.delete(f"{utils_tmp}/__init__.py")
-		Files.chmod(f"{utils_tmp}/*", "+x")
-		if not Files.exists(utils_tmp):
-			return Response.error("Failed to install the ssht00ls utils (#2).")
-
+		Files.copy(f"{SOURCE_PATH}/.version", f"{utils_lib}.version")
+		Files.chmod(f"{utils_lib}/*", "+x")
+		
 		# iterate.
 		for username in usernames:
 
@@ -315,7 +307,7 @@ class SSHD(Traceback):
 			if not Files.exists(fp.base(), sudo=True):
 				Files.create(path=fp.base(), sudo=True, directory=True)
 			fp.delete(sudo=True, forced=True)
-			Files.copy(utils_tmp, fp.path, sudo=True)
+			Files.copy(utils_lib, fp.path, sudo=True)
 			fp.ownership.set(owner=username, group=None, sudo=True, recursive=True)
 			fp.permission.set(permission=755, recursive=True, sudo=True)
 			if not fp.exists(sudo=True):
