@@ -171,7 +171,7 @@ def execute(
 		#return Response.error(error)
 	else:
 		if serialize:
-			try: response = Response.ResponseObject(json=output)
+			try: response = Response.ResponseObject(output)
 			except Exception as e: 
 				if loader != None: loader.stop(success=False)
 				return Response.error(f"Failed to serialize output: {output}")
