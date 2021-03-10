@@ -2,8 +2,8 @@
 # pip packages.
 
 # inc packages.
-encrypti0n>=3.22.1
-dev0s>=3.2.5
-netw0rk>=1.11.0
-syst3m>=2.18.5
+encrypti0n>=3.22.2
+dev0s>=3.2.6
+netw0rk>=1.11.1
+syst3m>=2.18.6
 
