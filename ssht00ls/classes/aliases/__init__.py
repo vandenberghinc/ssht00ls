@@ -52,7 +52,7 @@ class Aliases(Traceback):
 		self.log_level = log_level
 
 		# sync non interactive.
-		self.sync()
+		#self.sync()
 
 		#
 	def list(self):
