@@ -62,9 +62,11 @@ def execute(
 	# Logging.
 	# the success message (leave None to use the default).
 	message=None,
-	#   loader message.
+	#   loader message (str, Loader).
 	loader=None,
-	#   the log level.
+	# stop the loader at the end of the request (bool).
+	stop_loader=True,
+	#   the log level (int).
 	log_level=dev0s.defaults.options.log_level,
 	#
 	# System functions.
@@ -106,6 +108,7 @@ def execute(
 		shell=shell,
 		serialize=serialize,
 		loader=loader,
+		stop_loader=stop_loader,
 		log_level=log_level,
 		__spawn_attributes__=__spawn_attributes__,	)
 	if message != None and response.success: response.message = message
