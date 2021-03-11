@@ -123,7 +123,7 @@ class CLI_(CLI.CLI):
 		self.arguments.check(json=Defaults.options.json, exceptions=["--log-level", "--version", "--create-alias", "--non-interative"])
 
 		# sync aliases.
-		if ssht00ls_agent.activated and not self.arguments.present(["-h", "--config", "--help", "--version", "--unmount", "--list-tunnels"]):
+		if self.arguments.present(['--sync']) or (ssht00ls_agent.activated and not self.arguments.present(["-h", "--config", "--help", "--version", "--unmount", "--list-tunnels"])):
 			str_args = Array(sys.argv).string(joiner=" ")
 			aliases = ["*"]
 			if not self.arguments.present(["--sync"]):
