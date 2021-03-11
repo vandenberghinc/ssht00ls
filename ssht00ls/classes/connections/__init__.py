@@ -27,7 +27,7 @@ class Connections(Traceback):
 						"sendq":sendq,
 						"net_id":net_id,
 					}
-		return Response.success(f"Successfully listed {len(connections)} ssh connection(s).", {
+		return dev0s.response.success(f"Successfully listed {len(connections)} ssh connection(s).", {
 			"connections":connections,
 		})
 

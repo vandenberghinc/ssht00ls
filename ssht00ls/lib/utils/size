@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # return ResponseObject to parse file path size.
-import os, sys
+import os, sys, dev0s
 from dev0s import *
 size = None
 path = sys.argv[1]

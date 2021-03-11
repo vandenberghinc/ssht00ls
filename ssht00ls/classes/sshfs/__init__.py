@@ -32,7 +32,7 @@ class SSHFS(Traceback):
 		# checks.
 		base = ""
 		if alias == None:
-			response = Response.parameters.check(
+			response = dev0s.response.parameters.check(
 				traceback=self.__traceback__(function="mount"), 
 				parameters={
 					"username":username,
@@ -45,7 +45,7 @@ class SSHFS(Traceback):
 			if not response["success"]: return response
 			base += f"sshfs -p {port} -o IdentityFile={key_path} {username}@{ip}"
 		else:
-			response = Response.parameters.check(
+			response = dev0s.response.parameters.check(
 				traceback=self.__traceback__(function="mount"), 
 				parameters={
 					"alias":alias,
@@ -64,20 +64,20 @@ class SSHFS(Traceback):
 
 		# check fails.
 		if "mount_osxfuse: mount point " in output and "is itself" in output:
-			return Response.error(f"Client path [{path}] is already mounted.")
+			return dev0s.response.error(f"Client path [{path}] is already mounted.")
 		elif "No such file or directory" in output:
-			return Response.error(f"Server path [{remote}] does not exist.")
+			return dev0s.response.error(f"Server path [{remote}] does not exist.")
 		elif "" == output:
 			if not Files.exists(path):
-				return Response.error(f"Could not connect with server [{alias}].")
+				return dev0s.response.error(f"Could not connect with server [{alias}].")
 			# check success.	
 			else:
-				return Response.success(f"Successfully mounted directory [{path}].")
+				return dev0s.response.success(f"Successfully mounted directory [{path}].")
 
 		# unknown.
 		else:
 			l = f"Failed to mount directory [{path}]"
-			return Response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return dev0s.response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		
 		#		
 	def unmount(self, 
@@ -90,7 +90,7 @@ class SSHFS(Traceback):
 	):
 
 		# checks.
-		response = Response.parameters.check(
+		response = dev0s.response.parameters.check(
 			traceback=self.__traceback__(function="unmount"),
 			parameters={
 				"path":path
@@ -104,9 +104,9 @@ class SSHFS(Traceback):
 		output = utils.__execute__(command=command)
 		if output != "":
 			l = f"Failed to unmount directory [{path}]."
-			return Response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return dev0s.response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		else:
-			return Response.success(f"Successfully unmounted directory [{path}].")
+			return dev0s.response.success(f"Successfully unmounted directory [{path}].")
 		#
 	
 # Initialized classes.

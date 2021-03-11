@@ -31,7 +31,7 @@ class Aliases(Traceback):
 		#	the smart card serial numbers.
 		serial_numbers=[],
 		# 	the log level.
-		log_level=Defaults.options.log_level,
+		log_level=dev0s.defaults.options.log_level,
 	):
 		
 		# defaults.
@@ -66,7 +66,7 @@ class Aliases(Traceback):
 			else:
 				array.append(i)
 				dictionary[i] = dict(CONFIG["aliases"][i])
-		return Response.success(f"Successfully listed {len(array)} aliases.", {
+		return dev0s.response.success(f"Successfully listed {len(array)} aliases.", {
 			"aliases":array,
 			"array":array,
 			"dictionary":dictionary,
@@ -99,7 +99,7 @@ class Aliases(Traceback):
 		except KeyError:
 			exists = False
 			if not create:
-				return Response.error(f"Alias [{alias}] does not exist.")
+				return dev0s.response.error(f"Alias [{alias}] does not exist.")
 
 
 		# check existing config.
@@ -161,7 +161,7 @@ class Aliases(Traceback):
 			utils.save_config_safely()
 
 		# handler.
-		return Response.success(f"Successfully checked alias {alias}.")
+		return dev0s.response.success(f"Successfully checked alias {alias}.")
 
 		#
 	def check_duplicate(self, alias=None):
@@ -171,8 +171,8 @@ class Aliases(Traceback):
 		# check.
 		try: CONFIG["aliases"][alias]
 		except KeyError:
-			return Response.success(f"Alias {alias} does not exist.")
-		return Response.error(f"Alias {alias} already exists.")
+			return dev0s.response.success(f"Alias {alias} does not exist.")
+		return dev0s.response.error(f"Alias {alias} already exists.")
 	def info(self, alias=None):
 		# check specific.
 		if self.specific:
@@ -185,7 +185,7 @@ class Aliases(Traceback):
 			info["ip"], info["port"] = info["public_ip"], info["public_port"]
 		else:
 			info["ip"], info["port"] = info["private_ip"], info["private_port"]
-		return Response.success(f"Successfully listed the info of alias {alias}.", {
+		return dev0s.response.success(f"Successfully listed the info of alias {alias}.", {
 			"info":info,
 		})
 	def delete(self, alias=None):
@@ -197,7 +197,7 @@ class Aliases(Traceback):
 		if not response["success"]: return response
 		del CONFIG["aliases"][alias]
 		utils.save_config_safely()
-		return Response.success(f"Successfully deleted alias {alias}.")
+		return dev0s.response.success(f"Successfully deleted alias {alias}.")
 	def edit(self, 
 		# the alias.
 		alias=None,
@@ -211,7 +211,7 @@ class Aliases(Traceback):
 		# save the edits.
 		save=True,
 		# the log level.
-		log_level=Defaults.options.log_level,
+		log_level=dev0s.defaults.options.log_level,
 	):
 		def edit_dict(dictionary={}, edits={}):
 			c = 0
@@ -257,7 +257,7 @@ class Aliases(Traceback):
 			# check encryption activated.
 			if edits["passphrase"] not in [False, "", "none", "None"]:
 				if not ssht00ls_agent.activated:
-					return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+					return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 				response = ssht00ls_agent.encryption.encrypt(edits["passphrase"])
 				if not response["success"]: return response
 				CONFIG["aliases"][alias]["smartcard"] = False
@@ -273,7 +273,7 @@ class Aliases(Traceback):
 			# check encryption activated.
 			if edits["pin"] not in [False, "", "none", "None"]:
 				if not ssht00ls_agent.activated:
-					return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+					return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 				response = ssht00ls_agent.encryption.encrypt(edits["pin"])
 				if not response["success"]: return response
 				CONFIG["aliases"][alias]["smartcard"] = True
@@ -290,9 +290,9 @@ class Aliases(Traceback):
 			CONFIG["aliases"][alias] = dictionary
 			utils.save_config_safely()
 		if edit_count > 0 or c > 0:
-			return Response.success(f"Successfully saved {c} edits for alias {alias}.")
+			return dev0s.response.success(f"Successfully saved {c} edits for alias {alias}.")
 		else:
-			return Response.error(f"No edits were specified.")
+			return dev0s.response.error(f"No edits were specified.")
 	def create(self, 
 		# the alias.
 		alias=None,
@@ -355,7 +355,7 @@ class Aliases(Traceback):
 
 
 		# checks.
-		response = Response.parameters.check(
+		response = dev0s.response.parameters.check(
 			traceback=self.__traceback__(function="create"),
 			parameters={
 				"alias":alias,
@@ -371,19 +371,19 @@ class Aliases(Traceback):
 			})
 		if not response["success"]: return response
 		if smartcard:
-			response = Response.parameters.check({
+			response = dev0s.response.parameters.check({
 				"pin":pin,
 			}, default=None, traceback=self.__traceback__(function="create"))
 			if not response["success"]: return response
 		else:
-			response = Response.parameters.check({
+			response = dev0s.response.parameters.check({
 				"passphrase":passphrase,
 			}, default=None, traceback=self.__traceback__(function="create"))
 			if not response["success"]: return response
 
 		# check encryption activated.
 		if checks and not ssht00ls_agent.activated:
-			return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+			return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 
 		# duplicate.
 		if checks:
@@ -391,12 +391,12 @@ class Aliases(Traceback):
 			if not response["success"]: return response
 
 		# keys.
-		private_key = Environment.fill(private_key)
-		public_key = Environment.fill(public_key)
+		private_key = dev0s.env.fill(private_key)
+		public_key = dev0s.env.fill(public_key)
 		if not Files.exists(private_key):
-			return Response.error(f"Private key {private_key} does not exist.")
+			return dev0s.response.error(f"Private key {private_key} does not exist.")
 		if not Files.exists(public_key):
-			return Response.error(f"Public key {public_key} does not exist.")
+			return dev0s.response.error(f"Public key {public_key} does not exist.")
 
 		# info.
 		json_config, config = {}, ""
@@ -454,7 +454,7 @@ class Aliases(Traceback):
 			utils.save_config_safely()
 
 		# response.
-		return Response.success(f"Successfully created alias [{alias}].", {
+		return dev0s.response.success(f"Successfully created alias [{alias}].", {
 			"json":json_config,
 			"str":config,
 		})
@@ -472,18 +472,18 @@ class Aliases(Traceback):
 		
 		# loader.
 		if log_level >= 0:
-			loader = Console.Loader(f"Synchronizing {len(_aliases_)} aliases.")
+			loader = dev0s.console.Loader(f"Synchronizing {len(_aliases_)} aliases.")
 
 		# check ssh dir.
-		if not Files.exists(f"{Defaults.vars.home}/.ssh"): os.system(f"mkdir {Defaults.vars.home}/.ssh && chown -R {Defaults.vars.user}:{Defaults.vars.group} {Defaults.vars.home}/.ssh && chmod 700 {Defaults.vars.home}/.ssh")
+		if not Files.exists(f"{dev0s.defaults.vars.home}/.ssh"): os.system(f"mkdir {dev0s.defaults.vars.home}/.ssh && chown -R {dev0s.defaults.vars.user}:{dev0s.defaults.vars.group} {dev0s.defaults.vars.home}/.ssh && chmod 700 {dev0s.defaults.vars.home}/.ssh")
 		
 		# check include.
 		include = f"include ~/.ssht00ls/lib/aliases"
-		if not Files.exists(f"{Defaults.vars.home}/.ssh/config"): 
-			Files.save(f"{Defaults.vars.home}/.ssh/config", include)
-			os.system(f"chown {Defaults.vars.user}:{Defaults.vars.group} {Defaults.vars.home}/.ssh/config && chmod 770 {Defaults.vars.home}/.ssh/config")
-		if include not in Files.load(f"{Defaults.vars.home}/.ssh/config"):
-			data = Files.load(f"{Defaults.vars.home}/.ssh/config")
+		if not Files.exists(f"{dev0s.defaults.vars.home}/.ssh/config"): 
+			Files.save(f"{dev0s.defaults.vars.home}/.ssh/config", include)
+			os.system(f"chown {dev0s.defaults.vars.user}:{dev0s.defaults.vars.group} {dev0s.defaults.vars.home}/.ssh/config && chmod 770 {dev0s.defaults.vars.home}/.ssh/config")
+		if include not in Files.load(f"{dev0s.defaults.vars.home}/.ssh/config"):
+			data = Files.load(f"{dev0s.defaults.vars.home}/.ssh/config")
 			new, included = "", False
 			for line in data.split("\n"):
 				if len(line) > 0 and line[0] == "#":
@@ -492,7 +492,7 @@ class Aliases(Traceback):
 					new += include+"\n"
 					included = True
 				new += line+"\n"
-			Files.save(f"{Defaults.vars.home}/.ssh/config", new)
+			Files.save(f"{dev0s.defaults.vars.home}/.ssh/config", new)
 
 		# iterate.
 		aliases, c = "", 0
@@ -534,10 +534,10 @@ class Aliases(Traceback):
 					CONFIG["aliases"][alias] = checked
 					utils.save_config_safely()
 				if isinstance(checked["private_key"], str):
-					checked["private_key"] = Environment.fill(checked["private_key"])
+					checked["private_key"] = dev0s.env.fill(checked["private_key"])
 					Files.chmod(checked["private_key"], permission=700)
 				if isinstance(checked["public_key"], str):
-					checked["public_key"] = Environment.fill(checked["public_key"])
+					checked["public_key"] = dev0s.env.fill(checked["public_key"])
 					Files.chmod(checked["public_key"], permission=700)
 				if interactive:
 					passphrase, has_passphrase, new_passphrase = None, True, True
@@ -552,7 +552,7 @@ class Aliases(Traceback):
 							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+								return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 							new_passphrase = False
 							response = ssht00ls_agent.encryption.decrypt(checked["pin"])
 							if not response.success: 
@@ -570,7 +570,7 @@ class Aliases(Traceback):
 							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+								return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 							new_passphrase = False
 							response = ssht00ls_agent.encryption.decrypt(checked["passphrase"])
 							if not response.success: 
@@ -602,7 +602,7 @@ class Aliases(Traceback):
 							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
-								return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+								return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 							response = ssht00ls_agent.encryption.encrypt(passphrase)
 							if not response.success: 
 								if log_level >= 0: loader.stop(success=False)
@@ -622,16 +622,18 @@ class Aliases(Traceback):
 
 		# handler.
 		if log_level >= 0: loader.stop()
-		return Response.success(f"Successfully synchronized {c} alias(es).")
+		return dev0s.response.success(f"Successfully synchronized {c} alias(es).")
 	def public(self, public_ip=None, private_ip=None):
-		return not (NETWORK_INFO["public_ip"] == public_ip and netw0rk.network.ping(private_ip, timeout=0.5).up == True)
+		response = dev0s.network.ping(private_ip, timeout=0.5)
+		if not response.success: response.crash()
+		return not (NETWORK_INFO["public_ip"] == public_ip and response.up == True)
 	# edit aliases lib.
 	def __edit_alias_lib__(self, alias, data):
 
 
 		# load lib & get lib depth from the aliases.
 		try:
-			lib = Files.load(f"{Defaults.vars.home}/.ssht00ls/lib/aliases")
+			lib = Files.load(f"{dev0s.defaults.vars.home}/.ssht00ls/lib/aliases")
 		except FileNotFoundError:
 			lib = ""
 
@@ -667,7 +669,7 @@ class Aliases(Traceback):
 			else: break
 
 		# save.
-		Files.save(f"{Defaults.vars.home}/.ssht00ls/lib/aliases", lib)
+		Files.save(f"{dev0s.defaults.vars.home}/.ssht00ls/lib/aliases", lib)
 
 	# iterate.
 	def __iter__(self):

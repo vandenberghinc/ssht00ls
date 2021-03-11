@@ -32,7 +32,7 @@ class SCP(Traceback):
 
 		# checks.
 		if alias == None:
-			response = Response.parameters.check(default=None, parameters={
+			response = dev0s.response.parameters.check(default=None, parameters={
 				"username":username,
 				"ip":ip,
 				"server_path":server_path,
@@ -42,7 +42,7 @@ class SCP(Traceback):
 			}, traceback=self.__traceback__(function="download"))
 			if not response["success"]: return response
 		else:
-			response = Response.parameters.check(default=None, parameters={
+			response = dev0s.response.parameters.check(default=None, parameters={
 				"alias":alias,
 				"server_path":server_path,
 				"client_path":client_path,
@@ -51,7 +51,7 @@ class SCP(Traceback):
 
 		# check client path.
 		if Files.exists(client_path):
-			return Response.error(f"Client path [{client_path}] already exists.")
+			return dev0s.response.error(f"Client path [{client_path}] already exists.")
 
 		# do.
 		command = self.__build__(
@@ -65,19 +65,19 @@ class SCP(Traceback):
 		
 		# check fails.
 		if "No such file or directory" in output:
-			return Response.error(f"Server path [{server_path}] does not exist.")
+			return dev0s.response.error(f"Server path [{server_path}] does not exist.")
 		elif "not a regular file" in output:
-			return Response.error(f"Server path [{server_path}] is a directory.")
+			return dev0s.response.error(f"Server path [{server_path}] is a directory.")
 		elif "" == output:
 			if not Files.exists(client_path):
-				return Response.error(f"Failed to download [{server_path}].")
+				return dev0s.response.error(f"Failed to download [{server_path}].")
 			# check success.	
 			else:
-				return Response.success(f"Successfully downloaded [{server_path}].")
+				return dev0s.response.success(f"Successfully downloaded [{server_path}].")
 		# unknown.
 		else:
 			l = f"Failed to download [{client_path}]"
-			return Response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return dev0s.response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		
 		#
 	def upload(self, 
@@ -97,7 +97,7 @@ class SCP(Traceback):
 
 		# checks.
 		if alias == None:
-			response = Response.parameters.check(default=None, parameters={
+			response = dev0s.response.parameters.check(default=None, parameters={
 				"username":username,
 				"ip":ip,
 				"server_path":server_path,
@@ -107,7 +107,7 @@ class SCP(Traceback):
 			}, traceback=self.__traceback__(function="upload"))
 			if not response["success"]: return response
 		else:
-			response = Response.parameters.check(default=None, parameters={
+			response = dev0s.response.parameters.check(default=None, parameters={
 				"alias":alias,
 				"server_path":server_path,
 				"client_path":client_path,
@@ -116,7 +116,7 @@ class SCP(Traceback):
 
 		# check client path.
 		if not Files.exists(client_path):
-			return Response.error(f"Client path [{client_path}] does not exist.")
+			return dev0s.response.error(f"Client path [{client_path}] does not exist.")
 
 		# do.
 		command = self.__build__(
@@ -130,15 +130,15 @@ class SCP(Traceback):
 
 		# check fails.
 		if "No such file or directory" in output:
-			return Response.error(f"The base path [{FilePath(server_path).base()}] of the specified file does not exist on the server.")
+			return dev0s.response.error(f"The base path [{FilePath(server_path).base()}] of the specified file does not exist on the server.")
 		elif "not a regular file" in output:
-			return Response.error(f"Client path [{client_path}] is a directory.")
+			return dev0s.response.error(f"Client path [{client_path}] is a directory.")
 		elif "" == output:
-			return Response.success(f"Successfully uploaded [{client_path}].")
+			return dev0s.response.success(f"Successfully uploaded [{client_path}].")
 		# unknown.
 		else:
 			l = f"Failed to upload [{client_path}]"
-			return Response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return dev0s.response.error((f"{l}, error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		
 		#
 	# system functions.

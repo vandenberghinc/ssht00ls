@@ -31,11 +31,11 @@ class SMB(Thread):
 		# 	the reconnect reattemps.
 		reattemps=15,
 		# 	the log level.
-		log_level=Defaults.options.log_level,
+		log_level=dev0s.defaults.options.log_level,
 	):
 
 		# defaults.
-		Thread.__init__(self, traceback="ssht00ls.smb", log_level=Defaults.log_level(default=-1))
+		Thread.__init__(self, traceback="ssht00ls.smb", log_level=dev0s.defaults.log_level(default=-1))
 
 		# specific variables.
 		self.specific = alias != None and id != None and path != None and ip != None
@@ -89,10 +89,10 @@ class SMB(Thread):
 
 		# loader.
 		if log_level >= 0:
-			loader = Console.Loader(f"Mounting smb share [{alias}:{id}] to [{path}]")
+			loader = dev0s.console.Loader(f"Mounting smb share [{alias}:{id}] to [{path}]")
 
 		# checks.
-		response = Response.parameters.check({
+		response = dev0s.response.parameters.check({
 			"id:str,String":id,
 			"path:str,String":path,
 			"alias:str,String":alias,
@@ -119,11 +119,11 @@ class SMB(Thread):
 			return response
 		elif response.mounted:
 			if log_level >= 0: loader.stop(success=False)
-			return Response.error(f"Path [{path}] is already mounted.")
+			return dev0s.response.error(f"Path [{path}] is already mounted.")
 		elif not response.exists:
-			os.system(f"mkdir -p {path} 2> /dev/null && chown {Defaults.vars.user}:{Defaults.vars.group} {path}")
+			os.system(f"mkdir -p {path} 2> /dev/null && chown {dev0s.defaults.vars.user}:{dev0s.defaults.vars.group} {path}")
 			if not os.path.exists(path):
-				os.system(f"sudo mkdir -p {path} 2> /dev/null && sudo chown {Defaults.vars.user}:{Defaults.vars.group} {path}")
+				os.system(f"sudo mkdir -p {path} 2> /dev/null && sudo chown {dev0s.defaults.vars.user}:{dev0s.defaults.vars.group} {path}")
 
 		# check tunnel.
 		if tunnel:
@@ -131,7 +131,7 @@ class SMB(Thread):
 			if not self.specific or (self.specific and self.tunnel_obj == None):
 				# check already established tunnel from previous session.
 				established_port = None
-				response = Code.processes(includes=f":localhost:445 -f -N {DEFAULT_SSH_OPTIONS} {alias}")
+				response = dev0s.code.processes(includes=f":localhost:445 -f -N {DEFAULT_SSH_OPTIONS} {alias}")
 				if not response.success: 
 					if log_level >= 0: loader.stop(success=False)
 					return response
@@ -144,7 +144,7 @@ class SMB(Thread):
 				# create new tunnel.
 				remote_port = int(port)
 				if established_port == None:
-					response = netw0rk.network.free_port(start=6000)
+					response = dev0s.network.free_port(start=6000)
 					if not response.success: 
 						if log_level >= 0: loader.stop(success=False)
 						return response
@@ -177,7 +177,7 @@ class SMB(Thread):
 						return response
 
 		# command.
-		if Defaults.vars.os in ["macos"]:
+		if dev0s.defaults.vars.os in ["macos"]:
 			if password == None:
 				user_pass = username
 			elif password == "":
@@ -187,15 +187,15 @@ class SMB(Thread):
 			command = f"mount_smbfs //{user_pass}@{ip}:{port}/{id} {path}"
 		else:
 			if log_level >= 0: loader.stop(success=False)
-			return Response.error("Coming soon.")
+			return dev0s.response.error("Coming soon.")
 			command = ""
 
 		# execute.
 		try:
-			output = Code.execute(command)
+			output = dev0s.code.execute(command)
 		except KeyboardInterrupt as e:
-			if Defaults.vars.os in ["macos"]:
-				Code.kill(includes=command, log_level=-1)
+			if dev0s.defaults.vars.os in ["macos"]:
+				dev0s.code.kill(includes=command, log_level=-1)
 			raise KeyboardInterrupt(e)
 		if not output.success: 
 			if log_level >= 0: loader.stop(success=False)
@@ -227,7 +227,7 @@ class SMB(Thread):
 		if not self.specific and tunnel: attributes["tunnel"] = tunnel_
 		if not self.specific and reconnect: attributes["smb"] = smb
 		if log_level >= 0: loader.stop()
-		return Response.success(f"Successfully mounted smb share [{alias}:{id}] to [{path}].", attributes)
+		return dev0s.response.success(f"Successfully mounted smb share [{alias}:{id}] to [{path}].", attributes)
 
 		#
 	def unmount(self, 
@@ -247,10 +247,10 @@ class SMB(Thread):
 
 		# loader.
 		if log_level >= 0:
-			loader = Console.Loader(f"Unmounting [{path}]")
+			loader = dev0s.console.Loader(f"Unmounting [{path}]")
 
 		# checks.
-		response = Response.parameters.check({
+		response = dev0s.response.parameters.check({
 			"path:str,String":path,
 			"forced:bool,Boolean":forced,
 			"sudo:bool,Boolean":sudo,
@@ -266,7 +266,7 @@ class SMB(Thread):
 			return response
 		elif not response.mounted:
 			if log_level >= 0: loader.stop(success=False)
-			return Response.error(f"Path [{path}] is not mounted.")
+			return dev0s.response.error(f"Path [{path}] is not mounted.")
 
 		# check stop thread.
 		"""
@@ -279,7 +279,7 @@ class SMB(Thread):
 			smb = response.thread
 		if smb != None:
 			response = smb.stop()
-			Response.log(response=response)
+			dev0s.response.log(response=response)
 			if not response.success: return response
 		"""
 
@@ -291,18 +291,18 @@ class SMB(Thread):
 		if forced: 
 			command += "-f "
 		command += path
-		output = Code.execute(command)
+		output = dev0s.code.execute(command)
 
 		# handlers.
 		if not output:
 			if log_level >= 0: loader.stop(success=False)
-			return Response.error(f"Failed to unmount [{path}], error: {output}")
+			return dev0s.response.error(f"Failed to unmount [{path}], error: {output}")
 		if output != "":
 			if log_level >= 0: loader.stop(success=False)
-			return Response.error((f"Failed to unmount [{path}], error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
+			return dev0s.response.error((f"Failed to unmount [{path}], error: "+output.replace("\n", ". ").replace(". .", ".")+".)").replace(". .",".").replace("\r","").replace("..","."))
 		else:
 			if log_level >= 0: loader.stop()
-			return Response.success(f"Successfully unmounted [{path}].")
+			return dev0s.response.success(f"Successfully unmounted [{path}].")
 
 		#
 	def parse(self,
@@ -314,7 +314,7 @@ class SMB(Thread):
 		if path == None: path = self.path
 
 		# checks.
-		response = Response.parameters.check({
+		response = dev0s.response.parameters.check({
 			"path:str,String":path,
 		}, traceback=self.__traceback__(function="unmount"))
 		if not response["success"]: return response
@@ -324,7 +324,7 @@ class SMB(Thread):
 		except FileNotFoundError: mounted = False
 		try: directory = os.path.isdir(path)
 		except FileNotFoundError: directory = False
-		return Response.success(f"Successfully parsed [{path}].", {
+		return dev0s.response.success(f"Successfully parsed [{path}].", {
 			"exists":os.path.exists(path),
 			"mounted":mounted,
 			"directory":directory,
@@ -336,7 +336,7 @@ class SMB(Thread):
 
 		# checks.
 		if not self.mounted:
-			self.send_crash(response=Response.error_response("The smb share is not mounted yet."))
+			self.send_crash(response=dev0s.response.error_response("The smb share is not mounted yet."))
 
 		# start.
 		while self.run_permission:
@@ -370,7 +370,7 @@ class SMB(Thread):
 		# do not kill the tunnel since it may be used by other mounts.
 		response = self.unmount()
 		if not response.success and "is not mounted" not in response.error: return response
-		return Response.success(f"Successfully stopped [{self.id}]")
+		return dev0s.response.success(f"Successfully stopped [{self.id}]")
 	# properties.
 	@property
 	def id(self):

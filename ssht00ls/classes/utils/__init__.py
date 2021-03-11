@@ -12,7 +12,7 @@ def save_config_safely(backup=True, __loader__=None, __keyboard_interrupt__=None
 		CONFIG.save()
 	except KeyboardInterrupt as e:
 		if __loader__ == None:
-			__loader__ = Console.Loader("&RED&Do not interrupt!&END& Saving ssht00ls config file.")
+			__loader__ = dev0s.console.Loader("&RED&Do not interrupt!&END& Saving ssht00ls config file.")
 		return save_config_safely(backup=False, __loader__=__loader__, __keyboard_interrupt__=e)
 	if __loader__ != None: __loader__.stop()
 	if __keyboard_interrupt__ != None:
@@ -29,7 +29,7 @@ def save_config_backup_safely(__loader__=None):
 		Files.save(path, CONFIG.dictionary, format="json")
 	except KeyboardInterrupt as e:
 		if __loader__ == None:
-			__loader__ = Console.Loader("&RED&Do not interrupt!&END& Saving backup of ssht00ls config file.")
+			__loader__ = dev0s.console.Loader("&RED&Do not interrupt!&END& Saving backup of ssht00ls config file.")
 		return save_config_backup_safely(__loader__=__loader__)
 	if __loader__ != None: __loader__.stop()
 	fp = FilePath(gfp.base(path))

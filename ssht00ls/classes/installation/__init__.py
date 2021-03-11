@@ -19,8 +19,8 @@ class Installation(Traceback):
 		username=None,
 	):
 		# initialize.
-		if username == None: username = Defaults.vars.user
-		home = f"{Defaults.vars.homes}/{username}/"	
+		if username == None: username = dev0s.defaults.vars.user
+		home = f"{dev0s.defaults.vars.homes}/{username}/"	
 		sudo = True
 		
 		# users ssh directory.
@@ -79,7 +79,7 @@ class Installation(Traceback):
 			fp.ownership.set(owner=username, group=None, sudo=sudo)
 
 		# success.
-		return Response.success(f"Successfully installed ssh for user [{username}].")
+		return dev0s.response.success(f"Successfully installed ssh for user [{username}].")
 
 		#
 	def check_installed(self, 
@@ -88,14 +88,14 @@ class Installation(Traceback):
 	):	
 
 		# initialize.
-		if username == None: username = Defaults.vars.user
-		home = f"{Defaults.vars.homes}/{username}/"	
+		if username == None: username = dev0s.defaults.vars.user
+		home = f"{dev0s.defaults.vars.homes}/{username}/"	
 		sudo = True
 		
 		# users ssh directory.
 		fp = FilePath(f"{home}.ssh/")
 		if not fp.exists():
-			return Response.error(f"Required ssh configuration file [{fp.path}] for user [{username}] is not installed.")
+			return dev0s.response.error(f"Required ssh configuration file [{fp.path}] for user [{username}] is not installed.")
 		else:
 			fp.permission.set(permission=700, sudo=sudo)
 			fp.ownership.set(owner=username, group=None, sudo=sudo)
@@ -103,7 +103,7 @@ class Installation(Traceback):
 		# the ssh config.
 		fp = FilePath(f"{home}.ssh/config")
 		if not fp.exists():
-			return Response.error(f"Required ssh configuration file [{fp.path}] for user [{username}] is not installed.")
+			return dev0s.response.error(f"Required ssh configuration file [{fp.path}] for user [{username}] is not installed.")
 		else:
 			fp.permission.set(permission=644, sudo=sudo)
 			fp.ownership.set(owner=username, group=None, sudo=sudo)
@@ -111,7 +111,7 @@ class Installation(Traceback):
 		# the ssh known hosts.
 		fp = FilePath(f"{home}.ssh/known_hosts")
 		if not fp.exists():
-			return Response.error(f"Required ssh configuration file [{fp.path}] for user [{username}] is not installed.")
+			return dev0s.response.error(f"Required ssh configuration file [{fp.path}] for user [{username}] is not installed.")
 		else:
 			fp.permission.set(permission=644, sudo=sudo)
 			fp.ownership.set(owner=username, group=None, sudo=sudo)
@@ -119,13 +119,13 @@ class Installation(Traceback):
 		# authorized keys.
 		fp = FilePath(f"{home}.ssh/authorized_keys")
 		if not fp.exists():
-			return Response.error(f"Required ssh configuration file [{fp.path}] for user [{username}] is not installed.")
+			return dev0s.response.error(f"Required ssh configuration file [{fp.path}] for user [{username}] is not installed.")
 		else:
 			fp.permission.set(permission=600, sudo=sudo)
 			fp.ownership.set(owner=username, group=None, sudo=sudo)
 
 		# success.
-		return Response.success(f"SSH is successfully installed for user [{username}].")
+		return dev0s.response.success(f"SSH is successfully installed for user [{username}].")
 			
 # Initialized objects.
 installation = Installation()

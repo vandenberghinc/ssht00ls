@@ -8,9 +8,9 @@ from ssht00ls.classes.config import *
 os.environ["SSHT00LS_WEBSERVER_IMPORT"] = "False"
 
 # the ssync object class.
-class WebServer(syst3m.cache.WebServer):
+class WebServer(dev0s.database.WebServer):
 	def __init__(self):
-		syst3m.cache.WebServer.__init__(self, serialized={
+		dev0s.database.WebServer.__init__(self, serialized={
 			"id":"ssht00ls-agent",
 			"path":f"{DATABASE}/.cache/",
 			"host":"127.0.0.1",

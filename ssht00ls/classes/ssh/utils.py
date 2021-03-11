@@ -22,8 +22,8 @@ def check_errors(output):
 				if len(e) > 0 and e[len(e)-1] in [" ", "."]: e = e[:-1]
 				elif len(e) > 0 and e[0] in [" "]: e = e[1:]
 				else: break
-			return Response.error(e+".")
-	return Response.success("The output contains no (default) errors.")
+			return dev0s.response.error(e+".")
+	return dev0s.response.success("The output contains no (default) errors.")
 
 # execute command.
 def execute( 
@@ -65,7 +65,7 @@ def execute(
 	#   loader message.
 	loader=None,
 	#   the log level.
-	log_level=Defaults.options.log_level,
+	log_level=dev0s.defaults.options.log_level,
 	#
 	# System functions.
 	#   add additional attributes to the spawn object.
@@ -75,7 +75,7 @@ def execute(
 	# execute.
 	if log_level >= 6: print(command)
 	if loader != None and log_level >= 0 and loader.__class__.__name__ not in ["Loader"]:
-		loader = Console.Loader(loader, interactive=INTERACTIVE)
+		loader = dev0s.console.Loader(loader, interactive=INTERACTIVE)
 	if message != None: message = message.replace("$COMMAND", command)
 	
 	# version 4.
@@ -98,7 +98,7 @@ def execute(
 		optional = True
 
 	# execute.
-	response = Code.execute(
+	response = dev0s.code.execute(
 		command=command,
 		input=input,
 		optional=optional,
@@ -123,10 +123,10 @@ def execute(
 	#try:
 	#	output = subprocess.check_output(["sh", path]).decode()
 	#except subprocess.CalledProcessError as e:
-	#	return Response.error(f"Failed to execute command [{command}], (output: {e.output}), (error: {e}).")
+	#	return dev0s.response.error(f"Failed to execute command [{command}], (output: {e.output}), (error: {e}).")
 
 	# version 3.
-	#response = Code.execute(
+	#response = dev0s.code.execute(
 	#	command=command,)
 	#if not response["success"]: return response
 	#output = response.output
@@ -147,18 +147,18 @@ def execute(
 		if isinstance(output, bytes): output = output.decode()
 		if loader != None: loader.stop(success=False)
 		if log_level <= 0:
-			return Response.error(f"Failed to execute command ({command}), (error: {error_}).")
+			return dev0s.response.error(f"Failed to execute command ({command}), (error: {error_}).")
 		else:
-			return Response.error(f"Failed to execute command ({command}), (error: {error_}), (output: {output}).")
+			return dev0s.response.error(f"Failed to execute command ({command}), (error: {error_}), (output: {output}).")
 	error_, output = proc.stderr, proc.stdout
 	if isinstance(error_, bytes): error_ = error_.decode()
 	if isinstance(output, bytes): output = output.decode()
 	if error_ != "":
 		if loader != None: loader.stop(success=False)
 		if log_level <= 0:
-			return Response.error(f"Failed to execute command ({command}), (error: {error_}).")
+			return dev0s.response.error(f"Failed to execute command ({command}), (error: {error_}).")
 		else:
-			return Response.error(f"Failed to execute command ({command}), (error: {error_}), (output: {output}).")
+			return dev0s.response.error(f"Failed to execute command ({command}), (error: {error_}), (output: {output}).")
 	if len(output) > 0 and output[len(output)-1] == "\n": output = output[:-1]
 	Files.delete(path)
 
@@ -168,23 +168,23 @@ def execute(
 		if loader != None: loader.stop(success=False)
 		return response
 		#print(output)
-		#return Response.error(error)
+		#return dev0s.response.error(error)
 	else:
 		if serialize:
-			try: response = Response.ResponseObject(output)
+			try: response = dev0s.response.ResponseObject(output)
 			except Exception as e: 
 				if loader != None: loader.stop(success=False)
-				return Response.error(f"Failed to serialize output: {output}")
+				return dev0s.response.error(f"Failed to serialize output: {output}")
 			if loader != None: loader.stop()
 			return response
 		else:
 			if loader != None: loader.stop()
 			if get_output:
-				return Response.success(message, {
+				return dev0s.response.success(message, {
 					"output":output,
 				})
 			else:
-				return Response.success(message)
+				return dev0s.response.success(message)
 
 	#
 
@@ -195,25 +195,25 @@ def test(alias=None, accept_new_host_keys=True, checks=True):
 	command = f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' echo "Hello World" ' """
 	
 	# version 3.
-	response = Code.execute(
+	response = dev0s.code.execute(
 		command=command,
 		input={
 			"Are you sure you want to continue connecting":Boolean(accept_new_host_keys).string(true="yes", false="no"),
 		},
 		optional=True,)
 	if not response.success:
-		return Response.error(f"Failed to connect with {alias}, error: {response.error}")
+		return dev0s.response.error(f"Failed to connect with {alias}, error: {response.error}")
 	output = response.output
 	response = check_errors(output)
 	if "Hello World" in output:
-		return Response.success(f"Successfully connected with {alias}.")
+		return dev0s.response.success(f"Successfully connected with {alias}.")
 	else:
-		return Response.error(f"Failed to connect with {alias}, error: {output}")
+		return dev0s.response.error(f"Failed to connect with {alias}, error: {output}")
 
 	"""
 	version 2.
 	# pexpect.
-	spawn = Console.Spawn(command)
+	spawn = dev0s.console.Spawn(command)
 	response = spawn.start()
 	if not response.success: return response
 
@@ -242,103 +242,103 @@ def test(alias=None, accept_new_host_keys=True, checks=True):
 	output = response.output
 	response = check_errors(output)
 	if not response.success:
-		return Response.error(f"Failed to connect with {alias}, error: {output}")
+		return dev0s.response.error(f"Failed to connect with {alias}, error: {output}")
 	elif "Hello World" in output:
-		return Response.success(f"Successfully connected with {alias}.")
+		return dev0s.response.success(f"Successfully connected with {alias}.")
 	else:
-		return Response.error(f"Failed to connect with {alias}, error: {output}")
+		return dev0s.response.error(f"Failed to connect with {alias}, error: {output}")
 	"""
 
 	"""
 	# version 1
-	if Defaults.options.log_level >= 6:
+	if dev0s.defaults.options.log_level >= 6:
 		print(f"<{ALIAS}.ssh.utils.test> command: {command}")
-	response = Code.execute(command)
-	if not response.success: return Response.error(response.error)
+	response = dev0s.code.execute(command)
+	if not response.success: return dev0s.response.error(response.error)
 	output = response.output
 	response = check_errors(output)
 	if not response.success:
-		return Response.error(f"Failed to connect with {alias}, error: {output}")
+		return dev0s.response.error(f"Failed to connect with {alias}, error: {output}")
 	elif "Hello World" in output:
-		return Response.success(f"Successfully connected with {alias}.")
+		return dev0s.response.success(f"Successfully connected with {alias}.")
 	else:
-		return Response.error(f"Failed to connect with {alias}, error: {output}")
+		return dev0s.response.error(f"Failed to connect with {alias}, error: {output}")
 	"""
 def test_path(alias=None, path=None, accept_new_host_keys=True, checks=True):
 	if checks:
 		response = test(alias=alias, accept_new_host_keys=accept_new_host_keys)
 		if not response.success: return response
 	command = f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ' ls -ld {path} ' """
-	if Defaults.options.log_level >= 6:
+	if dev0s.defaults.options.log_level >= 6:
 		print(f"<{ALIAS}.ssh.utils.test> command: {command}")
-	response = Code.execute(
+	response = dev0s.code.execute(
 		command=command,
 		input={
 			"Are you sure you want to continue connecting":Boolean(accept_new_host_keys).string(true="yes", false="no"),
 		},
 		optional=True,)
 	if not response.success:
-		return Response.error(f"Failed to connect with {alias}, error: {response.error}")
+		return dev0s.response.error(f"Failed to connect with {alias}, error: {response.error}")
 	output = response.output
 	response = check_errors(output)
 	if not response.success:
-		return Response.error(f"Path {alias}:{path} does not exist.")
+		return dev0s.response.error(f"Path {alias}:{path} does not exist.")
 	elif "No such file or directory" not in output:
-		return Response.success(f"Path {alias}:{path} exists.")
+		return dev0s.response.success(f"Path {alias}:{path} exists.")
 	else:
-		return Response.error(f"Path {alias}:{path} does not exist.")
+		return dev0s.response.error(f"Path {alias}:{path} does not exist.")
 def test_dir(alias=None, path=None, accept_new_host_keys=True, create=False, created=False, checks=True):
 	if checks:
 		response = test(alias=alias, accept_new_host_keys=accept_new_host_keys)
 		if not response.success: return response
 	lpath = "\'"+path+"\'"
 	command = f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ''' .ssht00ls/utils/isdir {path}''' """
-	if Defaults.options.log_level >= 6:
+	if dev0s.defaults.options.log_level >= 6:
 		print(f"<{ALIAS}.ssh.utils.test> command: {command}")
-	response = Code.execute(
+	response = dev0s.code.execute(
 		command=command,
 		input={
 			"Are you sure you want to continue connecting":Boolean(accept_new_host_keys).string(true="yes", false="no"),
 		},
 		optional=True,)
 	if not response.success:
-		return Response.error(f"Failed to connect with {alias}, error: {response.error}")
+		return dev0s.response.error(f"Failed to connect with {alias}, error: {response.error}")
 	output = response.output
 	if output.replace("\n","") == "directory":
-		return Response.success(f"Path {alias}:{path} is a directory.", {
+		return dev0s.response.success(f"Path {alias}:{path} is a directory.", {
 			"created":created,
 		})
 	elif output.replace("\n","") in ["directory", "does-not-exist"]:
 		if output.replace("\n","") in ["does-not-exist"]:
 			if create:
 				output = dev0s.utils.__execute_script__(f"""ssh {DEFAULT_SSH_OPTIONS} {alias} ''' mkdir -p {path}''' """)
-				if "permission denied" in output: return Response.error(f"Unable to create remote directory [{alias}:{path}].")
+				if "permission denied" in output: return dev0s.response.error(f"Unable to create remote directory [{alias}:{path}].")
 				return test_dir(alias=alias, path=path, checks=False, create=False, created=True)
 			else:
-				return Response.error(f"Path {alias}:{path} does not exist.")
+				return dev0s.response.error(f"Path {alias}:{path} does not exist.")
 		else:
-			return Response.error(f"Path {alias}:{path} is not a directory.")
+			return dev0s.response.error(f"Path {alias}:{path} is not a directory.")
 	else:
-		return Response.error(f"Unable to check remote directory {alias}:{path}, output: {output}.")
+		return dev0s.response.error(f"Unable to check remote directory {alias}:{path}, output: {output}.")
 def test_ssht00ls(alias=None, accept_new_host_keys=True, install=True):
 	for path in [f"/usr/local/lib/{ALIAS}"]:
 		response = test_path(alias=alias, accept_new_host_keys=accept_new_host_keys, path=path)
 		if not response.success:
 			if response.error == f"Path {alias}:{path} does not exist.":
 				if install:
-					loader = Console.Loader(f"Installing ssht00ls library on remote {alias}.")
-					response = Code.execute(f"ssh {DEFAULT_SSH_OPTIONS} {alias} ' curl https://raw.githubusercontent.com/vandenberghinc/{ALIAS}/master/{ALIAS}/requirements/installer.remote | bash ' ")
-					if not response.success: return Response.error(response.error)
+					loader = dev0s.console.Loader(f"Installing ssht00ls library on remote {alias}.")
+					response = dev0s.code.execute(f"ssh {DEFAULT_SSH_OPTIONS} {alias} ' curl https://raw.githubusercontent.com/vandenberghinc/{ALIAS}/master/{ALIAS}/requirements/installer.remote | bash ' ")
+					if not response.success: return dev0s.response.error(response.error)
 					output = response.output
 					response = test_ssht00ls(alias=alias, accept_new_host_keys=accept_new_host_keys, install=False)
 					loader.stop(success=response.success)
 					#print(output)
 					return response
 				else:
-					return Response.error(f"Remote {alias} does not have library ssht00ls installed.")
+					return dev0s.response.error(f"Remote {alias} does not have library ssht00ls installed.")
 			else:
 				return response
-	return Response.success(f"Remote {alias} has library ssht00ls installed.")
+	return dev0s.response.success(f"Remote {alias} has library ssht00ls installed.")
 
 # check / start the ssh agent.
 def ssh_agent():
@@ -346,10 +346,10 @@ def ssh_agent():
 
 # kill all ssh procs with that includes the identifier.
 def kill(identifier=None, sudo=False):
-	response = Response.parameters.check({
+	response = dev0s.response.parameters.check({
 		"identifier:str":identifier,})
 	if not response.success: return response
-	return Code.kill(includes=identifier, sudo=sudo)
+	return dev0s.code.kill(includes=identifier, sudo=sudo)
 	# old.
 	killed = 0
 	output = dev0s.utils.__execute_script__(f"""ps -ax | grep "{identifier}" | """ + """awk '{print $1"|"$2"|"$3"|"$4}' """)
@@ -357,7 +357,7 @@ def kill(identifier=None, sudo=False):
 		if line not in ["", " "]:
 			pid,tty,_,process = line.split("|")
 			if process not in dont_kill:
-				loader = Console.Loader(f"Killing process {pid}.")
+				loader = dev0s.console.Loader(f"Killing process {pid}.")
 				if sudo: _sudo_ = "sudo "
 				else: _sudo_ = ""
 				output = dev0s.utils.__execute_script__(f"{_sudo_}kill {pid}")
@@ -366,5 +366,5 @@ def kill(identifier=None, sudo=False):
 					killed += 1
 				else:
 					loader.stop(success=False)
-					Response.log(f"Failed to stop process {pid}, error: {output}")
-	return Response.success(f"Successfully killed {killed} process(es) that included identifier [{identifier}].")
+					dev0s.response.log(f"Failed to stop process {pid}, error: {output}")
+	return dev0s.response.success(f"Successfully killed {killed} process(es) that included identifier [{identifier}].")

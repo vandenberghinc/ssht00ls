@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # imports.
-import os, syst3m, sys
-from dev0s import *
+import os, sys
+from dev0s.shortcuts import *
 
 # index.
 def index(path):
@@ -24,17 +24,17 @@ def index(path):
 if __name__ == "__main__":
 
 	# arguments.
-	path = CLI.get_argument("--path")
-	json = CLI.arguments_present(["--json", "-j"])
+	path = dev0s.cli.get_argument("--path")
+	json = dev0s.cli.arguments_present(["--json", "-j"])
 
 	# checks.
 	if not Files.exists(path):
-		Response.log(response=Response.error(f"Path [{path}] does not exist."), json=json)
+		dev0s.response.log(response=dev0s.response.error(f"Path [{path}] does not exist."), json=json)
 	elif not os.path.isdir(path):
-		Response.log(response=Response.error(f"Path [{path}] is not a directory."), json=json)
+		dev0s.response.log(response=dev0s.response.error(f"Path [{path}] is not a directory."), json=json)
 
 	# handler.
 	dict = index(path)
-	Response.log(json=json, response=Response.success(f"Successfully indexed {len(dict)} files from directory [{path}].", {
+	dev0s.response.log(json=json, response=dev0s.response.success(f"Successfully indexed {len(dict)} files from directory [{path}].", {
 		"index":dict,
 	}))

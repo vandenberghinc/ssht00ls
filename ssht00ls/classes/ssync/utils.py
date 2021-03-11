@@ -3,7 +3,7 @@
 
 # imports.
 import os
-from dev0s import *
+from dev0s.shortcuts import *
 from ssht00ls.classes.config import * 
 from ssht00ls.classes.ssh import ssh
 from ssht00ls.classes.ssync.index import index
@@ -31,7 +31,7 @@ def serialize_path(path, append_last_slash=False):
 # get the size of a dir.
 def size(path, alias=None, log_level=0):
 	if alias == None:
-		return Response.success(f"Successfully retrieved the size of {path}.", {
+		return dev0s.response.success(f"Successfully retrieved the size of {path}.", {
 			"size":FilePath(path).size(mode="MB"),
 		})
 	else:
@@ -67,7 +67,7 @@ def pull(
 	# checks.
 	checks=True,
 	# log level.
-	log_level=Defaults.options.log_level,
+	log_level=dev0s.defaults.options.log_level,
 	# get the command in str.
 	command=False,
 ):	
@@ -84,7 +84,7 @@ def pull(
 		
 		# check encryption activated.
 		#if not ssht00ls_agent.activated:
-		#	return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+		#	return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 
 		# check passphrase.
 		#if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
@@ -120,7 +120,7 @@ def pull(
 	if not Files.exists(base): 
 		os.system(f"mkdir -p {base}")
 		if not Files.exists(base): 
-			return Response.error(f"Failed to create pull base {base}.")
+			return dev0s.response.error(f"Failed to create pull base {base}.")
 		if log_level >= 3:
 			print(f"Created directory {base}.")
 
@@ -176,7 +176,7 @@ def push(
 	checks=True,
 	check_base=True,
 	# log level.
-	log_level=Defaults.options.log_level,
+	log_level=dev0s.defaults.options.log_level,
 	# get the command in str.
 	command=False,
 ):
@@ -193,7 +193,7 @@ def push(
 		
 		# check encryption activated.
 		#if not ssht00ls_agent.activated:
-		#	return Response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+		#	return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 		
 		# check passphrase.
 		#if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
@@ -214,7 +214,7 @@ def push(
 		# dir.
 		if directory == None: directory = os.path.isdir(path)
 		elif directory and not os.path.isdir(path):
-			return Response.error(f"Path {path} is not a directory.")
+			return dev0s.response.error(f"Path {path} is not a directory.")
 
 	# check remote base.
 	# must be excluded from the checks == False.

@@ -39,7 +39,7 @@ class SSH(Traceback):
 			if alias == None: alias = self.alias
 
 		# checks.
-		response = Response.parameters.check(
+		response = dev0s.response.parameters.check(
 			traceback=self.__traceback__(function="session"),
 			parameters={
 				"alias":alias,
@@ -50,7 +50,7 @@ class SSH(Traceback):
 		os.system(f"ssh {DEFAULT_SSH_OPTIONS} {alias}")
 
 		# handler.
-		return Response.success(f"Successfully started ssh session [{alias}].")
+		return dev0s.response.success(f"Successfully started ssh session [{alias}].")
 
 		#
 	def command(self,
@@ -95,7 +95,7 @@ class SSH(Traceback):
 		#   loader message.
 		loader=None,
 		#   the log level.
-		log_level=Defaults.log_level(default=0),
+		log_level=dev0s.defaults.log_level(default=0),
 		#
 		# System functions.
 		#   add additional attributes to the spawn object.
@@ -121,7 +121,7 @@ class SSH(Traceback):
 			except KeyError: __spawn_attributes__[str(key)] = value
 
 		# checks.
-		response = Response.parameters.check(
+		response = dev0s.response.parameters.check(
 			traceback=self.__traceback__(function="command"),
 			parameters={
 				"alias":alias,

@@ -28,7 +28,7 @@ class Tunnel(Thread):
 	):
 
 		# defaults.
-		Thread.__init__(self, traceback="ssht00ls.ssh.tunnel", raw_traceback="ssht00ls.ssh.Tunnel", log_level=Defaults.log_level(default=-1))
+		Thread.__init__(self, traceback="ssht00ls.ssh.tunnel", raw_traceback="ssht00ls.ssh.Tunnel", log_level=dev0s.defaults.log_level(default=-1))
 
 		# modules.
 		self.utils = ssh_utils
@@ -70,7 +70,7 @@ class Tunnel(Thread):
 		if log_level == None: log_level = self.log_level # keep this one indent back.
 
 		# check parameters.
-		response = Response.parameters.check(
+		response = dev0s.response.parameters.check(
 			traceback=self.__traceback__(function="establish"),
 			parameters={
 				"alias":alias,
@@ -86,13 +86,13 @@ class Tunnel(Thread):
 
 		# check already established
 		if self.established:
-			return Response.success(f"Tunnel [{id}] is already established.")
+			return dev0s.response.success(f"Tunnel [{id}] is already established.")
 
 		# execute.
-		output = Code.execute(f"ssh -L {port}:{ip}:{remote_port} -f -N {DEFAULT_SSH_OPTIONS} {alias}", async_=True)
+		output = dev0s.code.execute(f"ssh -L {port}:{ip}:{remote_port} -f -N {DEFAULT_SSH_OPTIONS} {alias}", async_=True)
 		if not output.success: return output
 		if output != "":
-			return Response.error(f"Failed to establish tunnel {id}, error: {output}.")
+			return dev0s.response.error(f"Failed to establish tunnel {id}, error: {output}.")
 
 		# send cached run permission.
 		response = ssht00ls_agent.webserver.set(group="tunnels.run_permission", id=id, data="True")
@@ -107,9 +107,9 @@ class Tunnel(Thread):
 				remote_port=remote_port,
 				reconnect=reconnect,)
 			if not tunnel.established:
-				return Response.error(f"Failed to establish tunnel {tunnel.id}.")
+				return dev0s.response.error(f"Failed to establish tunnel {tunnel.id}.")
 		elif not self.established:
-			return Response.error(f"Failed to establish tunnel {self.id}.")
+			return dev0s.response.error(f"Failed to establish tunnel {self.id}.")
 
 		# start thread.
 		if not self.specific and reconnect:
@@ -120,7 +120,7 @@ class Tunnel(Thread):
 		# handler.
 		attributes = {}
 		if not self.specific: attributes["tunnel"] = tunnel
-		return Response.success(f"Successfully established tunnel [{id}].", attributes)
+		return dev0s.response.success(f"Successfully established tunnel [{id}].", attributes)
 
 		#
 	def kill(self,
@@ -144,7 +144,7 @@ class Tunnel(Thread):
 		if log_level == None: log_level = self.log_level
 
 		# check parameters.
-		response = Response.parameters.check(
+		response = dev0s.response.parameters.check(
 			traceback=self.__traceback__(function="kill"),
 			parameters={
 				"alias":alias,
@@ -157,7 +157,7 @@ class Tunnel(Thread):
 
 		# check established.
 		if not self.__established__(alias=alias, ip=ip, port=port, remote_port=remote_port):
-			return Response.success(f"Tunnel [{id}] was not active.")
+			return dev0s.response.success(f"Tunnel [{id}] was not active.")
 
 		# check stop thread.
 		response = ssht00ls_agent.webserver.set(group="tunnels.run_permission", id=id, data="False")
@@ -178,24 +178,24 @@ class Tunnel(Thread):
 		# kill pid(s).
 		pid = self.__pid__(alias=alias, ip=ip, port=port, remote_port=remote_port)
 		if pid == None:
-			return Response.error(f"Unable to determine the pid of tunnel [{id}].")
+			return dev0s.response.error(f"Unable to determine the pid of tunnel [{id}].")
 		elif isinstance(pid, (list, Array)):
 			for i in pid:
-				response = Code.kill(pid=i, log_level=log_level)
+				response = dev0s.code.kill(pid=i, log_level=log_level)
 				if not response.success:
-					return Response.error(f"Failed to kill pid [{i}] of tunnel [{id}], error: {response.error}")
+					return dev0s.response.error(f"Failed to kill pid [{i}] of tunnel [{id}], error: {response.error}")
 		else:
-			response = Code.kill(pid=pid, log_level=log_level)
+			response = dev0s.code.kill(pid=pid, log_level=log_level)
 			if not response.success:
-				return Response.error(f"Failed to kill pid [{pid}] of tunnel [{id}], error: {response.error}")
+				return dev0s.response.error(f"Failed to kill pid [{pid}] of tunnel [{id}], error: {response.error}")
 
 
 		# check stopped.
 		if self.__established__(alias=alias, ip=ip, port=port, remote_port=remote_port):
-			return Response.error(f"Failed to stop tunnel [{id}].")
+			return dev0s.response.error(f"Failed to stop tunnel [{id}].")
 
 		# handler.
-		return Response.success(f"Successfully stopped tunnel [{id}].")
+		return dev0s.response.success(f"Successfully stopped tunnel [{id}].")
 
 		#
 	def list(self, alias=None):
@@ -203,7 +203,7 @@ class Tunnel(Thread):
 		array, dictionary = [], {}
 		#all_aliases, c = list(CONFIG["aliases"].keys()), 0
 		includes = f"ssh -L "
-		response = Code.processes(includes=includes)
+		response = dev0s.code.processes(includes=includes)
 		if not response.success: return response
 		for pid, info in response.processes.items():
 			pass_ = False
@@ -225,7 +225,7 @@ class Tunnel(Thread):
 					"port":port,
 					"remote_port":remote_port,
 				}
-		return Response.success(f"Successfully listed {len(array)} tunnels.", {
+		return dev0s.response.success(f"Successfully listed {len(array)} tunnels.", {
 			"tunnels":array,
 			"array":array,
 			"dictionary":dictionary,
@@ -239,7 +239,7 @@ class Tunnel(Thread):
 
 		# checks.
 		if not self.established:
-			self.send_crash(response=Response.error_response("The tunnel is not established yet."))
+			self.send_crash(response=dev0s.response.error_response("The tunnel is not established yet."))
 
 		# start.
 		while self.run_permission:
@@ -279,7 +279,7 @@ class Tunnel(Thread):
 	def __stop__(self):
 		response = self.kill()
 		if not response.success: return response
-		return Response.success(f"Successfully stopped [{self.id}]")
+		return dev0s.response.success(f"Successfully stopped [{self.id}]")
 	# properties.
 	@property
 	def id(self):
@@ -299,7 +299,7 @@ class Tunnel(Thread):
 		if remote_port == None: remote_port = self.remote_port
 		if ip == None: ip = self.ip
 		id = self.__id__(alias=alias, ip=ip, port=port, remote_port=remote_port)
-		response = Code.processes(includes=f"ssh -L {port}:{ip}:{remote_port}")
+		response = dev0s.code.processes(includes=f"ssh -L {port}:{ip}:{remote_port}")
 		if not response.success: raise ValueError(f"Unable to determine if tunnel {id} is active, error: {response.error}")
 		return len(response.processes) >= 1
 	@property
@@ -311,7 +311,7 @@ class Tunnel(Thread):
 		if remote_port == None: remote_port = self.remote_port
 		if ip == None: ip = self.ip
 		id = self.__id__(alias=alias, ip=ip, port=port, remote_port=remote_port)
-		response = Code.processes(includes=f"ssh -L {port}:{ip}:{remote_port}")
+		response = dev0s.code.processes(includes=f"ssh -L {port}:{ip}:{remote_port}")
 		if not response.success: raise ValueError(f"Unable to determine if tunnel {id} is active, error: {response.error}")
 		pids = list(response.processes.keys())
 		if len(pids) == 0:
