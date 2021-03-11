@@ -57,12 +57,16 @@ class SSync(Traceback):
 
 				# check passphrase.
 				if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-					response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+					passphrase = CONFIG["aliases"][alias]["pin"]
 				else:
-					response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
-				if not response["success"]: return response
-				passphrase = response.decrypted.decode()
-				
+					passphrase = CONFIG["aliases"][alias]["passphrase"]
+				if passphrase not in ["", "none", "None", None]:
+					response = ssht00ls_agent.encryption.decrypt()
+					if not response["success"]: return response
+					passphrase = response.decrypted.decode()
+				else:
+					passphrase = None
+					
 				# tests.
 				response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
 				if not response["success"]: return response
@@ -199,11 +203,15 @@ class SSync(Traceback):
 					if "is not added to the" not in response.error: return response
 					else:
 						if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-							response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
+							passphrase = CONFIG["aliases"][alias]["pin"]
 						else:
-							response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
-						if not response["success"]: return response
-						passphrase = response.decrypted.decode()
+							passphrase = CONFIG["aliases"][alias]["passphrase"]
+						if passphrase not in [None, "None", "none", "", False]:
+							response = ssht00ls_agent.encryption.decrypt(passphrase)
+							if not response["success"]: return response
+							passphrase = response.decrypted.decode()
+						else:
+							passphrase = None
 						response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
 						if not response["success"]: return response
 				if self.specific: self.activated = True
@@ -281,16 +289,15 @@ class SSync(Traceback):
 					if "is not added to the" not in response.error: return response
 					else:
 						if CONFIG["aliases"][alias]["smartcard"] in [True, "true", "True"]:
-							response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["pin"])
+							passphrase = CONFIG["aliases"][alias]["pin"]
+						else:
+							passphrase = CONFIG["aliases"][alias]["passphrase"]
+						if passphrase not in [None, "None", "none", "", False]:
+							response = ssht00ls_agent.encryption.decrypt(passphrase)
 							if not response["success"]: return response
 							passphrase = response.decrypted.decode()
 						else:
-							if CONFIG["aliases"][alias]["passphrase"] not in ["", False]:
-								response = ssht00ls_agent.encryption.decrypt(CONFIG["aliases"][alias]["passphrase"])
-								if not response["success"]: return response
-								passphrase = response.decrypted.decode()
-							else:
-								passphrase = None
+							passphrase = None
 						response = agent.add(private_key=CONFIG["aliases"][alias]["private_key"], passphrase=passphrase)
 						if not response["success"]: return response
 				if self.specific: self.activated = True
@@ -524,6 +531,6 @@ class SSync(Traceback):
 	
 # initialized objects.
 ssync = SSync()
-if CHECKS and INTERACTIVE and not dev0s.cli.argument_present("--reset-cache"):
+if CHECKS and dev0s.defaults.options.interactive and not dev0s.cli.argument_present("--reset-cache"):
 	daemons.sync()
 	

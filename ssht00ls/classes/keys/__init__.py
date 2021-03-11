@@ -145,7 +145,7 @@ class Keys(Traceback):
 		public_key = f'{directory}/public_key'
 		identity_file = f'-f "{private_key}"'
 		if comment == None: comment = ""
-		if "[#id:" not in comment: comment += f" [#id:{utils.__generate_shell_string__(characters=48, numerical_characters=True, special_characters=True)}]"
+		if "[#id:" not in comment: comment += f" [#id:{String().generate(length=48, digits=True, capitalize=True, special=False)}]"
 		comment = '-C "{}"'.format(comment)
 		passphrase = f'-N "{passphrase}"'#utils.__string_to_bash__(passphrase)
 

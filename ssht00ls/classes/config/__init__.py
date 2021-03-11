@@ -27,12 +27,11 @@ if dev0s.defaults.options.log_level >= 1:
 
 # universal options.
 # interactive must be False by default.
-INTERACTIVE = dev0s.env.get("INTERACTIVE", format=bool, default=False)
 CHECKS = not dev0s.cli.arguments_present(["--no-checks"])
 RESET_CACHE = dev0s.cli.arguments_present("--reset-cache")
 if dev0s.defaults.options.log_level >= 1:
 	dev0s.response.log("ssht00ls:")
-	dev0s.response.log(f"  * interactive: {INTERACTIVE}")
+	dev0s.response.log(f"  * interactive: {dev0s.defaults.options.interactive}")
 	dev0s.response.log(f"  * checks: {CHECKS}")
 
 # database.
@@ -123,21 +122,12 @@ if CHECKS and not RESET_CACHE:
 				"pin":None,
 			}
 		},
-		"settings": {
-			"keep_alive":60,
-		},
-		"encryption": {
-			"public_key":None,
-			"private_key":None,
-		},
 	})
 
 	# database.
 	Files.chmod(f"{SOURCE_PATH}/lib/utils/*", permission="+x")
 
 	# agent.
-	private_key = dev0s.env.get("SSHT00LS_PRIVATE_KEY", default=DATABASE.join("keys/master/private_key"))
-	public_key = dev0s.env.get("SSHT00LS_PUBLIC_KEY", default=DATABASE.join("keys/master/public_key"))
 	ssht00ls_agent = dev0s.encryption.Agent(
 		# id.
 		id="ssht00ls-agent",
@@ -147,12 +137,12 @@ if CHECKS and not RESET_CACHE:
 		host="127.0.0.1",
 		port=2379,
 		# encryption.
-		private_key=private_key,
-		public_key=public_key,
+		private_key=dev0s.env.get("SSHT00LS_PRIVATE_KEY", default=DATABASE.join("keys/master/private_key")),
+		public_key=dev0s.env.get("SSHT00LS_PUBLIC_KEY", default=DATABASE.join("keys/master/public_key")),
 		passphrase=None, 
-		interactive=INTERACTIVE,
+		interactive=dev0s.defaults.options.interactive,
 		# traceback.
-		traceback="ssht00ls_agent",
+		traceback="ssht00ls.ssht00ls_agent",
 	)
 
 	# webserver.
@@ -164,7 +154,7 @@ if CHECKS and not RESET_CACHE:
 		else:
 			dev0s.response.log(response=response, json=dev0s.defaults.options.json)
 			sys.exit(1)
-	elif INTERACTIVE and not ssht00ls_agent.webserver.running: # is also automatically done in agent.generate & agent.activate
+	elif dev0s.defaults.options.interactive and not ssht00ls_agent.webserver.running: # is also automatically done in agent.generate & agent.activate
 		if dev0s.defaults.options.log_level >= 1:
 			dev0s.response.log(f"{ALIAS}: forking the ssht00ls agent.")
 		response = ssht00ls_agent.webserver.fork()
@@ -174,7 +164,7 @@ if CHECKS and not RESET_CACHE:
 		dev0s.response.log(f"{ALIAS} webserver: {ssht00ls_agent.webserver}")
 
 	# check interactive.
-	if INTERACTIVE:
+	if dev0s.defaults.options.interactive:
 
 		# generate encryption.
 		if not ssht00ls_agent.generated:

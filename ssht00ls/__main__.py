@@ -3,7 +3,7 @@
 
 # imports.
 from dev0s.shortcuts import * ; dev0s.defaults.insert(dev0s.defaults.source_path(__file__, back=2))
-dev0s.env["INTERACTIVE"] = True
+dev0s.env["dev0s.defaults.options.interactive"] = True
 dev0s.env["CLI"] = True
 dev0s.defaults.options.interactive = True
 from ssht00ls.classes.config import *

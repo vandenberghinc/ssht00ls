@@ -75,7 +75,7 @@ def execute(
 	# execute.
 	if log_level >= 6: print(command)
 	if loader != None and log_level >= 0 and loader.__class__.__name__ not in ["Loader"]:
-		loader = dev0s.console.Loader(loader, interactive=INTERACTIVE)
+		loader = dev0s.console.Loader(loader, interactive=dev0s.defaults.options.interactive)
 	if message != None: message = message.replace("$COMMAND", command)
 	
 	# version 4.

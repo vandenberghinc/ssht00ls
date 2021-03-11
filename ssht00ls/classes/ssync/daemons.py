@@ -120,7 +120,7 @@ class Daemon(Thread):
 
 		# logs.
 		if self.log_level >= 0: 
-			loader = dev0s.console.Loader(f"Checking daemon {self.id}", interactive=INTERACTIVE)
+			loader = dev0s.console.Loader(f"Checking daemon {self.id}", interactive=dev0s.defaults.options.interactive)
 
 		# checks.
 		status = str(cache.get(id=self.cache_path, group="daemons"))

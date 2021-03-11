@@ -344,7 +344,7 @@ class Agent(Traceback):
 
 # Initialized objects.
 agent = Agent()
-if not INTERACTIVE: utils.ssh_agent()
+if not dev0s.defaults.options.interactive: utils.ssh_agent()
 
 """
 

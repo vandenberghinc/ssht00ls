@@ -52,7 +52,7 @@ class Aliases(Traceback):
 		self.log_level = log_level
 
 		# sync non interactive.
-		#self.sync(interactive=False)
+		self.sync()
 
 		#
 	def list(self):
@@ -370,19 +370,22 @@ class Aliases(Traceback):
 				"serial_numbers:list,Array":serial_numbers,
 			})
 		if not response["success"]: return response
+		has_passphrase = True
 		if smartcard:
 			response = dev0s.response.parameters.check({
 				"pin":pin,
 			}, default=None, traceback=self.__traceback__(function="create"))
 			if not response["success"]: return response
 		else:
-			response = dev0s.response.parameters.check({
-				"passphrase":passphrase,
-			}, default=None, traceback=self.__traceback__(function="create"))
-			if not response["success"]: return response
+			if passphrase in [None, "", "None", "none"]:
+				has_passphrase = False
+			#response = dev0s.response.parameters.check({
+			#	"passphrase":passphrase,
+			#}, default=None, traceback=self.__traceback__(function="create"))
+			#if not response["success"]: return response
 
 		# check encryption activated.
-		if checks and not ssht00ls_agent.activated:
+		if has_passphrase and checks and not ssht00ls_agent.activated:
 			return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
 
 		# duplicate.
@@ -431,19 +434,18 @@ class Aliases(Traceback):
 			config += "\n    PKCS11Provider {}".format(smartcards.path)
 
 		# passphrase.
-		if save:
-			if passphrase not in [False, "", "none", None, "None"]:
-				if smartcard:
-					response = ssht00ls_agent.encryption.encrypt(str(pin))
-					if not response["success"]: return response
-					json_config["pin"] = response["encrypted"].decode()
-				else:
-					response = ssht00ls_agent.encryption.encrypt(str(passphrase))
-					if not response["success"]: return response
-					json_config["passphrase"] = response["encrypted"].decode()
+		if has_passphrase:
+			if smartcard:
+				response = ssht00ls_agent.encryption.encrypt(str(pin))
+				if not response["success"]: return response
+				json_config["pin"] = response["encrypted"].decode()
 			else:
-				json_config["passphrase"] = ""
-				json_config["pin"] = ""
+				response = ssht00ls_agent.encryption.encrypt(str(passphrase))
+				if not response["success"]: return response
+				json_config["passphrase"] = response["encrypted"].decode()
+		else:
+			json_config["passphrase"] = ""
+			json_config["pin"] = ""
 
 		# serial numbers.
 		json_config["serial_numbers"] = serial_numbers
@@ -459,7 +461,7 @@ class Aliases(Traceback):
 			"str":config,
 		})
 	def sync(self, aliases=["*"], interactive=None, log_level=None):
-		if interactive == None: interactive = INTERACTIVE
+		if interactive == None: interactive = dev0s.defaults.options.interactive
 		if log_level == None: log_level = self.log_level
 
 		# all aliases.
@@ -499,15 +501,7 @@ class Aliases(Traceback):
 		for alias in _aliases_:
 			info = CONFIG["aliases"][alias]
 			if "example.com " not in alias:
-				
-				# deprications.
-				if "user" in info:
-					user = info["user"]
-					del info["user"]
-					info["username"] = user
-					CONFIG["aliases"][alias]["user"] = user
-					utils.save_config_safely()
-				
+
 				# check existance.
 				response = self.check(alias=alias)
 				if not response.success: 
@@ -546,7 +540,9 @@ class Aliases(Traceback):
 							if checked["pin"] in [False, "", "none", "None"]:
 								has_passphrase = False
 							else:
-								passphrase =  getpass.getpass(f"Enter the passphrase of key {checked['private_key']}:")
+								if log_level >= 0: loader.hold()
+								passphrase =  getpass.getpass(f"Enter the pin of smartcard [{gfp.clean(checked['private_key'])}]:")
+								if log_level >= 0: loader.release()
 						else:
 							# check encryption activated.
 							if not ssht00ls_agent.activated:
@@ -564,7 +560,13 @@ class Aliases(Traceback):
 							if checked["passphrase"] in [False, "", "none", "None"]:
 								has_passphrase = False
 							else:
-								passphrase =  getpass.getpass(f"Enter the passphrase of key {checked['private_key']}:")
+								if log_level >= 0: loader.hold()
+								passphrase =  getpass.getpass(f"Enter the passphrase of key [{gfp.clean(checked['private_key'])}] (leave '' for no passphrase):")
+								if log_level >= 0: loader.release()
+								if checked["passphrase"] in [False, "", "none", "None"]:
+									has_passphrase = False
+									CONFIG["aliases"][alias]["passphrase"] = ""
+									utils.save_config_safely()
 						else:
 							# check encryption activated.
 							if not ssht00ls_agent.activated:
