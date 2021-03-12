@@ -88,7 +88,7 @@ class SSHD(Traceback):
 		# defaults.
 		configuration += '\nPermitRootLogin {}'.format("no")
 		configuration += '\nStrictModes {}'.format("yes")
-		configuration += '\nPermitUserdev0s.env {}'.format("no")
+		configuration += '\nPermitUserEnvironment {}'.format("yes")
 		configuration += '\nIgnoreRhosts {}'.format("yes")
 		configuration += '\nPermitTunnel {}'.format("no")
 		configuration += '\nX11Forwarding {}'.format("no")
