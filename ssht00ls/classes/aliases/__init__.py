@@ -626,9 +626,15 @@ class Aliases(Traceback):
 		if log_level >= 0: loader.stop()
 		return dev0s.response.success(f"Successfully synchronized {c} alias(es).")
 	def public(self, public_ip=None, private_ip=None):
+
+		# cache.
+		response = cache.load(f"ping/{public_ip}/{private_ip}")
+
+		# get.
 		response = dev0s.network.ping(private_ip, timeout=0.5)
 		if not response.success: response.crash()
-		return not (NETWORK_INFO["public_ip"] == public_ip and response.up == True)
+		public = not (NETWORK_INFO["public_ip"] == public_ip and response.up == True)
+		return public
 	# edit aliases lib.
 	def __edit_alias_lib__(self, alias, data):
 
