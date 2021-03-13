@@ -208,8 +208,8 @@ def push(
 		#if not response["success"]: return response
 		response = ssh.utils.test_ssht00ls(alias=alias, accept_new_host_keys=accept_new_host_keys)
 		if not response.success: return response
-		response = ssh.utils.test_path(alias=alias, path=FilePath(remote).base(), accept_new_host_keys=accept_new_host_keys)
-		if not response.success: return response
+		#response = ssh.utils.test_path(alias=alias, path=FilePath(remote).base(), accept_new_host_keys=accept_new_host_keys)
+		#if not response.success: return response
 
 		# dir.
 		if directory == None: directory = os.path.isdir(path)
