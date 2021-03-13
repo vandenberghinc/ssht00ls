@@ -136,7 +136,7 @@ def execute(
 	if message != None: final_response.message = message
 
 	# check errors.
-	response = check_errors(response.output)
+	response = check_errors(final_response.output)
 	if not response.success: return response
 	return final_response
 
