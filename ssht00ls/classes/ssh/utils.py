@@ -9,6 +9,28 @@ import os, sys, json, subprocess, pexpect
 # check default errors..
 def check_errors(output):
 	for i in [
+		"\nrsync: ",
+		"\nrsync error: ",
+		"\nssh: ",
+		"\nssh error: ",
+		"\nsshfs: ",
+		"\nsshfs error: ",
+		"\nscp: ",
+		"\nscp error: ",
+		"\nmount_smbfs: ",
+		"\nmount_smbfs error: ",
+		"\nclient_loop: ",
+	]:
+		if i in "\n"+output:
+			e = str(String(("\n"+output).split(i)[1].split("\n")[0]).capitalized_word())
+			while True:
+				if len(e) > 0 and e[len(e)-1] in [" ", ".", "\n"]: e = e[:-1]
+				elif len(e) > 0 and e[0] in [" "]: e = e[1:]
+				else: break
+			return dev0s.response.error(e+" ("+i.replace("\n","").replace(" ","").replace(":","").replace(" error","")+").")
+	return dev0s.response.success("The output contains no (default) errors.")
+	"""
+	for i in [
 		"rsync: ", "rsync error: ",
 		"ssh: ", "ssh error: ",
 		"sshfs: ", "sshfs error: ",
@@ -24,6 +46,7 @@ def check_errors(output):
 				else: break
 			return dev0s.response.error(e+".")
 	return dev0s.response.success("The output contains no (default) errors.")
+	"""
 
 # execute command.
 def execute( 
@@ -77,8 +100,6 @@ def execute(
 	# execute.
 	if log_level >= 6: print(command)
 	if message != None: message = message.replace("$COMMAND", command)
-	
-	# version 4.
 
 	# default input.
 	default_input = {
@@ -98,7 +119,7 @@ def execute(
 		optional = True
 
 	# execute.
-	response = dev0s.code.execute(
+	final_response = dev0s.code.execute(
 		command=command,
 		input=input,
 		optional=optional,
@@ -111,9 +132,36 @@ def execute(
 		stop_loader=stop_loader,
 		log_level=log_level,
 		__spawn_attributes__=__spawn_attributes__,	)
-	if message != None and response.success: response.message = message
-	return response
+	if not final_response.sucess: return final_response
+	if message != None: final_response.message = message
 
+	# check errors.
+	response = check_errors(response.output)
+	if not response.sucess: return response
+	return final_response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	#########################
+	#
+	# DEPRICATED
 	# old.
 	# script.
 
