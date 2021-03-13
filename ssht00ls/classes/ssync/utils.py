@@ -15,18 +15,10 @@ EXCLUDE = ['__pycache__', '.DS_Store']
 
 # serialize path.
 def serialize_path(path, append_last_slash=False):
-	# keep in mind the file is saved by python and then executed.
-	array = []
-	for i in [" ","!","?","$","&","(",")","[","]","{","}"]:
-		array.append([i, f"\\{i}"],)
-	for x,y in array+[
-		#[" ", "\\ "],
-	]:
-		path = path.replace(x,y)
-	while True:
-		if append_last_slash and len(path) > 0 and path[len(path)-1] != "/": path = path+"/"
-		else: break
-	return path
+	if append_last_slash:
+		return gfp.clean(path, remove_double_slash=True, remove_last_slash=True)+"/"
+	else:
+		return gfp.clean(path)
 
 # get the size of a dir.
 def size(path, alias=None, log_level=0):
