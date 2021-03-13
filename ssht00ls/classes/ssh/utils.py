@@ -132,12 +132,12 @@ def execute(
 		stop_loader=stop_loader,
 		log_level=log_level,
 		__spawn_attributes__=__spawn_attributes__,	)
-	if not final_response.sucess: return final_response
+	if not final_response.success: return final_response
 	if message != None: final_response.message = message
 
 	# check errors.
 	response = check_errors(response.output)
-	if not response.sucess: return response
+	if not response.success: return response
 	return final_response
 
 
