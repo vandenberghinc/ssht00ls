@@ -17,7 +17,7 @@ EXCLUDE = ['__pycache__', '.DS_Store']
 def serialize_path(path, append_last_slash=False):
 	# keep in mind the file is saved by python and then executed.
 	array = []
-	for i in [" ","!","?","@","#","$","&","(",")","[","]","{","}"]:
+	for i in [" ","!","?","$","&","(",")","[","]","{","}"]:
 		array.append([i, f"\\{i}"],)
 	for x,y in array+[
 		#[" ", "\\ "],

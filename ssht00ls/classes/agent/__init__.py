@@ -149,7 +149,7 @@ class Agent(Traceback):
 				elif r == 1:
 					return dev0s.response.error("Provided an incorrect pin code.")
 				else:
-					raise ValueError(f"Unkown spawn behaviour: {spawn}")	
+					raise ValueError(f"Unknown spawn behaviour: {spawn}")	
 			except pexpect.exceptions.TIMEOUT:
 				a=1
 			except pexpect.exceptions.EOF:
