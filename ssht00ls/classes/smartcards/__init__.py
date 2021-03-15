@@ -30,7 +30,7 @@ class SmartCards(Traceback):
 				if Files.exists(path):
 					self.path = path
 					break
-			if self.path == None: raise ValueError("Unable to locate opensc-pkcs11.so.")
+			if dev0s.defaults.options.log_level >= 1 and self.original_path == None: dev0s.response.log("Unable to locate opensc-pkcs11.so.", mode="warning")
 					
 		elif dev0s.defaults.vars.os in ["macos"]: 
 			self.original_path = None
