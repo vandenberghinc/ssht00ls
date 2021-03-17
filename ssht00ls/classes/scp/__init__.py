@@ -11,6 +11,14 @@ class SCP(Traceback):
 	def __init__(self,
 	):
 
+
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.scp", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Protocols", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.scp", raw_traceback="ssht00ls.classes.scp.SCP")
 

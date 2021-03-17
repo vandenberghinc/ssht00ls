@@ -18,6 +18,14 @@ class Keys(Traceback):
 		private_key=None,
 	):
 
+
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.keys", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Keys", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.keys", raw_traceback="ssht00ls.classes.keys.Keys")
 

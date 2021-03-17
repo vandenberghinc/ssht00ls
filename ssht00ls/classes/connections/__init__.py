@@ -9,11 +9,20 @@ from ssht00ls.classes import utils
 class Connections(Traceback):
 	def __init__(self):
 		
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.connections", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Protocols", }
+			
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.connections", raw_traceback="ssht00ls.classes.connections.Connections")
 
 		#
 	def list(self, filter="ssh"):
+		if dev0s.defaults.vars.os not in ["linux"]:
+			return dev0s.response.error(f"Unsupported operating system [{dev0s.defauls.vars.os}].")
 		output = dev0s.utils.__execute_script__("""ss | grep ssh | awk '{print $1","$2","$3","$4","$5","$6}' """)
 		connections = {}
 		for line in output.split("\n"):

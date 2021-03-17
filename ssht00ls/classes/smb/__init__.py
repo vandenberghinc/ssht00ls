@@ -34,6 +34,14 @@ class SMB(Thread):
 		log_level=dev0s.defaults.options.log_level,
 	):
 
+
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.smb", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Protocols", }
+
 		# defaults.
 		Thread.__init__(self, traceback="ssht00ls.smb", log_level=dev0s.defaults.log_level(default=-1))
 

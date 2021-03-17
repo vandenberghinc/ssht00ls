@@ -10,6 +10,13 @@ class Installation(Traceback):
 	def __init__(self,
 	):
 		
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.installation", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Setup", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.installation", raw_traceback="ssht00ls.classes.installation.Installation")
 

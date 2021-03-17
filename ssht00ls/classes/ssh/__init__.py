@@ -15,6 +15,14 @@ class SSH(Traceback):
 		alias=None,
 	):
 
+
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.ssh", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Protocols", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.ssh", raw_traceback="ssht00ls.classes.ssh.SSH")	
 

@@ -33,6 +33,15 @@ class Client(Traceback):
 		parameters={},
 	):
 
+
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.Client", 
+			"initialized":False,
+			"description":[], 
+			"chapter": "Clients", }
+			
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.Client", raw_traceback="ssht00ls.classes.client.Client")
 
@@ -284,6 +293,13 @@ class Clients(Traceback):
 		preset=["*"],
 	):
 
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.clients", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Clients", }
+			
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.clients", raw_traceback="ssht00ls.classes.client.Clients")
 

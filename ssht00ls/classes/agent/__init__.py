@@ -18,6 +18,13 @@ class Agent(Traceback):
 		smartcard=False,
 	):
 
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.agent", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Agent", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls_agent", raw_traceback="ssht00ls.classes.agent.Agent")
 

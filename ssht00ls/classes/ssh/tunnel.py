@@ -27,6 +27,14 @@ class Tunnel(Thread):
 		log_level=0,
 	):
 
+
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.ssh.Tunnel", 
+			"initialized":False,
+			"description":[], 
+			"chapter": "Connections", }
+
 		# defaults.
 		Thread.__init__(self, traceback="ssht00ls.ssh.tunnel", raw_traceback="ssht00ls.ssh.Tunnel", log_level=dev0s.defaults.log_level(default=-1))
 

@@ -34,6 +34,13 @@ class Aliases(Traceback):
 		log_level=dev0s.defaults.options.log_level,
 	):
 		
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.aliases", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Aliases", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.aliases", raw_traceback="ssht00ls.classes.aliaes.Aliases")
 

@@ -14,7 +14,14 @@ def __check_os__(supported=[]):
 class SmartCards(Traceback):
 	def __init__(self, 
 	):	
-		
+
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.smartcards", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Keys", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.smartcards", raw_traceback="ssht00ls.classes.smartcards.SmartCards")
 
@@ -225,6 +232,13 @@ class SmartCard(Traceback):
 	# ssh : https://github.com/fredxinfan/ykman-piv-ssh
 	# another ssh : https://somm15.github.io/yubikey/macos/ssh/2018/11/20/welcome-to-jekyll.html
 	def __init__(self, serial_number=None):	
+
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.SmartCard", 
+			"initialized":False,
+			"description":[], 
+			"chapter": "Keys", }
 
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.SmartCard", raw_traceback="ssht00ls.classes.smartcards.SmartCard")	

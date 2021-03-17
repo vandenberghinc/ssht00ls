@@ -11,6 +11,13 @@ class SSHFS(Traceback):
 	def __init__(self,
 	):
 
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.sshfs", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Protocols", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.sshfs", raw_traceback="ssht00ls.classes.sshfs.SSHFS")	
 

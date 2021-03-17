@@ -18,6 +18,13 @@ class SSync(Traceback):
 		alias=None,
 	):
 
+		# docs.
+		DOCS = {
+			"module":"ssht00ls.ssync", 
+			"initialized":True,
+			"description":[], 
+			"chapter": "Protocols", }
+
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.ssync", raw_traceback="ssht00ls.classes.ssync.SSync")
 
