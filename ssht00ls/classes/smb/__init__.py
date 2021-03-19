@@ -62,11 +62,11 @@ class SMB(Thread):
 		#
 	# functions.
 	def mount(self,
-		# the share id (leave None to use self.id) (REQUIRED) (#1).
+		# the share id (leave None to use self.id) (required) (#1).
 		id=None,
-		# the mountpoint path (leave None to use self.path) (REQUIRED) (#2).
+		# the mountpoint path (leave None to use self.path) (required) (#2).
 		path=None,
-		# the ssh alias (leave None to use self.alias) (REQUIRED) (#3).
+		# the ssh alias (leave None to use self.alias) (required) (#3).
 		alias=None,
 		# the username of for the remote server (leave None to use the aliases username).
 		username=None,
@@ -239,7 +239,7 @@ class SMB(Thread):
 
 		#
 	def unmount(self, 
-		# the mountpoint path (leave None to use self.path) (REQUIRED) (#1).
+		# the mountpoint path (leave None to use self.path) (required) (#1).
 		path=None, 
 		# the forced umount option.
 		forced=False, 
@@ -314,7 +314,7 @@ class SMB(Thread):
 
 		#
 	def parse(self,
-		# the mountpoint path (leave None to use self.path) (REQUIRED) (#1). 
+		# the mountpoint path (leave None to use self.path) (required) (#1). 
 		path=None,
 	):
 

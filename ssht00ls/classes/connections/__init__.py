@@ -14,7 +14,7 @@ class Connections(Traceback):
 			"module":"ssht00ls.connections", 
 			"initialized":True,
 			"description":[], 
-			"chapter": "Protocols", }
+			"chapter": "Connections", }
 			
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.connections", raw_traceback="ssht00ls.classes.connections.Connections")

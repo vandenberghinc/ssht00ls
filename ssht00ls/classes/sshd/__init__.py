@@ -18,7 +18,7 @@ class SSHD(Traceback):
 			"module":"ssht00ls.sshd", 
 			"initialized":True,
 			"description":[], 
-			"chapter": "Setup", }
+			"chapter": "Protocols", }
 
 		# defaults.
 		Traceback.__init__(self, traceback="ssht00ls.sshd", raw_traceback="ssht00ls.classes.sshd.SSHD")	
