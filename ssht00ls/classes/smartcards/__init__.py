@@ -68,7 +68,9 @@ class SmartCards(Traceback):
 	def scan(self, silent=False):
 
 		# list.
-		output = utils.__execute__(["ykman", "list"], shell=False, return_format="array")
+		response = dev0s.code.execute("ykman list")
+		if not response.success: return response
+		output = response.output.split("\n")
 
 		# iterate.
 		count, smartcards = 0, {}
@@ -303,7 +305,9 @@ class SmartCard(Traceback):
 		if not response["success"]: return response
 
 		# unblock.
-		output = utils.__execute_script__(f"ykman --device {self.serial_number} piv unblock-pin --puk {puk} --new-pin {pin}", shell=True)
+		response = dev0s.code.execute(f"ykman --device {self.serial_number} piv unblock-pin --puk {puk} --new-pin {pin}")
+		if not response.success: return response
+		output = response.output
 
 		# handle defaults.
 		response = self.__handle_default_output__(output)
@@ -336,7 +340,9 @@ class SmartCard(Traceback):
 
 		# do.
 		command = f"ykman --device {self.serial_number} piv change-pin -P{old} -n{new}"
-		output = utils.__execute_script__(command, shell=True)
+		response = dev0s.code.execute(command)
+		if not response.success: return response
+		output = response.output
 
 		# handle defaults.
 		response = self.__handle_default_output__(output)
@@ -370,7 +376,9 @@ class SmartCard(Traceback):
 
 		# do.
 		command = f"ykman --device {self.serial_number} piv change-puk -p{old} -n{new}"
-		output = utils.__execute_script__(command, shell=True)
+		response = dev0s.code.execute(command)
+		if not response.success: return response
+		output = response.output
 
 		# handle defaults.
 		response = self.__handle_default_output__(output)
@@ -402,7 +410,9 @@ class SmartCard(Traceback):
 
 		# do.
 		command = f"printf '\\n\\n' | ykman --device {self.serial_number} piv generate-key 9a public.pem --pin-policy ALWAYS  --pin {pin} --management-key 010203040506070801020304050607080102030405060708"
-		output = utils.__execute_script__(command, shell=True)
+		response = dev0s.code.execute(command)
+		if not response.success: return response
+		output = response.output
 		
 		# handle error.
 		response = self.__handle_default_output__(output)
@@ -412,7 +422,9 @@ class SmartCard(Traceback):
 
 		# do.
 		command = f'ykman --device {self.serial_number} piv generate-certificate -s "/CN=SSH-key/" 9a public.pem --pin {pin} --management-key 010203040506070801020304050607080102030405060708'
-		output = utils.__execute_script__(command, shell=True)
+		response = dev0s.code.execute(command)
+		if not response.success: return response
+		output = response.output
 		
 		# handle error.
 		response = self.__handle_default_output__(output)
@@ -440,7 +452,9 @@ class SmartCard(Traceback):
 
 		# do.
 		command = f'ykman --device {self.serial_number} piv change-management-key --generate --protect --pin {pin} --management-key "010203040506070801020304050607080102030405060708"'
-		output = utils.__execute_script__(command, shell=True)
+		response = dev0s.code.execute(command)
+		if not response.success: return response
+		output = response.output
 
 		# handle success.
 		response = self.__handle_default_output__(output)
@@ -455,7 +469,9 @@ class SmartCard(Traceback):
 
 		# do.
 		#output = utils.__execute_script__(f"printf 'y\\n' | ykman --device {self.serial_number} piv reset", shell=True)
-		output = utils.__execute_script__(f"printf 'y\\n' | ykman --device {self.serial_number} piv reset", shell=True)
+		response = dev0s.code.execute(f"printf 'y\\n' | ykman --device {self.serial_number} piv reset")
+		if not response.success: return response
+		output = response.output
 		
 		# handle success.
 		if "Success!" in output:
@@ -473,7 +489,9 @@ class SmartCard(Traceback):
 
 		# output.
 		command = f"ssh-keygen -D {self.path} -e"
-		output = utils.__execute_script__(command, shell=True, return_format="array")
+		response = dev0s.code.execute(command)
+		if not response.success: return response
+		output = response.output.split("\n")
 		
 		# error.
 		if len(output) == 0 or "ssh-rsa " not in output[0]:
@@ -585,7 +603,7 @@ class SmartCard(Traceback):
 		# initialize.
 		if pin == None: 
 			pin = utils.__generate_pincode__(characters=6)
-		elif len(pin) != 6: return dev0s.response.error("The pin code must be a six character integer code.")
+		elif len(str(pin)) != 6: return dev0s.response.error("The pin code must be a six character integer code.")
 		if puk == None: 
 			puk = utils.__generate_pincode__(characters=8)
 		elif len(puk) != 8: return dev0s.response.error("The puk code must be a eight character integer code.")

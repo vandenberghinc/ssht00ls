@@ -53,8 +53,11 @@ def ssh_agent():
 	"""
 
 	# version 2.
+	dev0s.code.execute(f"pkill -9 -f ssh-agent")
 	try:
-		output = utils.__execute__(f"ssh-agent")
+		output = dev0s.code.execute(f"ssh-agent")
+		if not output.success: output.crash()
+		output = str(output)
 		try: 
 			SSH_AUTH_SOCK = output.split("SSH_AUTH_SOCK=")[1].split(";")[0]
 			os.environ["SSH_AUTH_SOCK"] = SSH_AUTH_SOCK
@@ -166,8 +169,8 @@ def __execute_script__(
 	input=None,
 ):
 	path = f"/tmp/shell_script.{__generate_pincode__(characters=32)}.sh"
-	with open(str(path), "wb") as file:
-		file.write(str(data))
+	with open(str(path), "w") as file:
+		file.write(str(script))
 	os.system(f"chmod +x {path}")
 	output = __execute__(
 		command=[f"sh", f"{path}"],
