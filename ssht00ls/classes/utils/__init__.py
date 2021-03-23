@@ -53,7 +53,8 @@ def ssh_agent():
 	"""
 
 	# version 2.
-	dev0s.code.execute(f"pkill -9 -f ssh-agent")
+	if dev0s.system.processes(includes="ssh-agent").processes >= 10:
+		dev0s.code.execute(f"pkill -9 -f ssh-agent")
 	try:
 		output = dev0s.code.execute(f"ssh-agent")
 		if not output.success: output.crash()
