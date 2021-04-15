@@ -21,7 +21,7 @@ SOURCE_PATH = dev0s.defaults.source_path(__file__, back=3)
 BASE = dev0s.defaults.source_path(SOURCE_PATH)
 dev0s.defaults.operating_system(supported=["linux", "macos"])
 dev0s.defaults.alias(alias=ALIAS, executable=f"{SOURCE_PATH}")
-if dev0s.defaults.options.log_level >= 1:
+if dev0s.defaults.options.log_level >= 2:
 	dev0s.response.log(f"{ALIAS}:")
 	dev0s.response.log(f"  * source: {SOURCE_PATH}")
 
@@ -29,8 +29,7 @@ if dev0s.defaults.options.log_level >= 1:
 # interactive must be False by default.
 CHECKS = not dev0s.cli.arguments_present(["--no-checks"])
 RESET_CACHE = dev0s.cli.arguments_present("--reset-cache")
-if dev0s.defaults.options.log_level >= 1:
-	dev0s.response.log("ssht00ls:")
+if dev0s.defaults.options.log_level >= 2:
 	dev0s.response.log(f"  * interactive: {dev0s.defaults.options.interactive}")
 	dev0s.response.log(f"  * checks: {CHECKS}")
 
@@ -46,7 +45,7 @@ if not DATABASE.fp.exists():
 CONFIG = Dictionary(path=dev0s.env.get_string("SSHT00LS_CONFIG", default=DATABASE.join("config","")), load=True, default={})
 
 # logs.
-if dev0s.defaults.options.log_level >= 1:
+if dev0s.defaults.options.log_level >= 2:
 	dev0s.response.log(f"  * database: {DATABASE}")
 	dev0s.response.log(f"  * config: {CONFIG.fp}")
 
@@ -79,8 +78,7 @@ if CHECKS and not RESET_CACHE:
 	if not NETWORK_INFO["success"]: 
 		dev0s.response.log(error=NETWORK_INFO.error, json=dev0s.cli.arguments_present(["--json", "-j"]), log_level=0)
 		sys.exit(1)
-	if dev0s.defaults.options.log_level >= 1:
-		dev0s.response.log("Network info:")
+	if dev0s.defaults.options.log_level >= 2:
 		dev0s.response.log(f"  * public ip: {NETWORK_INFO['public_ip']}")
 		dev0s.response.log(f"  * private ip: {NETWORK_INFO['private_ip']}")
 
@@ -155,13 +153,13 @@ if CHECKS and not RESET_CACHE:
 			dev0s.response.log(response=response, json=dev0s.defaults.options.json)
 			sys.exit(1)
 	elif dev0s.defaults.options.interactive and not ssht00ls_agent.webserver.running: # is also automatically done in agent.generate & agent.activate
-		if dev0s.defaults.options.log_level >= 1:
-			dev0s.response.log(f"{ALIAS}: forking the ssht00ls agent.")
+		if dev0s.defaults.options.log_level >= 2:
+			dev0s.response.log(f"  * forking the ssht00ls agent.")
 		response = ssht00ls_agent.webserver.fork()
 		dev0s.response.log(response=response, json=dev0s.defaults.options.json)
 		if not response.success: sys.exit(1)
-	if dev0s.defaults.options.log_level >= 1:
-		dev0s.response.log(f"{ALIAS} webserver: {ssht00ls_agent.webserver}")
+	if dev0s.defaults.options.log_level >= 2:
+		dev0s.response.log(f"  * webserver: {ssht00ls_agent.webserver}")
 
 	# check interactive.
 	if dev0s.defaults.options.interactive:
@@ -177,9 +175,5 @@ if CHECKS and not RESET_CACHE:
 			response = ssht00ls_agent.activate()
 			dev0s.response.log(response=response, json=dev0s.defaults.options.json)
 			if not response.success: sys.exit(1)
-
-# logs.
-elif dev0s.defaults.options.log_level >= 0:
-	dev0s.response.log(f"{ALIAS}: skip encryption import (#1) due to ssht00ls agent start.")
 
 #
