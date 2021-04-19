@@ -20,7 +20,7 @@ from dev0s.shortcuts import *
 SOURCE_PATH = dev0s.defaults.source_path(__file__, back=3)
 BASE = dev0s.defaults.source_path(SOURCE_PATH)
 dev0s.defaults.operating_system(supported=["linux", "macos"])
-dev0s.defaults.alias(alias=ALIAS, executable=f"{SOURCE_PATH}")
+dev0s.defaults.alias(alias=ALIAS, executable=f"{SOURCE_PATH}", venv=Files.join(SOURCE_PATH, "venv"), requirements=Files.join(SOURCE_PATH, "requirements/requirements.pip"))
 if dev0s.defaults.options.log_level >= 2:
 	dev0s.response.log(f"{ALIAS}:")
 	dev0s.response.log(f"  * source: {SOURCE_PATH}")
