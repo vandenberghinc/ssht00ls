@@ -642,6 +642,30 @@ class Aliases(Traceback):
 		if not response.success: response.crash()
 		public = not (NETWORK_INFO["public_ip"] == public_ip and response.up == True)
 		return public
+	def dump_passphrases(self, 
+		# the passphrase of the master encryption.
+		passphrase=None,
+	):
+		
+
+		# activate encryption.
+		response = ssht00ls_agent.activate(passphrase=passphrase)
+		if not response.success: return response
+
+		# dump.
+		c = 0
+		for alias, info in self.list()["dictionary"].items():
+			if info["passphrase"] not in [False, None, ""]:
+				response = ssht00ls_agent.decrypt(info["passphrase"])
+				if not response.success: return response
+				print(f"{alias}: {response.decrypted.decode()} ({info['private_key']}).")
+				c += 1
+
+		# handler.
+		return dev0s.response.success(f"Successfully dumpted {c} passphrase(s).")
+
+
+
 	# edit aliases lib.
 	def __edit_alias_lib__(self, alias, data):
 

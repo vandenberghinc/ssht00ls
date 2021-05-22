@@ -45,6 +45,7 @@ class CLI(dev0s.cli.CLI):
 				"        --edit":"Edit the alias config.",
 				"            *** same options as --create ***":"",
 				"            --alias newalias":"Rename the alias.",
+				"    --dump-passphrases":"Dump the encrypted passphrases.",
 				"Sessions:":"*chapter*",
 				"    --command <alias> 'ls .'":"Execute a command over ssh.",
 				"    --session <alias>":"Start a ssh session.",
@@ -207,6 +208,10 @@ class CLI(dev0s.cli.CLI):
 				else:
 					print("Aliases:") ; c = 1
 					for i in response.array: print(f" * {c}: {i}") ; c += 1
+
+		elif self.arguments.present("--dump-passphrases"):
+			response = ssht00ls.aliases.dump_passphrases(passphrase=dev0s.console.input("Enter the passphrase of the master encryption:", password=True))
+			self.stop(response=response)
 
 		# aliases.
 		elif self.arguments.present("--alias"):
