@@ -11,7 +11,7 @@ if "--update" in sys.argv and ALIAS in sys.argv[0]:
 	sys.exit(0)
 
 # imports.
-import os, sys, subprocess, pexpect, random, getpass, time
+import os, sys, subprocess, pexpect, random, getpass, time, logging
 
 # inc imports.
 from dev0s.shortcuts import *
@@ -69,6 +69,9 @@ if dev0s.defaults.options.log_level >= 2:
 	dev0s.response.log(f"  * ssh timeout: {SSH_TIMEOUT}")
 	dev0s.response.log(f"  * ssh reattempts: {SSH_REATTEMPS}")
 	dev0s.response.log(f"  * daemon sleeptime: {SSYNC_DAEMON_SLEEPTIME}")
+
+# logging.
+logging.disable(logging.CRITICAL)
 
 # speed up non interactive.
 if CHECKS and not RESET_CACHE:

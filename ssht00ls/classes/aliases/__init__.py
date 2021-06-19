@@ -4,6 +4,7 @@
 # imports.
 from ssht00ls.classes.config import *
 from ssht00ls.classes import utils
+from ssht00ls.classes.smartcards import smartcards
 from ssht00ls.classes.agent import agent
 
 # the aliases object class.
@@ -270,8 +271,8 @@ class Aliases(Traceback):
 				CONFIG["aliases"][alias]["smartcard"] = False
 				CONFIG["aliases"][alias]["passphrase"] = response.encrypted.decode()
 			else:
-				CONFIG["aliases"][alias]["smartcard"] = True
-				CONFIG["aliases"][alias]["passphrase"] = ""
+				CONFIG["aliases"][alias]["smartcard"] = False
+				CONFIG["aliases"][alias]["passphrase"] = False
 			edit_count += 1
 			del edits["passphrase"]
 		
@@ -286,7 +287,8 @@ class Aliases(Traceback):
 				CONFIG["aliases"][alias]["smartcard"] = True
 				CONFIG["aliases"][alias]["pin"] = response.encrypted.decode()
 			else:
-				CONFIG["aliases"][alias]["pin"] = ""
+				CONFIG["aliases"][alias]["smartcard"] = True
+				CONFIG["aliases"][alias]["pin"] = False
 			del edits["pin"]
 
 		# check.
@@ -379,12 +381,15 @@ class Aliases(Traceback):
 		if not response["success"]: return response
 		has_passphrase = True
 		if smartcard:
-			response = dev0s.response.parameters.check({
-				"pin":pin,
-			}, default=None, traceback=self.__traceback__(function="create"))
-			if not response["success"]: return response
+			if pin in [False]:
+				has_passphrase = False
+			else:
+				response = dev0s.response.parameters.check({
+					"pin":pin,
+				}, default=None, traceback=self.__traceback__(function="create"))
+				if not response["success"]: return response
 		else:
-			if passphrase in [None, "", "None", "none"]:
+			if passphrase in [False]:
 				has_passphrase = False
 			#response = dev0s.response.parameters.check({
 			#	"passphrase":passphrase,
@@ -401,11 +406,11 @@ class Aliases(Traceback):
 			if not response["success"]: return response
 
 		# keys.
-		private_key = dev0s.env.fill(private_key)
-		public_key = dev0s.env.fill(public_key)
-		if not Files.exists(private_key):
+		if private_key != False: private_key = dev0s.env.fill(private_key)
+		if public_key != False: public_key = dev0s.env.fill(public_key)
+		if private_key != False and not Files.exists(private_key):
 			return dev0s.response.error(f"Private key {private_key} does not exist.")
-		if not Files.exists(public_key):
+		if public_key != False and not Files.exists(public_key):
 			return dev0s.response.error(f"Public key {public_key} does not exist.")
 
 		# info.
@@ -451,8 +456,8 @@ class Aliases(Traceback):
 				if not response["success"]: return response
 				json_config["passphrase"] = response["encrypted"].decode()
 		else:
-			json_config["passphrase"] = ""
-			json_config["pin"] = ""
+			json_config["passphrase"] = False
+			json_config["pin"] = False
 
 		# serial numbers.
 		json_config["serial_numbers"] = serial_numbers
@@ -542,26 +547,47 @@ class Aliases(Traceback):
 					Files.chmod(checked["public_key"], permission=700)
 				if interactive:
 					passphrase, has_passphrase, new_passphrase = None, True, True
+
+					# smart card.
 					if checked["smartcard"] == True:
+
+						# pin disabled.
 						if checked["pin"] in [False, None, "", "none", "None"]:
-							if checked["pin"] in [False, "", "none", "None"]:
+							
+							# skip when passphrase is False.
+							if checked["pin"] in [False]: 
 								has_passphrase = False
+							
+							# prompt when passphrase is invalid.
 							else:
 								if log_level >= 0: loader.hold()
 								passphrase =  getpass.getpass(f"Enter the pin of smartcard [{gfp.clean(checked['private_key'])}]:")
 								if log_level >= 0: loader.release()
+
+						# prompt for pin.
+						elif str(checked["pin"]).lower() in ["prompt"]:
+							loader.hold()
+							passphrase = dev0s.console.input(f"Enter the pin code for smartcard {alias}:", password=True)
+							loader.release()
+
+						# has pincode cached.
 						else:
+							
 							# check encryption activated.
 							if not ssht00ls_agent.activated:
 								
 								if log_level >= 0: loader.stop(success=False)
 								return dev0s.response.error(f"The {ssht00ls_agent.id} encryption requires to be activated.")
+
+							# retrieve pass.
 							new_passphrase = False
 							response = ssht00ls_agent.encryption.decrypt(checked["pin"])
 							if not response.success: 
 								if log_level >= 0: loader.stop(success=False)
 								return response
 							passphrase = response.decrypted.decode()
+
+					# no smart card.
 					else:	
 						if checked["passphrase"] in [False, None, "", "none", "None"]:
 							if checked["passphrase"] in [False, "", "none", "None"]:
@@ -586,6 +612,8 @@ class Aliases(Traceback):
 								if log_level >= 0: loader.stop(success=False)
 								return response
 							passphrase = response.decrypted.decode()
+
+					# add to agent.
 					if has_passphrase:
 						if checked["smartcard"] == True:
 							response = agent.check(public_key=checked["public_key"], raw=True)

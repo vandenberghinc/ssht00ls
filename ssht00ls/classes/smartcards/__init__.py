@@ -233,7 +233,10 @@ class SmartCard(Traceback):
 	# docs : https://support.yubico.com/support/solutions/articles/15000011059-yubikey-fips-series-technical-manual#2.3.4_Recommended_PIV_Settings11ale3
 	# ssh : https://github.com/fredxinfan/ykman-piv-ssh
 	# another ssh : https://somm15.github.io/yubikey/macos/ssh/2018/11/20/welcome-to-jekyll.html
-	def __init__(self, serial_number=None):	
+	def __init__(self, 
+		# the serianl number (int) (#1).
+		serial_number=None,
+	):	
 
 		# docs.
 		DOCS = {
@@ -409,7 +412,7 @@ class SmartCard(Traceback):
 		if not response["success"]: return response
 
 		# do.
-		command = f"printf '\\n\\n' | ykman --device {self.serial_number} piv generate-key 9a public.pem --pin-policy ALWAYS  --pin {pin} --management-key 010203040506070801020304050607080102030405060708"
+		command = f"printf '\\n\\n' | ykman --device {self.serial_number} piv keys generate 9a public.pem --pin-policy ALWAYS  --pin {pin} --management-key 010203040506070801020304050607080102030405060708"
 		response = dev0s.code.execute(command)
 		if not response.success: return response
 		output = response.output
@@ -421,7 +424,8 @@ class SmartCard(Traceback):
 			return dev0s.response.error(f"Unknown error during key generation, output: [{output}].")
 
 		# do.
-		command = f'ykman --device {self.serial_number} piv generate-certificate -s "/CN=SSH-key/" 9a public.pem --pin {pin} --management-key 010203040506070801020304050607080102030405060708'
+		#command = f'ykman --device {self.serial_number} piv generate-certificate -s "/CN=SSH-key/" 9a public.pem --pin {pin} --management-key 010203040506070801020304050607080102030405060708'
+		command = f'ykman --device {self.serial_number} piv certificates generate -s "SSH-key" 9a public.pem --pin {pin} --management-key 010203040506070801020304050607080102030405060708'
 		response = dev0s.code.execute(command)
 		if not response.success: return response
 		output = response.output
@@ -451,7 +455,7 @@ class SmartCard(Traceback):
 		if not response["success"]: return response
 
 		# do.
-		command = f'ykman --device {self.serial_number} piv change-management-key --generate --protect --pin {pin} --management-key "010203040506070801020304050607080102030405060708"'
+		command = f'ykman --device {self.serial_number} piv access change-management-key --generate --protect --pin {pin} --management-key "010203040506070801020304050607080102030405060708"'
 		response = dev0s.code.execute(command)
 		if not response.success: return response
 		output = response.output
@@ -482,6 +486,8 @@ class SmartCard(Traceback):
 			return dev0s.response.error("Failed to reset the smart card.")
 
 	# single key plugged in compatible:
+
+	# export the public keys.
 	def export_keys(self, 
 		# optionally save the keys to a file.
 		path=None, 
@@ -606,7 +612,7 @@ class SmartCard(Traceback):
 		elif len(str(pin)) != 6: return dev0s.response.error("The pin code must be a six character integer code.")
 		if puk == None: 
 			puk = utils.__generate_pincode__(characters=8)
-		elif len(puk) != 8: return dev0s.response.error("The puk code must be a eight character integer code.")
+		elif len(str(puk)) != 8: return dev0s.response.error("The puk code must be a eight character integer code.")
 		info = {
 			"pin":pin,
 			"puk":puk,

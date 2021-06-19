@@ -58,6 +58,10 @@ class Agent(Traceback):
 			if public_key == None: public_key = self.public_key
 			if smartcard == None: smartcard = self.smartcard
 
+		# check smartcard.
+		if smartcard and private_key == None:
+			private_key = smartcards.path
+
 		# initialize.
 		private_key = private_key.replace("//", "/")
 		response = dev0s.response.parameters.check(default=None, parameters={
