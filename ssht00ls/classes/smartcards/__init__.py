@@ -33,6 +33,7 @@ class SmartCards(Traceback):
 				"/usr/lib/x86_64-linux-gnu//opensc-pkcs11.so",
 				"/usr/lib/arm-linux-gnueabihf/opensc-pkcs11.so",
 				"/usr/local/lib/libykcs11",
+				"/usr/lib/aarch64-linux-gnu/opensc-pkcs11.so",
 			]:
 				if Files.exists(path):
 					self.path = path
@@ -412,6 +413,7 @@ class SmartCard(Traceback):
 		if not response["success"]: return response
 
 		# do.
+		#command = f"printf '\\n\\n' | ykman --device {self.serial_number} piv generate-key 9a public.pem --pin-policy ALWAYS  --pin {pin} --management-key 010203040506070801020304050607080102030405060708"
 		command = f"printf '\\n\\n' | ykman --device {self.serial_number} piv keys generate 9a public.pem --pin-policy ALWAYS  --pin {pin} --management-key 010203040506070801020304050607080102030405060708"
 		response = dev0s.code.execute(command)
 		if not response.success: return response
@@ -455,6 +457,7 @@ class SmartCard(Traceback):
 		if not response["success"]: return response
 
 		# do.
+		#command = f'ykman --device {self.serial_number} piv change-management-key --generate --protect --pin {pin} --management-key "010203040506070801020304050607080102030405060708"'
 		command = f'ykman --device {self.serial_number} piv access change-management-key --generate --protect --pin {pin} --management-key "010203040506070801020304050607080102030405060708"'
 		response = dev0s.code.execute(command)
 		if not response.success: return response
