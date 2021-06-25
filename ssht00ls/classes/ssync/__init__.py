@@ -310,11 +310,11 @@ class SSync(Traceback):
 				if self.specific: self.activated = True
 		return self.utils.push(
 			# the local path.
-			path=path, 
+			path=str(path), 
 			# the ssht00ls alias.
 			alias=alias, 
 			# the remote path.
-			remote=remote, 
+			remote=str(remote), 
 			# exlude subpaths (list) (leave None to use default).
 			exclude=exclude,
 			# path is directory boolean (leave None to parse automatically).

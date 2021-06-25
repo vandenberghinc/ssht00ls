@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # imports.
-from dev0s.shortcuts import * ; dev0s.defaults.insert(dev0s.defaults.source_path(__file__, back=2))
+from dev0s.shortcuts import *
+dev0s.defaults.insert(dev0s.defaults.source_path(__file__, back=2))
 dev0s.env["dev0s.defaults.options.interactive"] = True
 dev0s.env["CLI"] = True
 dev0s.defaults.options.interactive = True
@@ -113,7 +114,7 @@ class CLI(dev0s.cli.CLI):
 			notes={
 				"Include config file":"Specify the $SSHT00LS_CONFIG environment variable to use a different ssht00ls config file.",
 			},
-			alias=ALIAS,
+			alias="ssht00ls",
 			executable=__file__,
 		)
 
@@ -132,6 +133,11 @@ class CLI(dev0s.cli.CLI):
 				for alias in ssht00ls.aliases:
 					if alias in str_args:
 						aliases.append(alias)
+			else:
+				aliases = self.arguments.get("--sync", required=False, default=None)
+				if aliases == None: aliases = ["*"]
+				else:
+					aliases = aliases.replace(" ","").split(",")
 			response = ssht00ls.aliases.sync(aliases=aliases)
 			if self.arguments.present("--sync"):
 				self.stop(response=response)

@@ -59,11 +59,11 @@ class Agent(Traceback):
 			if smartcard == None: smartcard = self.smartcard
 
 		# check smartcard.
-		if smartcard and private_key == None:
+		if smartcard and private_key in [None,False]:
 			private_key = smartcards.path
 
 		# initialize.
-		private_key = private_key.replace("//", "/")
+		private_key = str(private_key).replace("//", "/")
 		response = dev0s.response.parameters.check(default=None, parameters={
 			"private_key":private_key
 		}, traceback=self.__traceback__(function="add"))
@@ -286,7 +286,7 @@ class Agent(Traceback):
 
 		# check.
 		output = utils.__execute__(["ssh-add", "-L"])
-		if str(public_key.replace("\n",'')) in output:
+		if str(public_key).replace("\n",'') in output:
 			return dev0s.response.success(f"Public key [{public_key}] is added to the ssh agent.")
 		else:
 			return dev0s.response.error(f"Public key [{public_key}] is not added to the ssh agent.")

@@ -66,6 +66,8 @@ def pull(
 	# checks.
 	if exclude != None: exclude += EXCLUDE
 	if include != None: include += INCLUDE
+	if path != None: path = str(path)
+	if remote != None: remote = str(remote)
 	if checks:
 
 		# check alias.
@@ -175,6 +177,8 @@ def push(
 	# checks.
 	if exclude != None: exclude += EXCLUDE
 	if include != None: include += INCLUDE
+	if path != None: path = str(path)
+	if remote != None: remote = str(remote)
 	if checks:
 
 		# check alias.
@@ -204,8 +208,8 @@ def push(
 		#if not response.success: return response
 
 		# dir.
-		if directory == None: directory = os.path.isdir(path)
-		elif directory and not os.path.isdir(path):
+		if directory == None: directory = Files.directory(path)
+		elif directory and not Files.directory(path):
 			return dev0s.response.error(f"Path {path} is not a directory.")
 
 	# check remote base.
