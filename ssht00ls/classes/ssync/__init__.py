@@ -5,7 +5,7 @@
 from ssht00ls.classes.config import *
 from ssht00ls.classes.aliases import aliases
 from ssht00ls.classes.agent import agent
-import ssht00ls.classes.ssync.utils as ssync_utils 
+from . import utils as ssync_utils 
 from ssht00ls.classes.ssync import daemons
 from ssht00ls.classes.ssh import ssh
 from ssht00ls.classes import utils

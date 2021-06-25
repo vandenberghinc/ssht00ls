@@ -3,7 +3,7 @@
 
 # imports.
 from ssht00ls.classes.config import *
-import ssht00ls.classes.ssh.utils as ssh_utils 
+from . import utils as ssh_utils 
 
 # the ssh tunnel object class.
 class Tunnel(Thread):
