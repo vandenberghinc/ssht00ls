@@ -44,6 +44,7 @@ class SmartCards(Traceback):
 			self.original_path = None
 			for path in [
 				"/usr/local/lib/libykcs11.dylib",
+				"/usr/local/lib/opensc-pkcs11.so",
 			]:
 				if Files.exists(path):
 					self.original_path = path
@@ -55,8 +56,15 @@ class SmartCards(Traceback):
 			#self.original_path = "/usr/local/lib/opensc-pkcs11.so"
 			#self.original_path = f"{SOURCE_PATH}/lib/opensc/macos/opensc-pkcs11.so"
 			#self.path = "/usr/local/lib/opensc-pkcs11_NOTALINK.so"
-			self.original_path = path
-			self.path = "/usr/local/lib/libykcs11_NOTALNK.dylib"
+			if self.original_path == "/usr/local/lib/libykcs11.dylib":
+				self.original_path = path
+				self.path = "/usr/local/lib/libykcs11_NOTALNK.dylib"
+			elif self.original_path == None:
+				Files.copy(Files.join(SOURCE_PATH, "/lib/opensc/macos/opensc-pkcs11.so"), "/usr/local/lib/opensc-pkcs11.so")
+				Files.chmod("/usr/local/lib/opensc-pkcs11.so", 700)
+				Files.chown("/usr/local/lib/opensc-pkcs11.so", owner=dev0s.defaults.vars.user)
+				self.original_path = "/usr/local/lib/opensc-pkcs11.so"
+				self.path = "/usr/local/lib/opensc-pkcs11.so"
 			#if not Files.exists(self.original_path):
 			#	dev0s.response.log("&RED&OpenSC package is not installed&END&, run: [$ brew install yubico-piv-tool opensc].")
 
