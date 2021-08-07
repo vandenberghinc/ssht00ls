@@ -5,7 +5,7 @@
 from ssht00ls.classes.config import *
 from ssht00ls.classes.aliases import aliases
 from ssht00ls.classes.ssh.tunnel import Tunnel
-from . import utils as ssh_utils
+from ssht00ls.classes.ssh import utils as ssh_utils
 
 # the ssh object class.
 class SSH(Traceback):
